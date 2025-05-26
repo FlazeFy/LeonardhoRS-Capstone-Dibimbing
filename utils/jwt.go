@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"errors"
 	"pelita/config"
 	"pelita/entity"
 	"time"
@@ -20,28 +19,6 @@ func GenerateToken(userId uuid.UUID) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	return token.SignedString(config.GetJWTSecret())
-}
-
-func ValidateToken(tokenString string) (uuid.UUID, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return config.GetJWTSecret(), nil
-	})
-
-	if err != nil || !token.Valid {
-		return uuid.UUID{}, err
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return uuid.UUID{}, errors.New("invalid token claims")
-	}
-
-	userIdStr, ok := claims["user_id"].(string)
-	if !ok {
-		return uuid.UUID{}, errors.New("user id is not a string")
-	}
-
-	return uuid.Parse(userIdStr)
 }
 
 func HashPassword(u *entity.User, password string) error {
