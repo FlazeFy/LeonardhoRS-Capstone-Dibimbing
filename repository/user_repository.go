@@ -11,6 +11,7 @@ import (
 type UserRepository interface {
 	FindByUsernameOrEmail(username, email string) (*entity.User, error)
 	FindByEmail(email string) (*entity.User, error)
+	FindById(id string) (*entity.MyProfile, error)
 	Create(user *entity.User) error
 }
 
@@ -41,6 +42,23 @@ func (r *userRepository) FindByEmail(email string) (*entity.User, error) {
 
 	// Query
 	err := r.db.Where("email = ?", email).First(&user).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &user, err
+}
+
+func (r *userRepository) FindById(id string) (*entity.MyProfile, error) {
+	// Models
+	var user entity.MyProfile
+
+	// Query
+	err := r.db.Table("users").
+		Select("username, email, telegram_is_valid, telegram_user_id, created_at").
+		Where("id = ?", id).
+		First(&user).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}
