@@ -15,31 +15,41 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func ValidateToken(tokenString string) (jwt.MapClaims, error) {
+func ValidateToken(tokenString string) (uuid.UUID, error) {
 	// Token Parse
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return config.GetJWTSecret(), nil
 	})
 	if err != nil || !token.Valid {
-		return nil, errors.New("invalid token")
+		return uuid.UUID{}, errors.New("invalid token")
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, errors.New("invalid token claims")
+		return uuid.UUID{}, errors.New("invalid token claims")
 	}
 
 	// Check exp
 	expFloat, ok := claims["exp"].(float64)
 	if !ok {
-		return nil, errors.New("missing exp in token")
+		return uuid.UUID{}, errors.New("missing exp in token")
 	}
 
 	expTime := time.Unix(int64(expFloat), 0)
 	if time.Now().After(expTime) {
-		return nil, errors.New("token expired")
+		return uuid.UUID{}, errors.New("token expired")
 	}
 
-	return claims, nil
+	userIdStr, ok := claims["user_id"].(string)
+	if !ok {
+		return uuid.UUID{}, errors.New("user_id is not a string")
+	}
+
+	userID, err := uuid.Parse(userIdStr)
+	if err != nil {
+		return uuid.UUID{}, errors.New("invalid user_id format")
+	}
+
+	return userID, nil
 }
 
 func AuthMiddleware(redisClient *redis.Client) gin.HandlerFunc {
@@ -64,20 +74,13 @@ func AuthMiddleware(redisClient *redis.Client) gin.HandlerFunc {
 		}
 
 		// Validate JWT token
-		claims, err := ValidateToken(tokenString)
+		userID, err := ValidateToken(tokenString)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
 			return
 		}
 
-		userIDStr, ok := claims["user_id"].(string)
-		if ok {
-			userID, err := uuid.Parse(userIDStr)
-			if err == nil {
-				c.Set("userID", userID)
-			}
-		}
-
+		c.Set("userID", userID)
 		c.Next()
 	}
 }
