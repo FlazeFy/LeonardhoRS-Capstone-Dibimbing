@@ -24,7 +24,8 @@ func main() {
 
 	// Setup Gin
 	router := gin.Default()
-	routes.SetUpRoutes(router, db)
+	redisClient := config.InitRedis()
+	routes.SetUpRoutes(router, db, redisClient)
 
 	// Run server
 	router.Run(":9000")

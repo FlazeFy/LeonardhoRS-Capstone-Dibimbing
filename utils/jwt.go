@@ -6,7 +6,7 @@ import (
 	"pelita/entity"
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -17,8 +17,8 @@ func GenerateToken(userId uuid.UUID) (string, error) {
 		"exp":     time.Now().Add(config.GetJWTExpirationDuration()).Unix(),
 		"iat":     time.Now().Unix(),
 	}
-
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
 	return token.SignedString(config.GetJWTSecret())
 }
 
@@ -38,7 +38,7 @@ func ValidateToken(tokenString string) (uuid.UUID, error) {
 
 	userIdStr, ok := claims["user_id"].(string)
 	if !ok {
-		return uuid.UUID{}, errors.New("user_id is not a string")
+		return uuid.UUID{}, errors.New("user id is not a string")
 	}
 
 	return uuid.Parse(userIdStr)
@@ -50,6 +50,7 @@ func HashPassword(u *entity.User, password string) error {
 		return err
 	}
 	u.Password = string(hashedPass)
+
 	return nil
 }
 

@@ -6,12 +6,13 @@ import (
 	"pelita/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 )
 
-func SetUpRoutes(r *gin.Engine, db *gorm.DB) {
+func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	userRepo := repository.NewUserRepository(db)
-	authService := service.NewAuthService(userRepo)
+	authService := service.NewAuthService(userRepo, redisClient)
 	authController := controller.NewAuthController(authService)
 
 	api := r.Group("/api/v1")
@@ -21,6 +22,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB) {
 		{
 			auth.POST("/register", authController.Register)
 			auth.POST("/login", authController.Login)
+			auth.POST("/signout", authController.SignOut)
 		}
 	}
 }
