@@ -14,7 +14,9 @@ import (
 func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	// Auth Module
 	userRepo := repository.NewUserRepository(db)
-	authService := service.NewAuthService(userRepo, redisClient)
+	adminRepo := repository.NewAdminRepository(db)
+	technicianRepo := repository.NewTechnicianRepository(db)
+	authService := service.NewAuthService(userRepo, adminRepo, technicianRepo, redisClient)
 	authController := controller.NewAuthController(authService)
 
 	// User Module
@@ -33,7 +35,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	}
 
 	protected := api.Group("/")
-	protected.Use(middleware.AuthMiddleware(redisClient))
+	protected.Use(middleware.AuthMiddleware(redisClient, "admin", "technician", "guest"))
 	{
 		protected.GET("/profile", userController.GetMyProfile)
 	}

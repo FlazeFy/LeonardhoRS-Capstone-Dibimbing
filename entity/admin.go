@@ -7,7 +7,7 @@ import (
 )
 
 type (
-	User struct {
+	Admin struct {
 		ID              uuid.UUID `json:"id" gorm:"type:varchar(36);primaryKey"`
 		Username        string    `json:"username" gorm:"type:varchar(36);not null"`
 		Password        string    `json:"password" gorm:"type:varchar(500);not null"`
@@ -16,16 +16,12 @@ type (
 		TelegramIsValid bool      `json:"telegram_is_valid"`
 		CreatedAt       time.Time `json:"created_at" gorm:"type:timestamp;not null"`
 	}
-	UserAuth struct {
-		Email    string `json:"email" binding:"required,email"`
-		Password string `json:"password" binding:"required"`
-	}
 )
 
 // For Generic Interface
-func (a *User) GetID() uuid.UUID {
+func (a *Admin) GetID() uuid.UUID {
 	return a.ID
 }
-func (a *User) GetPassword() string {
+func (a *Admin) GetPassword() string {
 	return a.Password
 }

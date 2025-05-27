@@ -11,7 +11,7 @@ import (
 )
 
 type UserService interface {
-	GetMyProfile(user uuid.UUID) (*entity.MyProfile, error)
+	GetMyProfile(user uuid.UUID, role string) (*entity.MyProfile, error)
 }
 
 type userService struct {
@@ -26,8 +26,9 @@ func NewUserService(userRepo repository.UserRepository, redisClient *redis.Clien
 	}
 }
 
-func (s *userService) GetMyProfile(userId uuid.UUID) (*entity.MyProfile, error) {
-	user, err := s.userRepo.FindById(userId.String())
+func (s *userService) GetMyProfile(userId uuid.UUID, role string) (*entity.MyProfile, error) {
+	// Repo : Get Profile By Role
+	user, err := s.userRepo.FindById(userId.String(), role)
 	if err != nil {
 		return nil, err
 	}

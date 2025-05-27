@@ -10,9 +10,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func GenerateToken(userId uuid.UUID) (string, error) {
+func GenerateToken(userId uuid.UUID, role string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id": userId.String(),
+		"role":    role,
 		"exp":     time.Now().Add(config.GetJWTExpirationDuration()).Unix(),
 		"iat":     time.Now().Unix(),
 	}
@@ -31,6 +32,6 @@ func HashPassword(u *entity.User, password string) error {
 	return nil
 }
 
-func CheckPassword(u *entity.User, password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+func CheckPassword(account entity.Account, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(account.GetPassword()), []byte(password))
 }
