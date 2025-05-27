@@ -31,6 +31,6 @@ func HashPassword(u *entity.User, password string) error {
 	return nil
 }
 
-func CheckPassword(u *entity.User, password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+func CheckPassword(account entity.Account, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(account.GetPassword()), []byte(password))
 }

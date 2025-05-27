@@ -64,7 +64,7 @@ func (ac *AuthController) Login(c *gin.Context) {
 	}
 
 	// Token Generate
-	token, err := ac.AuthService.Login(req.Email, req.Password)
+	token, role, err := ac.AuthService.Login(req.Email, req.Password)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"message": err.Error(),
@@ -78,6 +78,7 @@ func (ac *AuthController) Login(c *gin.Context) {
 		"message": "user login successfully",
 		"status":  "success",
 		"data": gin.H{
+			"role":         role,
 			"access_token": token,
 		},
 	})

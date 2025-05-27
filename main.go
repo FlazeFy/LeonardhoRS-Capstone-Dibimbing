@@ -34,6 +34,8 @@ func main() {
 func MigrateAll(db *gorm.DB) {
 	err := db.AutoMigrate(
 		&entity.User{},
+		&entity.Admin{},
+		&entity.Technician{},
 	)
 
 	if err != nil {
