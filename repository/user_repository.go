@@ -2,6 +2,7 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 
 	"pelita/entity"
 
@@ -11,7 +12,7 @@ import (
 type UserRepository interface {
 	FindByUsernameOrEmail(username, email string) (*entity.User, error)
 	FindByEmail(email string) (*entity.User, error)
-	FindById(id string) (*entity.MyProfile, error)
+	FindById(id, role string) (*entity.MyProfile, error)
 	Create(user *entity.User) error
 }
 
@@ -49,12 +50,16 @@ func (r *userRepository) FindByEmail(email string) (*entity.User, error) {
 	return &user, err
 }
 
-func (r *userRepository) FindById(id string) (*entity.MyProfile, error) {
+func (r *userRepository) FindById(id, role string) (*entity.MyProfile, error) {
 	// Models
 	var user entity.MyProfile
+	var tableName = fmt.Sprintf("%ss", role)
+	if role == "guest" {
+		tableName = "users"
+	}
 
 	// Query
-	err := r.db.Table("users").
+	err := r.db.Table(tableName).
 		Select("username, email, telegram_is_valid, telegram_user_id, created_at").
 		Where("id = ?", id).
 		First(&user).Error

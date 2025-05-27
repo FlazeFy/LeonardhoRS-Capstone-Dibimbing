@@ -3,9 +3,9 @@ package controller
 import (
 	"net/http"
 	"pelita/service"
+	"pelita/utils"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type UserController struct {
@@ -17,26 +17,28 @@ func NewUserController(userService service.UserService) *UserController {
 }
 
 func (ac *UserController) GetMyProfile(c *gin.Context) {
-	// Get User Id in Middleware
-	userIDVal, exists := c.Get("userID")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": "something went wrong",
+	// Get User Id
+	userID, err := utils.GetCurrentUserID(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
 			"status":  "failed",
 		})
 		return
 	}
-	userID, ok := userIDVal.(uuid.UUID)
-	if !ok {
+
+	// Get Role
+	role, err := utils.GetCurrentRole(c)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "invalid user ID",
+			"message": err.Error(),
 			"status":  "failed",
 		})
 		return
 	}
 
 	// Service: Get Profile by User ID
-	user, err := ac.UserService.GetMyProfile(userID)
+	user, err := ac.UserService.GetMyProfile(userID, role)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),

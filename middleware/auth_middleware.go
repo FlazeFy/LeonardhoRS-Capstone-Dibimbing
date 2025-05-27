@@ -52,12 +52,12 @@ func ValidateToken(tokenString string) (uuid.UUID, error) {
 	return userID, nil
 }
 
-func AuthMiddleware(redisClient *redis.Client) gin.HandlerFunc {
+func AuthMiddleware(redisClient *redis.Client, allowedRoles ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Header
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "missing authorization header"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "invalid authorization header"})
 			return
 		}
 		tokenString := strings.TrimSpace(strings.TrimPrefix(authHeader, "Bearer "))
@@ -73,14 +73,56 @@ func AuthMiddleware(redisClient *redis.Client) gin.HandlerFunc {
 			return
 		}
 
-		// Validate JWT token
-		userID, err := ValidateToken(tokenString)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": err.Error()})
+		// Validate JWT Token
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "unexpected signing method"})
+			}
+			return config.GetJWTSecret(), nil
+		})
+		if err != nil || !token.Valid {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "invalid or expired token"})
 			return
 		}
 
+		// Claims
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "invalid token"})
+			return
+		}
+
+		// Extract userID
+		userID, ok := claims["user_id"].(string)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "user ID not found"})
+			return
+		}
+
+		// Extract role
+		role, ok := claims["role"].(string)
+		if !ok {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "role not found"})
+			return
+		}
+
+		// Check If Role Is Allowed
+		isAllowed := false
+		for _, r := range allowedRoles {
+			if role == r {
+				isAllowed = true
+				break
+			}
+		}
+		if !isAllowed {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"message": "access forbidden for this role"})
+			return
+		}
+
+		// Set Context
 		c.Set("userID", userID)
+		c.Set("role", role)
+
 		c.Next()
 	}
 }

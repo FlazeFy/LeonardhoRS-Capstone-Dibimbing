@@ -35,7 +35,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	}
 
 	protected := api.Group("/")
-	protected.Use(middleware.AuthMiddleware(redisClient))
+	protected.Use(middleware.AuthMiddleware(redisClient, "admin", "technician", "guest"))
 	{
 		protected.GET("/profile", userController.GetMyProfile)
 	}

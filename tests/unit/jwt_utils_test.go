@@ -38,9 +38,10 @@ func TestHashPassword(t *testing.T) {
 func TestGenerateAndValidateToken(t *testing.T) {
 	// Test Data
 	userID := uuid.New()
+	role := "guest"
 
 	// Exec
-	token, err := utils.GenerateToken(userID)
+	token, err := utils.GenerateToken(userID, role)
 
 	// Test 1 : Not returned an error and not empty value
 	assert.NoError(t, err, "token generation should not return error")

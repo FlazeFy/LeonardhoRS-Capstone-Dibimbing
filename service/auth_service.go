@@ -57,13 +57,13 @@ func (s *authService) Register(user *entity.User) (string, error) {
 	user.CreatedAt = time.Now()
 	user.TelegramIsValid = false
 
-	// Query : Create Register
+	// Repo : Create Register
 	if err := s.userRepo.Create(user); err != nil {
 		return "", err
 	}
 
 	// Utils : Generate Token
-	token, err := utils.GenerateToken(user.ID)
+	token, err := utils.GenerateToken(user.ID, "user")
 	if err != nil {
 		return "", err
 	}
@@ -76,7 +76,7 @@ func (s *authService) Login(email, password string) (string, string, error) {
 	var account entity.Account
 	var role string
 
-	// Query : Check Admin By Email
+	// Repo : Check Admin By Email
 	admin, err := s.adminRepo.FindByEmail(email)
 	if err != nil {
 		return "", "", err
@@ -86,7 +86,7 @@ func (s *authService) Login(email, password string) (string, string, error) {
 		role = "admin"
 	}
 
-	// Query : Check Technician By Email
+	// Repo : Check Technician By Email
 	if account == nil {
 		technician, err := s.technicianRepo.FindByEmail(email)
 		if err != nil {
@@ -98,7 +98,7 @@ func (s *authService) Login(email, password string) (string, string, error) {
 		}
 	}
 
-	// Query : Check User By Email
+	// Repo : Check User (Guest) By Email
 	if account == nil {
 		user, err := s.userRepo.FindByEmail(email)
 		if err != nil {
@@ -106,7 +106,7 @@ func (s *authService) Login(email, password string) (string, string, error) {
 		}
 		if user != nil {
 			account = user
-			role = "user"
+			role = "guest"
 		}
 	}
 
@@ -120,7 +120,7 @@ func (s *authService) Login(email, password string) (string, string, error) {
 	}
 
 	// Utils : Generate Token
-	token, err := utils.GenerateToken(account.GetID())
+	token, err := utils.GenerateToken(account.GetID(), role)
 	if err != nil {
 		return "", "", err
 	}
