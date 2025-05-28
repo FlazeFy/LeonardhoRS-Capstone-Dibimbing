@@ -44,10 +44,20 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	{
 		protected.GET("/profile", userController.GetMyProfile)
 
-		room := api.Group("/room")
+		room := protected.Group("/room")
 		{
 			room.GET("/", roomController.GetAllRoom)
+		}
+	}
+
+	protected_admin := api.Group("/")
+	protected_admin.Use(middleware.AuthMiddleware(redisClient, "admin"))
+	{
+		room := protected_admin.Group("/room")
+		{
 			room.POST("/", roomController.Create)
+			room.DELETE("/:id", roomController.DeleteById)
+			room.PUT("/:id", roomController.UpdateById)
 		}
 	}
 }

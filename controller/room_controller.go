@@ -6,6 +6,7 @@ import (
 	"pelita/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type RoomController struct {
@@ -63,5 +64,77 @@ func (rc *RoomController) Create(c *gin.Context) {
 		"message": "room created successfully",
 		"status":  "success",
 		"data":    &req,
+	})
+}
+
+func (rc *RoomController) UpdateById(c *gin.Context) {
+	// Param
+	id := c.Param("id")
+
+	// Model
+	var req entity.Room
+
+	// Validator
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Parse Id
+	roomID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid UUID format",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Service : Update Room
+	if err := rc.RoomService.UpdateById(&req, roomID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "room update successfully",
+		"status":  "success",
+	})
+}
+
+func (rc *RoomController) DeleteById(c *gin.Context) {
+	// Param
+	id := c.Param("id")
+
+	// Parse Id
+	roomID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid UUID format",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Service : Delete Room By Id
+	if err := rc.RoomService.DeleteById(roomID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "room deleted",
+		"status":  "success",
 	})
 }

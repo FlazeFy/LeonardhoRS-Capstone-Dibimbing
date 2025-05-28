@@ -4,11 +4,15 @@ import (
 	"errors"
 	"pelita/entity"
 	"pelita/repository"
+
+	"github.com/google/uuid"
 )
 
 type RoomService interface {
 	GetAllRoom() ([]entity.Room, error)
 	Create(room *entity.Room) error
+	UpdateById(room *entity.Room, id uuid.UUID) error
+	DeleteById(id uuid.UUID) error
 }
 
 type roomService struct {
@@ -57,6 +61,45 @@ func (s *roomService) Create(room *entity.Room) error {
 
 	// Repo : Create Room
 	s.roomRepo.Create(room)
+
+	return nil
+}
+
+func (s *roomService) UpdateById(room *entity.Room, id uuid.UUID) error {
+	// Validator
+	if room.RoomName == "" {
+		return errors.New("room name is required")
+	}
+	if room.RoomDept == "" {
+		return errors.New("room dept is required")
+	}
+	if room.Floor == "" {
+		return errors.New("floor is required")
+	}
+
+	// Repo : Get Room by Room Name & Floor
+	is_exist, err := s.roomRepo.FindByRoomNameFloorAndId(room.RoomName, room.Floor, id)
+	if err != nil {
+		return err
+	}
+	if is_exist != nil {
+		return errors.New("room already exist on the same floor")
+	}
+
+	// Repo : Delete Room By Id
+	if err := s.roomRepo.UpdateById(room, id); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *roomService) DeleteById(id uuid.UUID) error {
+	// Repo : Delete Room By Id
+	err := s.roomRepo.DeleteById(id)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
