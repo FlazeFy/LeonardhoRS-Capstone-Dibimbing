@@ -23,6 +23,11 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	userService := service.NewUserService(userRepo, redisClient)
 	userController := controller.NewUserController(userService)
 
+	// Room Module
+	roomRepo := repository.NewRoomRepository(db)
+	roomService := service.NewRoomService(roomRepo)
+	roomController := controller.NewRoomRepository(roomService)
+
 	api := r.Group("/api/v1")
 	{
 		// Public Routes
@@ -38,5 +43,21 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	protected.Use(middleware.AuthMiddleware(redisClient, "admin", "technician", "guest"))
 	{
 		protected.GET("/profile", userController.GetMyProfile)
+
+		room := protected.Group("/room")
+		{
+			room.GET("/", roomController.GetAllRoom)
+		}
+	}
+
+	protected_admin := api.Group("/")
+	protected_admin.Use(middleware.AuthMiddleware(redisClient, "admin"))
+	{
+		room := protected_admin.Group("/room")
+		{
+			room.POST("/", roomController.Create)
+			room.DELETE("/:id", roomController.DeleteById)
+			room.PUT("/:id", roomController.UpdateById)
+		}
 	}
 }
