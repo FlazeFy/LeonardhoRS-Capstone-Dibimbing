@@ -68,6 +68,8 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		technician := protected_admin.Group("/technician")
 		{
 			technician.POST("/", technicianController.Create)
+			technician.PUT("/:id", technicianController.UpdateById)
+			technician.DELETE("/:id", technicianController.DeleteById)
 		}
 	}
 

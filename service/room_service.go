@@ -88,7 +88,7 @@ func (s *roomService) UpdateById(room *entity.Room, id uuid.UUID) error {
 		return errors.New("room already exist on the same floor")
 	}
 
-	// Repo : Delete Room By Id
+	// Repo : Update Room By Id
 	if err := s.roomRepo.UpdateById(room, id); err != nil {
 		return err
 	}
