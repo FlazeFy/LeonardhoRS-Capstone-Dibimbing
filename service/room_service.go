@@ -60,7 +60,9 @@ func (s *roomService) Create(room *entity.Room) error {
 	}
 
 	// Repo : Create Room
-	s.roomRepo.Create(room)
+	if err := s.roomRepo.Create(room); err != nil {
+		return err
+	}
 
 	return nil
 }
