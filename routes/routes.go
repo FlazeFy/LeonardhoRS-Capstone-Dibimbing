@@ -19,6 +19,10 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	authService := service.NewAuthService(userRepo, adminRepo, technicianRepo, redisClient)
 	authController := controller.NewAuthController(authService)
 
+	// Technician Module
+	technicianService := service.NewTechnicianService(technicianRepo)
+	technicianController := controller.NewTechnicianController(technicianService)
+
 	// User Module
 	userService := service.NewUserService(userRepo, redisClient)
 	userController := controller.NewUserController(userService)
@@ -39,6 +43,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		}
 	}
 
+	// All Role
 	protected := api.Group("/")
 	protected.Use(middleware.AuthMiddleware(redisClient, "admin", "technician", "guest"))
 	{
@@ -50,6 +55,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		}
 	}
 
+	// Admin Only
 	protected_admin := api.Group("/")
 	protected_admin.Use(middleware.AuthMiddleware(redisClient, "admin"))
 	{
@@ -58,6 +64,22 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			room.POST("/", roomController.Create)
 			room.DELETE("/:id", roomController.DeleteById)
 			room.PUT("/:id", roomController.UpdateById)
+		}
+		technician := protected_admin.Group("/technician")
+		{
+			technician.POST("/", technicianController.Create)
+			technician.PUT("/:id", technicianController.UpdateById)
+			technician.DELETE("/:id", technicianController.DeleteById)
+		}
+	}
+
+	// Admin & Technician Only
+	protected_admin_technician := api.Group("/")
+	protected_admin_technician.Use(middleware.AuthMiddleware(redisClient, "admin", "technician"))
+	{
+		technician := protected_admin_technician.Group("/technician")
+		{
+			technician.GET("/", technicianController.GetAllTechnician)
 		}
 	}
 }

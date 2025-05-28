@@ -17,7 +17,7 @@ type (
 		CreatedAt       time.Time `json:"created_at" gorm:"type:timestamp;not null"`
 		// FK - User
 		CreatedBy uuid.UUID `json:"created_by" gorm:"not null"`
-		User      User      `json:"-" gorm:"foreignKey:CreatedBy;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+		Admin     Admin     `json:"-" gorm:"foreignKey:CreatedBy;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	}
 )
 
