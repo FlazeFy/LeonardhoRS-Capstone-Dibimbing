@@ -32,10 +32,15 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	roomService := service.NewRoomService(roomRepo)
 	roomController := controller.NewRoomRepository(roomService)
 
-	// Room Module
+	// Asset Module
 	assetRepo := repository.NewAssetRepository(db)
 	assetService := service.NewAssetService(assetRepo)
 	assetController := controller.NewAssetRepository(assetService)
+
+	// Asset Module
+	assetPlacementRepo := repository.NewAssetPlacementRepository(db)
+	assetPlacementService := service.NewAssetPlacementService(assetPlacementRepo)
+	assetPlacementController := controller.NewAssetPlacementRepository(assetPlacementService)
 
 	api := r.Group("/api/v1")
 	{
@@ -84,6 +89,11 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			asset.DELETE("/:id", assetController.SoftDeleteById)
 			asset.PUT("/:id", assetController.UpdateById)
 			asset.PUT("/recover/:id", assetController.RecoverDeletedById)
+
+			asset_placement := asset.Group("/placement")
+			{
+				asset_placement.POST("/", assetPlacementController.Create)
+			}
 		}
 	}
 
@@ -94,6 +104,13 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		technician := protected_admin_technician.Group("/technician")
 		{
 			technician.GET("/", technicianController.GetAllTechnician)
+		}
+		asset := protected_admin_technician.Group("/asset")
+		{
+			asset_placement := asset.Group("/placement")
+			{
+				asset_placement.GET("/", assetPlacementController.GetAllAssetPlacement)
+			}
 		}
 	}
 }
