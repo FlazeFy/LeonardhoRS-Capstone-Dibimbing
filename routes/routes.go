@@ -93,6 +93,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			asset_placement := asset.Group("/placement")
 			{
 				asset_placement.POST("/", assetPlacementController.Create)
+				asset_placement.DELETE("/:id", assetPlacementController.DeleteById)
 			}
 		}
 	}
@@ -110,6 +111,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			asset_placement := asset.Group("/placement")
 			{
 				asset_placement.GET("/", assetPlacementController.GetAllAssetPlacement)
+				asset_placement.PUT("/:id", assetPlacementController.UpdateById)
 			}
 		}
 	}

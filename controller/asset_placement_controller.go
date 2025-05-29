@@ -7,6 +7,7 @@ import (
 	"pelita/utils"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type AssetPlacementController struct {
@@ -73,5 +74,77 @@ func (rc *AssetPlacementController) Create(c *gin.Context) {
 		"message": "asset placement created successfully",
 		"status":  "success",
 		"data":    &req,
+	})
+}
+
+func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
+	// Param
+	id := c.Param("id")
+
+	// Model
+	var req entity.AssetPlacement
+
+	// Validator
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Parse Id
+	assetPlacementID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid UUID format",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Service : Update Asset Placement
+	if err := rc.AssetPlacementService.UpdateById(&req, assetPlacementID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "asset placement update successfully",
+		"status":  "success",
+	})
+}
+
+func (rc *AssetPlacementController) DeleteById(c *gin.Context) {
+	// Param
+	id := c.Param("id")
+
+	// Parse Id
+	assetPlacementID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid UUID format",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Service : Delete Asset Placement By Id
+	if err := rc.AssetPlacementService.DeleteById(assetPlacementID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "asset placement deleted",
+		"status":  "success",
 	})
 }
