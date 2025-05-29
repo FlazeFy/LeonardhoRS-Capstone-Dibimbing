@@ -32,6 +32,11 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	roomService := service.NewRoomService(roomRepo)
 	roomController := controller.NewRoomRepository(roomService)
 
+	// Room Module
+	assetRepo := repository.NewAssetRepository(db)
+	assetService := service.NewAssetService(assetRepo)
+	assetController := controller.NewAssetRepository(assetService)
+
 	api := r.Group("/api/v1")
 	{
 		// Public Routes
@@ -70,6 +75,15 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			technician.POST("/", technicianController.Create)
 			technician.PUT("/:id", technicianController.UpdateById)
 			technician.DELETE("/:id", technicianController.DeleteById)
+		}
+		asset := protected_admin.Group("/asset")
+		{
+			asset.POST("/", assetController.Create)
+			asset.GET("/", assetController.GetAllAsset)
+			asset.DELETE("/destroy/:id", assetController.HardDeleteById)
+			asset.DELETE("/:id", assetController.SoftDeleteById)
+			asset.PUT("/:id", assetController.UpdateById)
+			asset.PUT("/recover/:id", assetController.RecoverDeletedById)
 		}
 	}
 
