@@ -11,6 +11,8 @@ import (
 type AssetService interface {
 	GetAllAsset() ([]entity.Asset, error)
 	Create(asset *entity.Asset, adminId uuid.UUID) error
+	UpdateById(asset *entity.Asset, id uuid.UUID) error
+	HardDeleteById(id uuid.UUID) error
 }
 
 type assetService struct {
@@ -59,6 +61,45 @@ func (s *assetService) Create(asset *entity.Asset, adminId uuid.UUID) error {
 
 	// Repo : Create Asset
 	if err := s.assetRepo.Create(asset, adminId); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *assetService) UpdateById(asset *entity.Asset, id uuid.UUID) error {
+	// Validator
+	if asset.AssetName == "" {
+		return errors.New("asset name is required")
+	}
+	if asset.AssetCategory == "" {
+		return errors.New("asset category is required")
+	}
+	if asset.AssetStatus == "" {
+		return errors.New("asset status is required")
+	}
+
+	// Repo : Get Asset by Asset Name & Floor
+	is_exist, err := s.assetRepo.FindByAssetNameCategoryMerkAndId(asset.AssetName, asset.AssetCategory, asset.AssetMerk, id)
+	if err != nil {
+		return err
+	}
+	if is_exist != nil {
+		return errors.New("asset already exist on the same floor")
+	}
+
+	// Repo : Update Asset By Id
+	if err := s.assetRepo.UpdateById(asset, id); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *assetService) HardDeleteById(id uuid.UUID) error {
+	// Repo : Delete Asset By Id
+	err := s.assetRepo.HardDeleteById(id)
+	if err != nil {
 		return err
 	}
 

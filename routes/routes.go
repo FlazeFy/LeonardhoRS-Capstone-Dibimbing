@@ -80,6 +80,8 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		{
 			asset.POST("/", assetController.Create)
 			asset.GET("/", assetController.GetAllAsset)
+			asset.DELETE("/destroy/:id", assetController.HardDeleteById)
+			asset.PUT("/:id", assetController.UpdateById)
 		}
 	}
 
