@@ -148,3 +148,63 @@ func (rc *AssetController) HardDeleteById(c *gin.Context) {
 		"status":  "success",
 	})
 }
+
+func (rc *AssetController) SoftDeleteById(c *gin.Context) {
+	// Param
+	id := c.Param("id")
+
+	// Parse Id
+	assetID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid UUID format",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Service : Soft Delete Asset By Id
+	if err := rc.AssetService.SoftDeleteById(assetID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "asset deleted",
+		"status":  "success",
+	})
+}
+
+func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
+	// Param
+	id := c.Param("id")
+
+	// Parse Id
+	assetID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid UUID format",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Service : Recover Delete Asset By Id
+	if err := rc.AssetService.RecoverDeletedById(assetID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "asset recovered",
+		"status":  "success",
+	})
+}

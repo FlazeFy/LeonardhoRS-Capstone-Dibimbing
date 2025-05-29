@@ -13,6 +13,8 @@ type AssetService interface {
 	Create(asset *entity.Asset, adminId uuid.UUID) error
 	UpdateById(asset *entity.Asset, id uuid.UUID) error
 	HardDeleteById(id uuid.UUID) error
+	SoftDeleteById(id uuid.UUID) error
+	RecoverDeletedById(id uuid.UUID) error
 }
 
 type assetService struct {
@@ -99,6 +101,26 @@ func (s *assetService) UpdateById(asset *entity.Asset, id uuid.UUID) error {
 func (s *assetService) HardDeleteById(id uuid.UUID) error {
 	// Repo : Delete Asset By Id
 	err := s.assetRepo.HardDeleteById(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *assetService) SoftDeleteById(id uuid.UUID) error {
+	// Repo : Delete Asset By Id
+	err := s.assetRepo.SoftDeleteById(id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *assetService) RecoverDeletedById(id uuid.UUID) error {
+	// Repo : Recover Asset By Id
+	err := s.assetRepo.RecoverDeletedById(id)
 	if err != nil {
 		return err
 	}

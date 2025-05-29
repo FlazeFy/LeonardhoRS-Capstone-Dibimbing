@@ -16,6 +16,8 @@ type AssetRepository interface {
 	FindByAssetNameCategoryMerkAndId(assetName, assetCategory string, assetMerk *string, id uuid.UUID) (*entity.Asset, error)
 	UpdateById(asset *entity.Asset, id uuid.UUID) error
 	HardDeleteById(id uuid.UUID) error
+	SoftDeleteById(id uuid.UUID) error
+	RecoverDeletedById(id uuid.UUID) error
 }
 
 type assetRepository struct {
@@ -92,6 +94,41 @@ func (r *assetRepository) UpdateById(asset *entity.Asset, id uuid.UUID) error {
 	asset.UpdatedAt = &now
 
 	if err := r.db.Save(&asset).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *assetRepository) SoftDeleteById(id uuid.UUID) error {
+	// Query : Check Old Asset
+	var existingAsset entity.Asset
+	if err := r.db.First(&existingAsset, "id = ? AND deleted_at is null", id).Error; err != nil {
+		return err
+	}
+	now := time.Now()
+
+	// Query : Update
+	existingAsset.DeletedAt = &now
+
+	if err := r.db.Save(&existingAsset).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *assetRepository) RecoverDeletedById(id uuid.UUID) error {
+	// Query : Check Old Asset
+	var existingAsset entity.Asset
+	if err := r.db.First(&existingAsset, "id = ? AND deleted_at is not null", id).Error; err != nil {
+		return err
+	}
+
+	// Query : Update
+	existingAsset.DeletedAt = nil
+
+	if err := r.db.Save(&existingAsset).Error; err != nil {
 		return err
 	}
 
