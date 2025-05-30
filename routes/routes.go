@@ -111,6 +111,10 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 				asset_maintenance.PUT("/:id", assetMaintenanceController.UpdateById)
 				asset_maintenance.DELETE("/:id", assetMaintenanceController.DeleteById)
 			}
+			asset_finding := asset.Group("/finding")
+			{
+				asset_finding.DELETE("/:id", assetFindingController.DeleteById)
+			}
 		}
 	}
 

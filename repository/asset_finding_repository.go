@@ -12,6 +12,7 @@ import (
 type AssetFindingRepository interface {
 	FindAll() ([]entity.AssetFinding, error)
 	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID) error
+	DeleteById(id uuid.UUID) error
 }
 
 type assetFindingRepository struct {
@@ -45,4 +46,17 @@ func (r *assetFindingRepository) Create(assetFinding *entity.AssetFinding, techn
 
 	// Query
 	return r.db.Create(assetFinding).Error
+}
+
+func (r *assetFindingRepository) DeleteById(id uuid.UUID) error {
+	// Models
+	var assetFinding entity.AssetFinding
+
+	// Query
+	err := r.db.Unscoped().Where("id = ?", id).Delete(&assetFinding).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

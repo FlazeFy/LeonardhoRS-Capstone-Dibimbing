@@ -11,6 +11,7 @@ import (
 type AssetFindingService interface {
 	GetAllAssetFinding() ([]entity.AssetFinding, error)
 	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID) error
+	DeleteById(id uuid.UUID) error
 }
 
 type assetFindingService struct {
@@ -47,6 +48,16 @@ func (s *assetFindingService) Create(assetFinding *entity.AssetFinding, technici
 
 	// Repo : Create Asset Finding
 	if err := s.assetFindingRepo.Create(assetFinding, technicianId, userId); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *assetFindingService) DeleteById(id uuid.UUID) error {
+	// Repo : Delete Asset Finding By Id
+	err := s.assetFindingRepo.DeleteById(id)
+	if err != nil {
 		return err
 	}
 

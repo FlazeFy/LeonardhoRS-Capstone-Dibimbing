@@ -105,3 +105,33 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 		"data":    &req,
 	})
 }
+
+func (rc *AssetFindingController) DeleteById(c *gin.Context) {
+	// Param
+	id := c.Param("id")
+
+	// Parse Id
+	assetFindingID, err := uuid.Parse(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid UUID format",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Service : Delete Asset Finding By Id
+	if err := rc.AssetFindingService.DeleteById(assetFindingID); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "asset finding deleted",
+		"status":  "success",
+	})
+}
