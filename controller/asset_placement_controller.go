@@ -19,7 +19,7 @@ func NewAssetPlacementRepository(assetPlacementService service.AssetPlacementSer
 }
 
 func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
-	// Service: Get All AssetPlacement
+	// Service: Get All Asset Placement
 	assetPlacement, err := rc.AssetPlacementService.GetAllAssetPlacement()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

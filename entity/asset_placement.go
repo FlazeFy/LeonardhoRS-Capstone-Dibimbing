@@ -8,7 +8,7 @@ import (
 
 type (
 	AssetPlacement struct {
-		ID        uuid.UUID  `json:"id" gorm:"type:char(36);primaryKey"`
+		ID        uuid.UUID  `json:"id" gorm:"type:varchar(36);primaryKey"`
 		AssetQty  int        `json:"asset_qty" gorm:"type:int;not null"`
 		AssetDesc *string    `json:"asset_desc" gorm:"type:varchar(144)"`
 		CreatedAt time.Time  `json:"created_at" gorm:"type:datetime;not null"`

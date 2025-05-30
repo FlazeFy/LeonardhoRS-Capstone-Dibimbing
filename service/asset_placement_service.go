@@ -26,7 +26,7 @@ func NewAssetPlacementService(assetPlacementRepo repository.AssetPlacementReposi
 }
 
 func (s *assetPlacementService) GetAllAssetPlacement() ([]entity.AssetPlacement, error) {
-	// Repo : Get All AssetPlacement
+	// Repo : Get All Asset Placement
 	assetPlacement, err := s.assetPlacementRepo.FindAll()
 	if err != nil {
 		return nil, err
