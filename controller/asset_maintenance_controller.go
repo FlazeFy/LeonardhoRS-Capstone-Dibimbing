@@ -10,17 +10,17 @@ import (
 	"github.com/google/uuid"
 )
 
-type AssetPlacementController struct {
-	AssetPlacementService service.AssetPlacementService
+type AssetMaintenanceController struct {
+	AssetMaintenanceService service.AssetMaintenanceService
 }
 
-func NewAssetPlacementRepository(assetPlacementService service.AssetPlacementService) *AssetPlacementController {
-	return &AssetPlacementController{AssetPlacementService: assetPlacementService}
+func NewAssetMaintenanceRepository(assetMaintenanceService service.AssetMaintenanceService) *AssetMaintenanceController {
+	return &AssetMaintenanceController{AssetMaintenanceService: assetMaintenanceService}
 }
 
-func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
-	// Service: Get All Asset Placement
-	assetPlacement, err := rc.AssetPlacementService.GetAllAssetPlacement()
+func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
+	// Service: Get All Asset Maintenance
+	assetMaintenance, err := rc.AssetMaintenanceService.GetAllAssetMaintenance()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
@@ -31,20 +31,30 @@ func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
 
 	// Response
 	c.JSON(http.StatusOK, gin.H{
-		"message": "asset placement fetched",
+		"message": "asset maintenance fetched",
 		"status":  "success",
-		"data":    assetPlacement,
+		"data":    assetMaintenance,
 	})
 }
 
-func (rc *AssetPlacementController) Create(c *gin.Context) {
+func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	// Model
-	var req entity.AssetPlacement
+	var req entity.AssetMaintenance
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Validator Rules
+	validDays := map[string]bool{"Sun": true, "Mon": true, "Tue": true, "Wed": true, "Thu": true, "Fri": true, "Sat": true}
+	if !validDays[req.MaintenanceDay] {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "maintenance_day must be one of: Sun, Mon, Tue, Wed, Thu, Fri, Sat",
 			"status":  "failed",
 		})
 		return
@@ -60,8 +70,8 @@ func (rc *AssetPlacementController) Create(c *gin.Context) {
 		return
 	}
 
-	// Service : Create Asset Placement
-	if err := rc.AssetPlacementService.Create(&req, adminId); err != nil {
+	// Service : Create Asset Maintenance
+	if err := rc.AssetMaintenanceService.Create(&req, adminId); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 			"status":  "failed",
@@ -71,18 +81,18 @@ func (rc *AssetPlacementController) Create(c *gin.Context) {
 
 	// Response
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset placement created successfully",
+		"message": "asset maintenance created successfully",
 		"status":  "success",
 		"data":    &req,
 	})
 }
 
-func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
+func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 	// Param
 	id := c.Param("id")
 
 	// Model
-	var req entity.AssetPlacement
+	var req entity.AssetMaintenance
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -94,7 +104,7 @@ func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
 	}
 
 	// Parse Id
-	assetPlacementID, err := uuid.Parse(id)
+	assetMaintenanceID, err := uuid.Parse(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Invalid UUID format",
@@ -103,8 +113,8 @@ func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
 		return
 	}
 
-	// Service : Update Asset Placement
-	if err := rc.AssetPlacementService.UpdateById(&req, assetPlacementID); err != nil {
+	// Service : Update Asset Maintenance
+	if err := rc.AssetMaintenanceService.UpdateById(&req, assetMaintenanceID); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 			"status":  "failed",
@@ -114,17 +124,17 @@ func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
 
 	// Response
 	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset placement update successfully",
+		"message": "asset maintenance update successfully",
 		"status":  "success",
 	})
 }
 
-func (rc *AssetPlacementController) DeleteById(c *gin.Context) {
+func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 	// Param
 	id := c.Param("id")
 
 	// Parse Id
-	assetPlacementID, err := uuid.Parse(id)
+	assetMaintenanceID, err := uuid.Parse(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "Invalid UUID format",
@@ -133,8 +143,8 @@ func (rc *AssetPlacementController) DeleteById(c *gin.Context) {
 		return
 	}
 
-	// Service : Delete Asset Placement By Id
-	if err := rc.AssetPlacementService.DeleteById(assetPlacementID); err != nil {
+	// Service : Delete Asset Maintenance By Id
+	if err := rc.AssetMaintenanceService.DeleteById(assetMaintenanceID); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 			"status":  "failed",
@@ -144,7 +154,7 @@ func (rc *AssetPlacementController) DeleteById(c *gin.Context) {
 
 	// Response
 	c.JSON(http.StatusOK, gin.H{
-		"message": "asset placement deleted",
+		"message": "asset maintenance deleted",
 		"status":  "success",
 	})
 }

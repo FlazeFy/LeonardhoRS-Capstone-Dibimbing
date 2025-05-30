@@ -8,11 +8,11 @@ import (
 
 type (
 	AssetPlacement struct {
-		ID        uuid.UUID  `json:"id" gorm:"type:char(36);primaryKey"`
+		ID        uuid.UUID  `json:"id" gorm:"type:varchar(36);primaryKey"`
 		AssetQty  int        `json:"asset_qty" gorm:"type:int;not null"`
 		AssetDesc *string    `json:"asset_desc" gorm:"type:varchar(144)"`
 		CreatedAt time.Time  `json:"created_at" gorm:"type:datetime;not null"`
-		UpdatedAt *time.Time `json:"updated_at" gorm:"type:datetime"`
+		UpdatedAt *time.Time `json:"updated_at" gorm:"type:datetime;null"`
 		// FK - Asset
 		AssetId uuid.UUID `json:"asset_id" gorm:"not null"`
 		Asset   Asset     `json:"-" gorm:"foreignKey:AssetId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`

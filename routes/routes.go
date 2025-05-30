@@ -37,10 +37,15 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	assetService := service.NewAssetService(assetRepo)
 	assetController := controller.NewAssetRepository(assetService)
 
-	// Asset Module
+	// Asset Placement Module
 	assetPlacementRepo := repository.NewAssetPlacementRepository(db)
 	assetPlacementService := service.NewAssetPlacementService(assetPlacementRepo)
 	assetPlacementController := controller.NewAssetPlacementRepository(assetPlacementService)
+
+	// Asset Maintenance Module
+	assetMaintenanceRepo := repository.NewAssetMaintenanceRepository(db)
+	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo)
+	assetMaintenanceController := controller.NewAssetMaintenanceRepository(assetMaintenanceService)
 
 	api := r.Group("/api/v1")
 	{
@@ -95,6 +100,12 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 				asset_placement.POST("/", assetPlacementController.Create)
 				asset_placement.DELETE("/:id", assetPlacementController.DeleteById)
 			}
+			asset_maintenance := asset.Group("/maintenance")
+			{
+				asset_maintenance.POST("/", assetMaintenanceController.Create)
+				asset_maintenance.PUT("/:id", assetMaintenanceController.UpdateById)
+				asset_maintenance.DELETE("/:id", assetMaintenanceController.DeleteById)
+			}
 		}
 	}
 
@@ -112,6 +123,10 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			{
 				asset_placement.GET("/", assetPlacementController.GetAllAssetPlacement)
 				asset_placement.PUT("/:id", assetPlacementController.UpdateById)
+			}
+			asset_maintenance := asset.Group("/maintenance")
+			{
+				asset_maintenance.GET("/", assetMaintenanceController.GetAllAssetMaintenance)
 			}
 		}
 	}
