@@ -54,7 +54,7 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	validDays := map[string]bool{"Sun": true, "Mon": true, "Tue": true, "Wed": true, "Thu": true, "Fri": true, "Sat": true}
 	if !validDays[req.MaintenanceDay] {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "maintenance_day must be one of: Sun, Mon, Tue, Wed, Thu, Fri, Sat",
+			"message": "maintenance day must be one of: Sun, Mon, Tue, Wed, Thu, Fri, Sat",
 			"status":  "failed",
 		})
 		return
