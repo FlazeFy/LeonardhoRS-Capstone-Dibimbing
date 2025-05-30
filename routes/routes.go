@@ -47,6 +47,11 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo)
 	assetMaintenanceController := controller.NewAssetMaintenanceRepository(assetMaintenanceService)
 
+	// Asset Finding Module
+	assetFindingRepo := repository.NewAssetFindingRepository(db)
+	assetFindingService := service.NewAssetFindingService(assetFindingRepo)
+	assetFindingController := controller.NewAssetFindingRepository(assetFindingService)
+
 	api := r.Group("/api/v1")
 	{
 		// Public Routes
@@ -106,6 +111,10 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 				asset_maintenance.PUT("/:id", assetMaintenanceController.UpdateById)
 				asset_maintenance.DELETE("/:id", assetMaintenanceController.DeleteById)
 			}
+			asset_finding := asset.Group("/finding")
+			{
+				asset_finding.DELETE("/:id", assetFindingController.DeleteById)
+			}
 		}
 	}
 
@@ -127,6 +136,23 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			asset_maintenance := asset.Group("/maintenance")
 			{
 				asset_maintenance.GET("/", assetMaintenanceController.GetAllAssetMaintenance)
+			}
+			asset_finding := asset.Group("/finding")
+			{
+				asset_finding.GET("/", assetFindingController.GetAllAssetFinding)
+			}
+		}
+	}
+
+	// User / Guest & Technician Only
+	protected_user_technician := api.Group("/")
+	protected_user_technician.Use(middleware.AuthMiddleware(redisClient, "guest", "technician"))
+	{
+		asset := protected_user_technician.Group("/asset")
+		{
+			asset_finding := asset.Group("/finding")
+			{
+				asset_finding.POST("/", assetFindingController.Create)
 			}
 		}
 	}
