@@ -288,3 +288,75 @@ func TestAssetPlacementPostCreateWithValidInput(t *testing.T) {
 	assert.IsType(t, "", data["created_by"])
 	assert.IsType(t, "", data["asset_owner"])
 }
+
+func TestAssetSoftDeleteWithId(t *testing.T) {
+	// Pre - Condition : Need To Login First as Admin
+	username := "flazen.edu@gmail.com"
+	password := "nopass123"
+	token, _ := tests.GetAuthTokenAndRole(t, username, password)
+
+	// Test Data
+	id := "b1e8541d-23b6-4a83-9634-ed01c739a3d8"
+
+	// Exec
+	url := "http://127.0.0.1:9000/api/v1/asset/" + id
+	req, err := http.NewRequest("DELETE", url, nil)
+	assert.NoError(t, err)
+
+	// Set Authorization
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	assert.NoError(t, err)
+	defer resp.Body.Close()
+
+	// Prepare Response Test
+	body, err := ioutil.ReadAll(resp.Body)
+	assert.NoError(t, err)
+	var result map[string]interface{}
+	err = json.Unmarshal(body, &result)
+	assert.NoError(t, err)
+
+	// Template Response
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "success", result["status"])
+	assert.Equal(t, "asset deleted", result["message"])
+}
+
+func TestAssetHardDeleteWithId(t *testing.T) {
+	// Pre - Condition : Need To Login First as Admin
+	username := "flazen.edu@gmail.com"
+	password := "nopass123"
+	token, _ := tests.GetAuthTokenAndRole(t, username, password)
+
+	// Test Data
+	id := "b1e8541d-23b6-4a83-9634-ed01c739a3d8"
+
+	// Exec
+	url := "http://127.0.0.1:9000/api/v1/asset/destroy/" + id
+	req, err := http.NewRequest("DELETE", url, nil)
+	assert.NoError(t, err)
+
+	// Set Authorization
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	assert.NoError(t, err)
+	defer resp.Body.Close()
+
+	// Prepare Response Test
+	body, err := ioutil.ReadAll(resp.Body)
+	assert.NoError(t, err)
+	var result map[string]interface{}
+	err = json.Unmarshal(body, &result)
+	assert.NoError(t, err)
+
+	// Template Response
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "success", result["status"])
+	assert.Equal(t, "asset permanentally deleted", result["message"])
+}
