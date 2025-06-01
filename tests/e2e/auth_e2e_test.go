@@ -99,7 +99,9 @@ func TestAuthPostLoginWithValidInput(t *testing.T) {
 
 func TestAuthPostSignOutWithValidInput(t *testing.T) {
 	// Pre - Condition : Need To Login First
-	token, _ := tests.GetAuthTokenAndRole(t)
+	username := "tester.123@gmail.com"
+	password := "nopass123"
+	token, _ := tests.GetAuthTokenAndRole(t, username, password)
 
 	// Exec
 	url := "http://127.0.0.1:9000/api/v1/auth/signout"

@@ -10,10 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func GetAuthTokenAndRole(t *testing.T) (string, string) {
+func GetAuthTokenAndRole(t *testing.T, email, password string) (string, string) {
 	payload := map[string]string{
-		"email":    "tester.123@gmail.com",
-		"password": "nopass123",
+		"email":    email,
+		"password": password,
 	}
 	jsonPayload, _ := json.Marshal(payload)
 
