@@ -289,7 +289,7 @@ func TestAssetPlacementPostCreateWithValidInput(t *testing.T) {
 	assert.IsType(t, "", data["asset_owner"])
 }
 
-func TestAssetSoftDeleteWithId(t *testing.T) {
+func TestAssetSoftDeleteWithValidId(t *testing.T) {
 	// Pre - Condition : Need To Login First as Admin
 	username := "flazen.edu@gmail.com"
 	password := "nopass123"
@@ -325,7 +325,7 @@ func TestAssetSoftDeleteWithId(t *testing.T) {
 	assert.Equal(t, "asset deleted", result["message"])
 }
 
-func TestAssetHardDeleteWithId(t *testing.T) {
+func TestAssetHardDeleteWithValidId(t *testing.T) {
 	// Pre - Condition : Need To Login First as Admin
 	username := "flazen.edu@gmail.com"
 	password := "nopass123"
@@ -359,4 +359,76 @@ func TestAssetHardDeleteWithId(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "success", result["status"])
 	assert.Equal(t, "asset permanentally deleted", result["message"])
+}
+
+func TestAssetFindingDeleteWithValidId(t *testing.T) {
+	// Pre - Condition : Need To Login First as Admin
+	username := "flazen.edu@gmail.com"
+	password := "nopass123"
+	token, _ := tests.GetAuthTokenAndRole(t, username, password)
+
+	// Test Data
+	id := "f6cc7afa-46fa-430e-9568-51be8b49837d"
+
+	// Exec
+	url := "http://127.0.0.1:9000/api/v1/asset/finding/" + id
+	req, err := http.NewRequest("DELETE", url, nil)
+	assert.NoError(t, err)
+
+	// Set Authorization
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	assert.NoError(t, err)
+	defer resp.Body.Close()
+
+	// Prepare Response Test
+	body, err := ioutil.ReadAll(resp.Body)
+	assert.NoError(t, err)
+	var result map[string]interface{}
+	err = json.Unmarshal(body, &result)
+	assert.NoError(t, err)
+
+	// Template Response
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "success", result["status"])
+	assert.Equal(t, "asset finding deleted", result["message"])
+}
+
+func TestAssetRecoverWithValidId(t *testing.T) {
+	// Pre - Condition : Need To Login First as Admin
+	username := "flazen.edu@gmail.com"
+	password := "nopass123"
+	token, _ := tests.GetAuthTokenAndRole(t, username, password)
+
+	// Test Data
+	id := "921d4b03-bf28-444d-b97f-30017cb82c93"
+
+	// Exec
+	url := "http://127.0.0.1:9000/api/v1/asset/recover/" + id
+	req, err := http.NewRequest("PUT", url, nil)
+	assert.NoError(t, err)
+
+	// Set Authorization
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	assert.NoError(t, err)
+	defer resp.Body.Close()
+
+	// Prepare Response Test
+	body, err := ioutil.ReadAll(resp.Body)
+	assert.NoError(t, err)
+	var result map[string]interface{}
+	err = json.Unmarshal(body, &result)
+	assert.NoError(t, err)
+
+	// Template Response
+	assert.Equal(t, http.StatusOK, resp.StatusCode)
+	assert.Equal(t, "success", result["status"])
+	assert.Equal(t, "asset recovered", result["message"])
 }
