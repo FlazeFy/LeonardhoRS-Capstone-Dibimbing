@@ -18,6 +18,8 @@ func main() {
 		panic("error loading ENV")
 	}
 
+	config.InitFirebase()
+
 	// Connect DB
 	db := config.ConnectDatabase()
 	MigrateAll(db)

@@ -2,15 +2,17 @@ package service
 
 import (
 	"errors"
+	"mime/multipart"
 	"pelita/entity"
 	"pelita/repository"
+	"pelita/utils"
 
 	"github.com/google/uuid"
 )
 
 type AssetFindingService interface {
 	GetAllAssetFinding() ([]entity.AssetFinding, error)
-	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID) error
+	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID, file *multipart.FileHeader, fileExt string, fileSize int64) error
 	DeleteById(id uuid.UUID) error
 }
 
@@ -37,13 +39,31 @@ func (s *assetFindingService) GetAllAssetFinding() ([]entity.AssetFinding, error
 	return assetFinding, nil
 }
 
-func (s *assetFindingService) Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID) error {
+func (s *assetFindingService) Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID, file *multipart.FileHeader, fileExt string, fileSize int64) error {
 	// Validator
 	if assetFinding.AssetPlacementId == uuid.Nil {
 		return errors.New("asset placement id is required")
 	}
 	if !technicianId.Valid && !userId.Valid {
 		return errors.New("technician id or user id is required")
+	}
+
+	// Utils : Firebase Upload image
+	if file != nil {
+		var createdBy uuid.UUID
+		if technicianId.Valid {
+			createdBy = technicianId.UUID
+		} else if userId.Valid {
+			createdBy = userId.UUID
+		}
+		assetImage, err := utils.UploadFile(createdBy, "asset", file, fileExt)
+
+		if err != nil {
+			return errors.New(err.Error())
+		}
+		assetFinding.FindingImage = &assetImage
+	} else {
+		assetFinding.FindingImage = nil
 	}
 
 	// Repo : Create Asset Finding
