@@ -37,6 +37,25 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
 	})
 }
 
+func (rc *AssetMaintenanceController) GetAllAssetMaintenanceSchedule(c *gin.Context) {
+	// Service: Get All Asset Maintenance
+	assetMaintenance, err := rc.AssetMaintenanceService.GetAllAssetMaintenanceSchedule()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "asset maintenance schedule fetched",
+		"status":  "success",
+		"data":    assetMaintenance,
+	})
+}
+
 func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetMaintenance

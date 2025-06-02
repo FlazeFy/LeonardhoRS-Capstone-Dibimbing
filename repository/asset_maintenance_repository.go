@@ -12,6 +12,7 @@ import (
 
 type AssetMaintenanceRepository interface {
 	FindAll() ([]entity.AssetMaintenance, error)
+	FindAllSchedule() ([]entity.AssetMaintenanceSchedule, error)
 	Create(assetMaintenance *entity.AssetMaintenance, adminId uuid.UUID) error
 	FindByAssetPlacementIdMaintenanceByAndMaintenanceDay(assetPlacementId, maintenanceBy uuid.UUID, maintenanceDay string, maintenanceHourStart, maintenanceHourEnd entity.Time) (*entity.AssetMaintenance, error)
 	FindByAssetPlacementIdMaintenanceByMaintenanceDayAndId(assetPlacementId, maintenanceBy uuid.UUID, maintenanceDay string, maintenanceHourStart, maintenanceHourEnd entity.Time, id uuid.UUID) (*entity.AssetMaintenance, error)
@@ -38,6 +39,26 @@ func (r *assetMaintenanceRepository) FindAll() ([]entity.AssetMaintenance, error
 	}
 
 	return assetMaintenance, err
+}
+
+func (r *assetMaintenanceRepository) FindAllSchedule() ([]entity.AssetMaintenanceSchedule, error) {
+	// Models
+	var asset []entity.AssetMaintenanceSchedule
+
+	// Query
+	err := r.db.Table("asset_maintenances").
+		Select("maintenance_day, maintenance_hour_start, maintenance_hour_end, maintenance_notes, asset_qty, asset_name, asset_category, username, email, telegram_user_id, telegram_is_valid").
+		Joins("JOIN asset_placements ON asset_maintenances.asset_placement_id = asset_placements.id").
+		Joins("JOIN assets ON assets.id = asset_placements.asset_id").
+		Joins("JOIN technicians ON technicians.id = asset_maintenances.maintenance_by").
+		Order("FIELD(maintenance_day, 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'), maintenance_hour_start ASC").
+		Find(&asset).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return asset, err
 }
 
 func (r *assetMaintenanceRepository) FindByAssetPlacementIdMaintenanceByAndMaintenanceDay(assetPlacementId, maintenanceBy uuid.UUID, maintenanceDay string, maintenanceHourStart, maintenanceHourEnd entity.Time) (*entity.AssetMaintenance, error) {

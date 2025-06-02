@@ -25,4 +25,20 @@ type (
 		MaintenanceBy uuid.UUID  `json:"maintenance_by" gorm:"not null"`
 		Technician    Technician `json:"-" gorm:"foreignKey:MaintenanceBy;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	}
+	AssetMaintenanceSchedule struct {
+		MaintenanceDay       string  `json:"maintenance_day"`
+		MaintenanceHourStart Time    `json:"maintenance_hour_start"`
+		MaintenanceHourEnd   Time    `json:"maintenance_hour_end"`
+		MaintenanceNotes     *string `json:"maintenance_notes"`
+		// FK - Asset Placement
+		AssetQty int `json:"asset_qty"`
+		// FK - Asset
+		AssetName     string `json:"asset_name"`
+		AssetCategory string `json:"asset_category"`
+		// FK - Technician
+		Username        string  `json:"username"`
+		Email           string  `json:"email"`
+		TelegramUserId  *string `json:"telegram_user_id"`
+		TelegramIsValid bool    `json:"telegram_is_valid"`
+	}
 )

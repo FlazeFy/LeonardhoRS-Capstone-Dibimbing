@@ -138,6 +138,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			asset_maintenance := asset.Group("/maintenance")
 			{
 				asset_maintenance.GET("/", assetMaintenanceController.GetAllAssetMaintenance)
+				asset_maintenance.GET("/schedule", assetMaintenanceController.GetAllAssetMaintenanceSchedule)
 			}
 			asset_finding := asset.Group("/finding")
 			{
