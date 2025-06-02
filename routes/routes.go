@@ -142,6 +142,10 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 				asset_finding.GET("/", assetFindingController.GetAllAssetFinding)
 			}
 		}
+		room := protected_admin_technician.Group("/room/asset")
+		{
+			room.GET("/:floor/:room_name", roomController.GetRoomAssetByFloorAndRoomName)
+		}
 	}
 
 	// User / Guest & Technician Only
