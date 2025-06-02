@@ -24,4 +24,11 @@ type (
 		AssetMerk     *string `json:"asset_merk"`
 		AssetCategory string  `json:"asset_category"`
 	}
+	RoomAssetShort struct {
+		Floor         string `json:"floor"`
+		RoomName      string `json:"room_name"`
+		RoomDept      string `json:"room_dept"`
+		AssetName     string `json:"asset_name"`
+		AssetCategory string `json:"asset_category"`
+	}
 )
