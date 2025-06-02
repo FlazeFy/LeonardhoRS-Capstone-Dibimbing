@@ -2,15 +2,18 @@ package service
 
 import (
 	"errors"
+	"mime/multipart"
 	"pelita/entity"
 	"pelita/repository"
+	"pelita/utils"
 
 	"github.com/google/uuid"
 )
 
 type AssetService interface {
 	GetAllAsset() ([]entity.Asset, error)
-	Create(asset *entity.Asset, adminId uuid.UUID) error
+	GetDeleted() ([]entity.Asset, error)
+	Create(asset *entity.Asset, adminId uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error
 	UpdateById(asset *entity.Asset, id uuid.UUID) error
 	HardDeleteById(id uuid.UUID) error
 	SoftDeleteById(id uuid.UUID) error
@@ -40,7 +43,20 @@ func (s *assetService) GetAllAsset() ([]entity.Asset, error) {
 	return asset, nil
 }
 
-func (s *assetService) Create(asset *entity.Asset, adminId uuid.UUID) error {
+func (s *assetService) GetDeleted() ([]entity.Asset, error) {
+	// Repo : Get All Deleted Asset
+	asset, err := s.assetRepo.FindDeleted()
+	if err != nil {
+		return nil, err
+	}
+	if asset == nil {
+		return nil, errors.New("deleted asset not found")
+	}
+
+	return asset, nil
+}
+
+func (s *assetService) Create(asset *entity.Asset, adminId uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error {
 	// Validator
 	if asset.AssetName == "" {
 		return errors.New("asset name is required")
@@ -50,6 +66,17 @@ func (s *assetService) Create(asset *entity.Asset, adminId uuid.UUID) error {
 	}
 	if asset.AssetStatus == "" {
 		return errors.New("asset status is required")
+	}
+
+	// Utils : Firebase Upload image
+	if file != nil {
+		assetImage, err := utils.UploadFile(adminId, "asset", file, fileExt)
+		if err != nil {
+			return errors.New(err.Error())
+		}
+		asset.AssetImageURL = &assetImage
+	} else {
+		asset.AssetImageURL = nil
 	}
 
 	// Repo : Get Asset by Asset Name & Category & Merk

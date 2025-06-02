@@ -36,6 +36,52 @@ func (rc *RoomController) GetAllRoom(c *gin.Context) {
 	})
 }
 
+func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
+	// Params
+	roomName := c.Param("room_name")
+	floor := c.Param("floor")
+
+	// Service: Get Find Room Asset By Floor And Room Name
+	room, err := rc.RoomService.GetRoomAssetByFloorAndRoomName(floor, roomName)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "room asset fetched",
+		"status":  "success",
+		"data":    room,
+	})
+}
+
+func (rc *RoomController) GetRoomAssetShortByFloorAndRoomName(c *gin.Context) {
+	// Params
+	roomName := c.Param("room_name")
+	floor := c.Param("floor")
+
+	// Service: Get Find Room Asset Short By Floor And Room Name
+	room, err := rc.RoomService.GetRoomAssetShortByFloorAndRoomName(floor, roomName)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "room asset fetched",
+		"status":  "success",
+		"data":    room,
+	})
+}
+
 func (rc *RoomController) Create(c *gin.Context) {
 	// Model
 	var req entity.Room

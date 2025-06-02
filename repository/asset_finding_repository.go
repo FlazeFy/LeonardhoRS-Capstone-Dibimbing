@@ -28,7 +28,12 @@ func (r *assetFindingRepository) FindAll() ([]entity.AssetFinding, error) {
 	var assetFinding []entity.AssetFinding
 
 	// Query
-	err := r.db.Find(&assetFinding).Error
+	err := r.db.Preload("User").
+		Preload("Technician").
+		Preload("AssetPlacement").
+		Order("created_at DESC").
+		Find(&assetFinding).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}

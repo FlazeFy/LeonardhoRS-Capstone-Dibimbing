@@ -10,6 +10,7 @@ import (
 
 type AssetMaintenanceService interface {
 	GetAllAssetMaintenance() ([]entity.AssetMaintenance, error)
+	GetAllAssetMaintenanceSchedule() ([]entity.AssetMaintenanceSchedule, error)
 	Create(assetMaintenance *entity.AssetMaintenance, adminId uuid.UUID) error
 	UpdateById(assetMaintenance *entity.AssetMaintenance, id uuid.UUID) error
 	DeleteById(id uuid.UUID) error
@@ -32,7 +33,20 @@ func (s *assetMaintenanceService) GetAllAssetMaintenance() ([]entity.AssetMainte
 		return nil, err
 	}
 	if assetMaintenance == nil {
-		return nil, errors.New("asset placement not found")
+		return nil, errors.New("asset maintenance not found")
+	}
+
+	return assetMaintenance, nil
+}
+
+func (s *assetMaintenanceService) GetAllAssetMaintenanceSchedule() ([]entity.AssetMaintenanceSchedule, error) {
+	// Repo : Get All Asset Maintenance Schedule
+	assetMaintenance, err := s.assetMaintenanceRepo.FindAllSchedule()
+	if err != nil {
+		return nil, err
+	}
+	if assetMaintenance == nil {
+		return nil, errors.New("asset maintenance schedule not found")
 	}
 
 	return assetMaintenance, nil

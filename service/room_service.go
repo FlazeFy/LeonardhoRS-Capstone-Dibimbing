@@ -10,6 +10,8 @@ import (
 
 type RoomService interface {
 	GetAllRoom() ([]entity.Room, error)
+	GetRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error)
+	GetRoomAssetShortByFloorAndRoomName(floor, roomName string) ([]entity.RoomAssetShort, error)
 	Create(room *entity.Room) error
 	UpdateById(room *entity.Room, id uuid.UUID) error
 	DeleteById(id uuid.UUID) error
@@ -36,6 +38,32 @@ func (s *roomService) GetAllRoom() ([]entity.Room, error) {
 	}
 
 	return room, nil
+}
+
+func (s *roomService) GetRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error) {
+	// Repo : Get Find Room Asset By Floor And Room Name
+	roomAsset, err := s.roomRepo.FindRoomAssetByFloorAndRoomName(floor, roomName)
+	if err != nil {
+		return nil, err
+	}
+	if roomAsset == nil {
+		return nil, errors.New("room not found")
+	}
+
+	return roomAsset, nil
+}
+
+func (s *roomService) GetRoomAssetShortByFloorAndRoomName(floor, roomName string) ([]entity.RoomAssetShort, error) {
+	// Repo : Get Find Room Asset Short By Floor And Room Name
+	roomAsset, err := s.roomRepo.FindRoomAssetShortByFloorAndRoomName(floor, roomName)
+	if err != nil {
+		return nil, err
+	}
+	if roomAsset == nil {
+		return nil, errors.New("room not found")
+	}
+
+	return roomAsset, nil
 }
 
 func (s *roomService) Create(room *entity.Room) error {

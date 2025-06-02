@@ -2,7 +2,9 @@ package repository
 
 import (
 	"errors"
+	"fmt"
 	"pelita/entity"
+	"strings"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -15,6 +17,8 @@ type RoomRepository interface {
 	UpdateById(room *entity.Room, id uuid.UUID) error
 	FindByRoomNameAndFloor(roomName, floor string) (*entity.Room, error)
 	FindByRoomNameFloorAndId(roomName, floor string, id uuid.UUID) (*entity.Room, error)
+	FindRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error)
+	FindRoomAssetShortByFloorAndRoomName(floor, roomName string) ([]entity.RoomAssetShort, error)
 }
 
 type roomRepository struct {
@@ -30,12 +34,91 @@ func (r *roomRepository) FindAll() ([]entity.Room, error) {
 	var room []entity.Room
 
 	// Query
-	err := r.db.Find(&room).Error
+	err := r.db.Order("floor ASC").
+		Order("room_name ASC").
+		Find(&room).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}
 
 	return room, err
+}
+
+func (r *roomRepository) FindRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error) {
+	// Models
+	var roomAsset []entity.RoomAsset
+	roomName = strings.ToLower(roomName)
+
+	// Query
+	var roomNameSelect string
+	if roomName == "all" {
+		roomNameSelect = "GROUP_CONCAT(DISTINCT room_name SEPARATOR ', ') as room_name"
+	} else {
+		roomNameSelect = "room_name"
+	}
+
+	query := r.db.Table("rooms").
+		Select(fmt.Sprintf(`floor, %s, room_dept, asset_name, assets.asset_desc, SUM(asset_qty) as total_asset, asset_merk, asset_category`, roomNameSelect)).
+		Joins("JOIN asset_placements ON asset_placements.room_id = rooms.id").
+		Joins("JOIN assets ON assets.id = asset_placements.asset_id").
+		Where("floor = ?", floor)
+
+	if roomName != "all" {
+		query = query.Where("room_name = ?", roomName)
+	}
+
+	result := query.Group("assets.id").
+		Order("assets.asset_name ASC").
+		Find(&roomAsset)
+
+	// Response
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) || len(roomAsset) == 0 {
+		return nil, errors.New("room asset not found")
+	}
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return roomAsset, nil
+}
+
+func (r *roomRepository) FindRoomAssetShortByFloorAndRoomName(floor, roomName string) ([]entity.RoomAssetShort, error) {
+	// Models
+	var roomAsset []entity.RoomAssetShort
+	roomName = strings.ToLower(roomName)
+
+	// Query
+	var roomNameSelect string
+	if roomName == "all" {
+		roomNameSelect = "GROUP_CONCAT(DISTINCT room_name SEPARATOR ', ') as room_name"
+	} else {
+		roomNameSelect = "room_name"
+	}
+
+	query := r.db.Table("rooms").
+		Select(fmt.Sprintf(`floor, %s, room_dept, asset_name, asset_category`, roomNameSelect)).
+		Joins("JOIN asset_placements ON asset_placements.room_id = rooms.id").
+		Joins("JOIN assets ON assets.id = asset_placements.asset_id").
+		Where("floor = ?", floor)
+
+	if roomName != "all" {
+		query = query.Where("room_name = ?", roomName)
+	}
+
+	result := query.Group("assets.id").
+		Order("assets.asset_name ASC").
+		Find(&roomAsset)
+
+	// Response
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) || len(roomAsset) == 0 {
+		return nil, errors.New("room asset not found")
+	}
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return roomAsset, nil
 }
 
 func (r *roomRepository) FindByRoomNameAndFloor(roomName, floor string) (*entity.Room, error) {

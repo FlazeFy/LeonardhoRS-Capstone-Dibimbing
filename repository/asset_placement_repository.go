@@ -31,7 +31,9 @@ func (r *assetPlacementRepository) FindAll() ([]entity.AssetPlacement, error) {
 	var assetPlacement []entity.AssetPlacement
 
 	// Query
-	err := r.db.Find(&assetPlacement).Error
+	err := r.db.Order("created_at DESC").
+		Find(&assetPlacement).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}

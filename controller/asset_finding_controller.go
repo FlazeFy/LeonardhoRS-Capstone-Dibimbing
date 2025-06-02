@@ -1,10 +1,14 @@
 package controller
 
 import (
+	"fmt"
+	"mime/multipart"
 	"net/http"
+	"path/filepath"
 	"pelita/entity"
 	"pelita/service"
 	"pelita/utils"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -89,8 +93,48 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 		userId = uuid.NullUUID{UUID: technicianOrUserId, Valid: true}
 	}
 
+	// Default values
+	var fileExt string
+	var fileSize int64
+	var fileHeader *multipart.FileHeader = nil
+
+	file, err := c.FormFile("asset_image")
+	if file != nil {
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "failed to retrieve the file",
+				"status":  "failed",
+			})
+			return
+		}
+
+		fileExt = strings.ToLower(strings.TrimPrefix(filepath.Ext(file.Filename), "."))
+		fileSize = file.Size
+		fileHeader = file
+
+		// Validate file size
+		if fileSize > config.MaxSizeFile {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": fmt.Sprintf("The file size must be under %.2f MB", float64(config.MaxSizeFile)/1000000),
+				"status":  "failed",
+			})
+			return
+		}
+
+		// Optional: open file to validate it can be read
+		fileReader, err := file.Open()
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "Failed to open the file",
+				"status":  "failed",
+			})
+			return
+		}
+		defer fileReader.Close()
+	}
+
 	// Service : Create Asset Finding
-	if err := rc.AssetFindingService.Create(&req, technicianId, userId); err != nil {
+	if err := rc.AssetFindingService.Create(&req, technicianId, userId, fileHeader, fileExt, fileSize); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 			"status":  "failed",
@@ -99,10 +143,12 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 	}
 
 	// Response
+	cleanedRes := utils.CleanResponse(req, "users", "technicians", "asset_placements")
+
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "asset finding created successfully",
 		"status":  "success",
-		"data":    &req,
+		"data":    cleanedRes,
 	})
 }
 

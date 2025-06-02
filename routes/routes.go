@@ -128,6 +128,8 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		}
 		asset := protected_admin_technician.Group("/asset")
 		{
+			asset.GET("/deleted", assetController.GetDeletedAsset)
+
 			asset_placement := asset.Group("/placement")
 			{
 				asset_placement.GET("/", assetPlacementController.GetAllAssetPlacement)
@@ -136,11 +138,17 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			asset_maintenance := asset.Group("/maintenance")
 			{
 				asset_maintenance.GET("/", assetMaintenanceController.GetAllAssetMaintenance)
+				asset_maintenance.GET("/schedule", assetMaintenanceController.GetAllAssetMaintenanceSchedule)
 			}
 			asset_finding := asset.Group("/finding")
 			{
 				asset_finding.GET("/", assetFindingController.GetAllAssetFinding)
 			}
+		}
+		room := protected_admin_technician.Group("/room/asset")
+		{
+			room.GET("/detail/:floor/:room_name", roomController.GetRoomAssetByFloorAndRoomName)
+			room.GET("/short/:floor/:room_name", roomController.GetRoomAssetShortByFloorAndRoomName)
 		}
 	}
 

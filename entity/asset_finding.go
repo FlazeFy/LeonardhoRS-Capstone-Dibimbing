@@ -15,12 +15,12 @@ type (
 		CreatedAt       time.Time `json:"created_at" gorm:"type:datetime;not null"`
 		// FK - Asset Placement
 		AssetPlacementId uuid.UUID      `json:"asset_placement_id" gorm:"not null"`
-		AssetPlacement   AssetPlacement `json:"-" gorm:"foreignKey:AssetPlacementId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+		AssetPlacement   AssetPlacement `json:"asset_placements" gorm:"foreignKey:AssetPlacementId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 		// FK - Technician
 		FindingByTechnician uuid.NullUUID `json:"finding_by_technician" gorm:"null"`
-		Technician          Technician    `json:"-" gorm:"foreignKey:FindingByTechnician;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+		Technician          Technician    `json:"technicians" gorm:"foreignKey:FindingByTechnician;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 		// FK - User / Guest
 		FindingByUser uuid.NullUUID `json:"finding_by_user" gorm:"null"`
-		User          User          `json:"-" gorm:"foreignKey:FindingByUser;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+		User          User          `json:"users" gorm:"foreignKey:FindingByUser;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	}
 )

@@ -1,10 +1,14 @@
 package controller
 
 import (
+	"fmt"
+	"mime/multipart"
 	"net/http"
+	"path/filepath"
 	"pelita/entity"
 	"pelita/service"
 	"pelita/utils"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -16,6 +20,16 @@ type AssetController struct {
 
 func NewAssetRepository(assetService service.AssetService) *AssetController {
 	return &AssetController{AssetService: assetService}
+}
+
+type Config struct {
+	MaxSizeFile     int64
+	AllowedFileType []string
+}
+
+var config = Config{
+	MaxSizeFile:     10000000, // 10 MB
+	AllowedFileType: []string{"jpg", "jpeg"},
 }
 
 func (rc *AssetController) GetAllAsset(c *gin.Context) {
@@ -37,18 +51,45 @@ func (rc *AssetController) GetAllAsset(c *gin.Context) {
 	})
 }
 
-func (rc *AssetController) Create(c *gin.Context) {
-	// Model
-	var req entity.Asset
-
-	// Validator
-	if err := c.ShouldBindJSON(&req); err != nil {
+func (rc *AssetController) GetDeletedAsset(c *gin.Context) {
+	// Service: Get All Deleted Asset
+	asset, err := rc.AssetService.GetDeleted()
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 			"status":  "failed",
 		})
 		return
 	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "deleted asset fetched",
+		"status":  "success",
+		"data":    asset,
+	})
+}
+
+func (rc *AssetController) Create(c *gin.Context) {
+	// Model
+	var req entity.Asset
+
+	// Multipart Form
+	if err := c.Request.ParseMultipartForm(20 << 20); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "failed to parse form data",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Parse Form
+	req.AssetName = c.PostForm("asset_name")
+	req.AssetDesc = utils.OptionalString(c.PostForm("asset_desc"))
+	req.AssetMerk = utils.OptionalString(c.PostForm("asset_merk"))
+	req.AssetCategory = c.PostForm("asset_category")
+	req.AssetPrice = utils.OptionalString(c.PostForm("asset_price"))
+	req.AssetStatus = c.PostForm("asset_status")
 
 	// Get User Id
 	adminId, err := utils.GetCurrentUserID(c)
@@ -60,8 +101,48 @@ func (rc *AssetController) Create(c *gin.Context) {
 		return
 	}
 
+	// Default values
+	var fileExt string
+	var fileSize int64
+	var fileHeader *multipart.FileHeader = nil
+
+	file, err := c.FormFile("asset_image")
+	if file != nil {
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "failed to retrieve the file",
+				"status":  "failed",
+			})
+			return
+		}
+
+		fileExt = strings.ToLower(strings.TrimPrefix(filepath.Ext(file.Filename), "."))
+		fileSize = file.Size
+		fileHeader = file
+
+		// Validate file size
+		if fileSize > config.MaxSizeFile {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": fmt.Sprintf("The file size must be under %.2f MB", float64(config.MaxSizeFile)/1000000),
+				"status":  "failed",
+			})
+			return
+		}
+
+		// Optional: open file to validate it can be read
+		fileReader, err := file.Open()
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"message": "Failed to open the file",
+				"status":  "failed",
+			})
+			return
+		}
+		defer fileReader.Close()
+	}
+
 	// Service : Create Asset
-	if err := rc.AssetService.Create(&req, adminId); err != nil {
+	if err := rc.AssetService.Create(&req, adminId, fileHeader, fileExt, fileSize); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 			"status":  "failed",
