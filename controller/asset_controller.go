@@ -51,6 +51,25 @@ func (rc *AssetController) GetAllAsset(c *gin.Context) {
 	})
 }
 
+func (rc *AssetController) GetDeletedAsset(c *gin.Context) {
+	// Service: Get All Deleted Asset
+	asset, err := rc.AssetService.GetDeleted()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "deleted asset fetched",
+		"status":  "success",
+		"data":    asset,
+	})
+}
+
 func (rc *AssetController) Create(c *gin.Context) {
 	// Model
 	var req entity.Asset

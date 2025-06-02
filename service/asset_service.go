@@ -12,6 +12,7 @@ import (
 
 type AssetService interface {
 	GetAllAsset() ([]entity.Asset, error)
+	GetDeleted() ([]entity.Asset, error)
 	Create(asset *entity.Asset, adminId uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error
 	UpdateById(asset *entity.Asset, id uuid.UUID) error
 	HardDeleteById(id uuid.UUID) error
@@ -37,6 +38,19 @@ func (s *assetService) GetAllAsset() ([]entity.Asset, error) {
 	}
 	if asset == nil {
 		return nil, errors.New("asset not found")
+	}
+
+	return asset, nil
+}
+
+func (s *assetService) GetDeleted() ([]entity.Asset, error) {
+	// Repo : Get All Deleted Asset
+	asset, err := s.assetRepo.FindDeleted()
+	if err != nil {
+		return nil, err
+	}
+	if asset == nil {
+		return nil, errors.New("deleted asset not found")
 	}
 
 	return asset, nil

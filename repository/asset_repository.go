@@ -14,6 +14,7 @@ type AssetRepository interface {
 	Create(asset *entity.Asset, adminId uuid.UUID) error
 	FindByAssetNameCategoryAndMerk(assetName, assetCategory string, assetMerk *string) (*entity.Asset, error)
 	FindByAssetNameCategoryMerkAndId(assetName, assetCategory string, assetMerk *string, id uuid.UUID) (*entity.Asset, error)
+	FindDeleted() ([]entity.Asset, error)
 	UpdateById(asset *entity.Asset, id uuid.UUID) error
 	HardDeleteById(id uuid.UUID) error
 	SoftDeleteById(id uuid.UUID) error
@@ -33,7 +34,10 @@ func (r *assetRepository) FindAll() ([]entity.Asset, error) {
 	var asset []entity.Asset
 
 	// Query
-	err := r.db.Find(&asset).Error
+	err := r.db.Order("created_at DESC").
+		Where("deleted_at is null").
+		Find(&asset).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}
@@ -65,6 +69,26 @@ func (r *assetRepository) FindByAssetNameCategoryMerkAndId(assetName, assetCateg
 	}
 
 	return &asset, err
+}
+
+func (r *assetRepository) FindDeleted() ([]entity.Asset, error) {
+	// Models
+	var asset []entity.Asset
+
+	// Query
+	result := r.db.Order("deleted_at DESC").
+		Where("deleted_at is not null").
+		Find(&asset)
+
+	// Response
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) || len(asset) == 0 {
+		return nil, errors.New("deleted asset not found")
+	}
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return asset, nil
 }
 
 func (r *assetRepository) Create(asset *entity.Asset, adminId uuid.UUID) error {

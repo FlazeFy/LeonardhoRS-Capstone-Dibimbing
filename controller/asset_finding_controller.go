@@ -143,10 +143,12 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 	}
 
 	// Response
+	cleanedRes := utils.CleanResponse(req, "users", "technicians", "asset_placements")
+
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "asset finding created successfully",
 		"status":  "success",
-		"data":    &req,
+		"data":    cleanedRes,
 	})
 }
 

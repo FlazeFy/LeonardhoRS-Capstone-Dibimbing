@@ -128,6 +128,8 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		}
 		asset := protected_admin_technician.Group("/asset")
 		{
+			asset.GET("/deleted", assetController.GetDeletedAsset)
+
 			asset_placement := asset.Group("/placement")
 			{
 				asset_placement.GET("/", assetPlacementController.GetAllAssetPlacement)

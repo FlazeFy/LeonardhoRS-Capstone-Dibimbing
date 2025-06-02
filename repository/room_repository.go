@@ -34,7 +34,10 @@ func (r *roomRepository) FindAll() ([]entity.Room, error) {
 	var room []entity.Room
 
 	// Query
-	err := r.db.Find(&room).Error
+	err := r.db.Order("floor ASC").
+		Order("room_name ASC").
+		Find(&room).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}
