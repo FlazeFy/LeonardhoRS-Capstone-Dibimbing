@@ -4,6 +4,7 @@ import (
 	"errors"
 	"pelita/entity"
 	"pelita/repository"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -14,6 +15,9 @@ type AssetMaintenanceService interface {
 	Create(assetMaintenance *entity.AssetMaintenance, adminId uuid.UUID) error
 	UpdateById(assetMaintenance *entity.AssetMaintenance, id uuid.UUID) error
 	DeleteById(id uuid.UUID) error
+
+	// Scheduler Service
+	GetTodayValidSchedules() (map[string][]entity.AssetMaintenanceSchedule, error)
 }
 
 type assetMaintenanceService struct {
@@ -118,4 +122,26 @@ func (s *assetMaintenanceService) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+// Scheduler Service
+func (s *assetMaintenanceService) GetTodayValidSchedules() (map[string][]entity.AssetMaintenanceSchedule, error) {
+	allSchedules, err := s.assetMaintenanceRepo.FindAllSchedule()
+	if err != nil {
+		return nil, err
+	}
+
+	today := time.Now().Weekday().String()[:3]
+
+	// Group by telegram_user_id
+	result := make(map[string][]entity.AssetMaintenanceSchedule)
+	for _, schedule := range allSchedules {
+		if schedule.MaintenanceDay == today &&
+			schedule.TelegramUserId != nil &&
+			schedule.TelegramIsValid {
+			result[*schedule.TelegramUserId] = append(result[*schedule.TelegramUserId], schedule)
+		}
+	}
+
+	return result, nil
 }

@@ -12,6 +12,13 @@ func OptionalString(value string) *string {
 	return &value
 }
 
+func NullSafeString(val *string) string {
+	if val != nil {
+		return *val
+	}
+	return "-"
+}
+
 func CleanResponse(data interface{}, keysToRemove ...string) map[string]interface{} {
 	jsonData, _ := json.Marshal(data)
 
