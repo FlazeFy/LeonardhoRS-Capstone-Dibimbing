@@ -11,6 +11,7 @@ import (
 
 type AssetFindingRepository interface {
 	FindAll() ([]entity.AssetFinding, error)
+	FindAllReport() ([]entity.AssetFindingReport, error)
 	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID) error
 	DeleteById(id uuid.UUID) error
 }
@@ -32,6 +33,28 @@ func (r *assetFindingRepository) FindAll() ([]entity.AssetFinding, error) {
 		Preload("Technician").
 		Preload("AssetPlacement").
 		Order("created_at DESC").
+		Find(&assetFinding).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return assetFinding, err
+}
+
+func (r *assetFindingRepository) FindAllReport() ([]entity.AssetFindingReport, error) {
+	// Models
+	var assetFinding []entity.AssetFindingReport
+
+	// Query
+	err := r.db.Table("asset_findings").
+		Select("asset_name,finding_category, finding_notes, asset_findings.created_at, floor, room_name, username, email").
+		Joins("JOIN asset_placements ON asset_findings.asset_placement_id = asset_placements.id").
+		Joins("JOIN assets ON asset_placements.asset_id = assets.id").
+		Joins("JOIN rooms ON rooms.id = asset_placements.room_id").
+		Joins("JOIN asset_maintenances ON asset_maintenances.asset_placement_id = asset_placements.id").
+		Joins("JOIN technicians ON technicians.id = asset_maintenances.maintenance_by").
+		Order("asset_findings.created_at DESC").
 		Find(&assetFinding).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {

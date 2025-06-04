@@ -23,4 +23,16 @@ type (
 		FindingByUser uuid.NullUUID `json:"finding_by_user" gorm:"null"`
 		User          User          `json:"users" gorm:"foreignKey:FindingByUser;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	}
+	AssetFindingReport struct {
+		AssetName       string    `json:"asset_name"`
+		FindingCategory string    `json:"finding_category"`
+		FindingNotes    string    `json:"finding_notes"`
+		CreatedAt       time.Time `json:"created_at"`
+		// FK - Asset Placement
+		Floor    string `json:"floor"`
+		RoomName string `json:"room_name"`
+		// FK - Technician
+		Username string `json:"username"`
+		Email    string `json:"email"`
+	}
 )

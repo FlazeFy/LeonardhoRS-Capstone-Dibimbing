@@ -2,9 +2,15 @@ package service
 
 import (
 	"errors"
+	"fmt"
+	"log"
+	"os"
 	"pelita/entity"
 	"pelita/repository"
+	"strconv"
+	"time"
 
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/google/uuid"
 )
 
@@ -14,15 +20,22 @@ type AssetMaintenanceService interface {
 	Create(assetMaintenance *entity.AssetMaintenance, adminId uuid.UUID) error
 	UpdateById(assetMaintenance *entity.AssetMaintenance, id uuid.UUID) error
 	DeleteById(id uuid.UUID) error
+
+	// Scheduler Service
+	GetTodayValidSchedules() (map[string][]entity.AssetMaintenanceSchedule, error)
 }
 
 type assetMaintenanceService struct {
 	assetMaintenanceRepo repository.AssetMaintenanceRepository
+	technicianRepo       repository.TechnicianRepository
+	assetRepo            repository.AssetRepository
 }
 
-func NewAssetMaintenanceService(assetMaintenanceRepo repository.AssetMaintenanceRepository) AssetMaintenanceService {
+func NewAssetMaintenanceService(assetMaintenanceRepo repository.AssetMaintenanceRepository, technicianRepo repository.TechnicianRepository, assetRepo repository.AssetRepository) AssetMaintenanceService {
 	return &assetMaintenanceService{
 		assetMaintenanceRepo: assetMaintenanceRepo,
+		technicianRepo:       technicianRepo,
+		assetRepo:            assetRepo,
 	}
 }
 
@@ -78,6 +91,49 @@ func (s *assetMaintenanceService) Create(assetMaintenance *entity.AssetMaintenan
 		return err
 	}
 
+	// Repo : Find Technician By Id
+	technician, err := s.technicianRepo.FindById(assetMaintenance.MaintenanceBy)
+	if err != nil {
+		return err
+	}
+
+	// Send Telegram
+	if technician != nil && technician.TelegramIsValid && technician.TelegramUserId != nil {
+		bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_BOT_TOKEN"))
+		if err != nil {
+			return errors.New(fmt.Sprintf("Failed to connect to Telegram bot:", err.Error()))
+		}
+
+		telegramID, err := strconv.ParseInt(*technician.TelegramUserId, 10, 64)
+		if err != nil {
+			return errors.New(fmt.Sprintf("Invalid technician Telegram ID: %v\n", err))
+		}
+
+		// Repo : Find Asset By Id
+		asset, err := s.assetRepo.FindByAssetPlacementId(assetMaintenance.AssetPlacementId)
+		if err != nil {
+			return err
+		}
+
+		// Build Message
+		personalMessage := fmt.Sprintf("🛠 *You Have A New Asset To Maintenance:*\n\nAsset Name : %s\nCategory : %s\nDay / Hour : Every %s at %s - %s\n",
+			asset.AssetName,
+			asset.AssetCategory,
+			assetMaintenance.MaintenanceDay,
+			assetMaintenance.MaintenanceHourStart.Format("15:04"),
+			assetMaintenance.MaintenanceHourEnd.Format("15:04"))
+
+		msg := tgbotapi.NewMessage(telegramID, personalMessage)
+		msg.ParseMode = "Markdown"
+
+		_, err = bot.Send(msg)
+		if err != nil {
+			log.Printf("Failed to send message to technician %s: %v\n", *technician.TelegramUserId, err)
+		} else {
+			log.Printf("Personal message sent to technician (%s)\n", *technician.TelegramUserId)
+		}
+	}
+
 	return nil
 }
 
@@ -118,4 +174,26 @@ func (s *assetMaintenanceService) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+// Scheduler Service
+func (s *assetMaintenanceService) GetTodayValidSchedules() (map[string][]entity.AssetMaintenanceSchedule, error) {
+	allSchedules, err := s.assetMaintenanceRepo.FindAllSchedule()
+	if err != nil {
+		return nil, err
+	}
+
+	today := time.Now().Weekday().String()[:3]
+
+	// Group by telegram_user_id
+	result := make(map[string][]entity.AssetMaintenanceSchedule)
+	for _, schedule := range allSchedules {
+		if schedule.MaintenanceDay == today &&
+			schedule.TelegramUserId != nil &&
+			schedule.TelegramIsValid {
+			result[*schedule.TelegramUserId] = append(result[*schedule.TelegramUserId], schedule)
+		}
+	}
+
+	return result, nil
 }

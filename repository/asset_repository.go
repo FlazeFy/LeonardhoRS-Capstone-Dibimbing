@@ -12,6 +12,7 @@ import (
 type AssetRepository interface {
 	FindAll() ([]entity.Asset, error)
 	Create(asset *entity.Asset, adminId uuid.UUID) error
+	FindByAssetPlacementId(id uuid.UUID) (*entity.Asset, error)
 	FindByAssetNameCategoryAndMerk(assetName, assetCategory string, assetMerk *string) (*entity.Asset, error)
 	FindByAssetNameCategoryMerkAndId(assetName, assetCategory string, assetMerk *string, id uuid.UUID) (*entity.Asset, error)
 	FindDeleted() ([]entity.Asset, error)
@@ -43,6 +44,24 @@ func (r *assetRepository) FindAll() ([]entity.Asset, error) {
 	}
 
 	return asset, err
+}
+
+func (r *assetRepository) FindByAssetPlacementId(id uuid.UUID) (*entity.Asset, error) {
+	// Models
+	var asset entity.Asset
+
+	// Query
+	err := r.db.Table("assets").
+		Select("assets.id, asset_name, assets.asset_desc, asset_merk, asset_category, asset_price, asset_status, asset_image_url, assets.created_at, assets.updated_at, deleted_at, assets.created_by").
+		Joins("JOIN asset_placements ON asset_placements.asset_id = assets.id").
+		Where("asset_placements.id = ?", id).
+		First(&asset).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &asset, err
 }
 
 func (r *assetRepository) FindByAssetNameCategoryAndMerk(assetName, assetCategory string, assetMerk *string) (*entity.Asset, error) {
