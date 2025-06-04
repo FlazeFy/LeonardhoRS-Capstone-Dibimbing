@@ -52,6 +52,11 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	assetFindingService := service.NewAssetFindingService(assetFindingRepo)
 	assetFindingController := controller.NewAssetFindingRepository(assetFindingService)
 
+	// History Module
+	historyRepo := repository.NewHistoryRepository(db)
+	historyService := service.NewHistoryService(historyRepo)
+	historyController := controller.NewHistoryRepository(historyService)
+
 	api := r.Group("/api/v1")
 	{
 		// Public Routes
@@ -84,6 +89,10 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			room.POST("/", roomController.Create, middleware.AuditTrailMiddleware(db, "create_room"))
 			room.DELETE("/:id", roomController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_room_by_id"))
 			room.PUT("/:id", roomController.UpdateById, middleware.AuditTrailMiddleware(db, "update_room_by_id"))
+		}
+		history := protected_admin.Group("/history")
+		{
+			history.GET("/all", historyController.GetAllHistory, middleware.AuditTrailMiddleware(db, "get_all_history"))
 		}
 		technician := protected_admin.Group("/technician")
 		{
