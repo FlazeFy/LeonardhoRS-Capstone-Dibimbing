@@ -78,6 +78,10 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		{
 			room.GET("/", roomController.GetAllRoom, middleware.AuditTrailMiddleware(db, "get_all_room"))
 		}
+		history := protected.Group("/history")
+		{
+			history.GET("/my", historyController.GetMyHistory, middleware.AuditTrailMiddleware(db, "get_my_history"))
+		}
 	}
 
 	// Admin Only
