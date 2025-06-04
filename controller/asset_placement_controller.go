@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"math"
 	"net/http"
 	"pelita/entity"
 	"pelita/service"
@@ -19,8 +20,11 @@ func NewAssetPlacementRepository(assetPlacementService service.AssetPlacementSer
 }
 
 func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
+	// Pagination
+	pagination := utils.GetPagination(c)
+
 	// Service: Get All Asset Placement
-	assetPlacement, err := rc.AssetPlacementService.GetAllAssetPlacement()
+	assetPlacement, total, err := rc.AssetPlacementService.GetAllAssetPlacement(pagination)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
@@ -30,10 +34,17 @@ func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
 	}
 
 	// Response
+	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
 	c.JSON(http.StatusOK, gin.H{
 		"message": "asset placement fetched",
 		"status":  "success",
 		"data":    assetPlacement,
+		"metadata": gin.H{
+			"total":       total,
+			"page":        pagination.Page,
+			"limit":       pagination.Limit,
+			"total_pages": totalPages,
+		},
 	})
 }
 

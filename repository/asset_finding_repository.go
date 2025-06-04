@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 	"pelita/entity"
+	"pelita/utils"
 	"time"
 
 	"github.com/google/uuid"
@@ -10,7 +11,7 @@ import (
 )
 
 type AssetFindingRepository interface {
-	FindAll() ([]entity.AssetFinding, error)
+	FindAll(pagination utils.Pagination) ([]entity.AssetFinding, int64, error)
 	FindAllReport() ([]entity.AssetFindingReport, error)
 	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID) error
 	DeleteById(id uuid.UUID) error
@@ -24,22 +25,30 @@ func NewAssetFindingRepository(db *gorm.DB) AssetFindingRepository {
 	return &assetFindingRepository{db: db}
 }
 
-func (r *assetFindingRepository) FindAll() ([]entity.AssetFinding, error) {
+func (r *assetFindingRepository) FindAll(pagination utils.Pagination) ([]entity.AssetFinding, int64, error) {
+	var total int64
+
 	// Models
 	var assetFinding []entity.AssetFinding
+
+	// Pagination
+	offset := (pagination.Page - 1) * pagination.Limit
+	r.db.Model(&entity.AssetFinding{}).Count(&total)
 
 	// Query
 	err := r.db.Preload("User").
 		Preload("Technician").
 		Preload("AssetPlacement").
 		Order("created_at DESC").
+		Limit(pagination.Limit).
+		Offset(offset).
 		Find(&assetFinding).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
+		return nil, 0, err
 	}
 
-	return assetFinding, err
+	return assetFinding, total, nil
 }
 
 func (r *assetFindingRepository) FindAllReport() ([]entity.AssetFindingReport, error) {

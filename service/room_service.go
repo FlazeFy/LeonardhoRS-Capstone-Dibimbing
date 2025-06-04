@@ -4,12 +4,13 @@ import (
 	"errors"
 	"pelita/entity"
 	"pelita/repository"
+	"pelita/utils"
 
 	"github.com/google/uuid"
 )
 
 type RoomService interface {
-	GetAllRoom() ([]entity.Room, error)
+	GetAllRoom(pagination utils.Pagination) ([]entity.Room, int64, error)
 	GetRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error)
 	GetRoomAssetShortByFloorAndRoomName(floor, roomName string) ([]entity.RoomAssetShort, error)
 	Create(room *entity.Room) error
@@ -27,17 +28,17 @@ func NewRoomService(roomRepo repository.RoomRepository) RoomService {
 	}
 }
 
-func (s *roomService) GetAllRoom() ([]entity.Room, error) {
+func (s *roomService) GetAllRoom(pagination utils.Pagination) ([]entity.Room, int64, error) {
 	// Repo : Get All Room
-	room, err := s.roomRepo.FindAll()
+	room, total, err := s.roomRepo.FindAll(pagination)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	if room == nil {
-		return nil, errors.New("room not found")
+		return nil, 0, errors.New("room not found")
 	}
 
-	return room, nil
+	return room, total, nil
 }
 
 func (s *roomService) GetRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error) {

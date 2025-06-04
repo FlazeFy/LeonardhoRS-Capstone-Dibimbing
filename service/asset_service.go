@@ -11,7 +11,7 @@ import (
 )
 
 type AssetService interface {
-	GetAllAsset() ([]entity.Asset, error)
+	GetAllAsset(pagination utils.Pagination) ([]entity.Asset, int64, error)
 	GetDeleted() ([]entity.Asset, error)
 	Create(asset *entity.Asset, adminId uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error
 	UpdateById(asset *entity.Asset, id uuid.UUID) error
@@ -30,17 +30,17 @@ func NewAssetService(assetRepo repository.AssetRepository) AssetService {
 	}
 }
 
-func (s *assetService) GetAllAsset() ([]entity.Asset, error) {
+func (s *assetService) GetAllAsset(pagination utils.Pagination) ([]entity.Asset, int64, error) {
 	// Repo : Get All Asset
-	asset, err := s.assetRepo.FindAll()
+	asset, total, err := s.assetRepo.FindAll(pagination)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	if asset == nil {
-		return nil, errors.New("asset not found")
+		return nil, 0, errors.New("asset not found")
 	}
 
-	return asset, nil
+	return asset, total, nil
 }
 
 func (s *assetService) GetDeleted() ([]entity.Asset, error) {

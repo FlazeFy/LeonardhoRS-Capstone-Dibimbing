@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"pelita/entity"
+	"pelita/utils"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -13,7 +14,7 @@ type TechnicianRepository interface {
 	FindByEmail(email string) (*entity.Technician, error)
 	FindByEmailAndId(email string, id uuid.UUID) (*entity.Technician, error)
 	FindById(id uuid.UUID) (*entity.Technician, error)
-	FindAll() ([]entity.Technician, error)
+	FindAll(pagination utils.Pagination) ([]entity.Technician, int64, error)
 	Create(technician *entity.Technician, adminId uuid.UUID) error
 	DeleteById(id uuid.UUID) error
 	UpdateById(technician *entity.Technician, adminId uuid.UUID) error
@@ -67,17 +68,27 @@ func (r *technicianRepository) FindByEmailAndId(email string, id uuid.UUID) (*en
 	return &technician, err
 }
 
-func (r *technicianRepository) FindAll() ([]entity.Technician, error) {
+func (r *technicianRepository) FindAll(pagination utils.Pagination) ([]entity.Technician, int64, error) {
+	var total int64
+
 	// Models
 	var technician []entity.Technician
 
+	// Pagination
+	offset := (pagination.Page - 1) * pagination.Limit
+	r.db.Model(&entity.Technician{}).Count(&total)
+
 	// Query
-	err := r.db.Find(&technician).Error
+	err := r.db.Order("created_at DESC").
+		Limit(pagination.Limit).
+		Offset(offset).
+		Find(&technician).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
+		return nil, 0, err
 	}
 
-	return technician, err
+	return technician, total, nil
 }
 
 func (r *technicianRepository) Create(technician *entity.Technician, adminId uuid.UUID) error {

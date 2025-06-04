@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"pelita/entity"
+	"pelita/utils"
 	"time"
 
 	"github.com/google/uuid"
@@ -11,7 +12,7 @@ import (
 )
 
 type AssetMaintenanceRepository interface {
-	FindAll() ([]entity.AssetMaintenance, error)
+	FindAll(pagination utils.Pagination) ([]entity.AssetMaintenance, int64, error)
 	FindAllSchedule() ([]entity.AssetMaintenanceSchedule, error)
 	Create(assetMaintenance *entity.AssetMaintenance, adminId uuid.UUID) error
 	FindByAssetPlacementIdMaintenanceByAndMaintenanceDay(assetPlacementId, maintenanceBy uuid.UUID, maintenanceDay string, maintenanceHourStart, maintenanceHourEnd entity.Time) (*entity.AssetMaintenance, error)
@@ -28,17 +29,26 @@ func NewAssetMaintenanceRepository(db *gorm.DB) AssetMaintenanceRepository {
 	return &assetMaintenanceRepository{db: db}
 }
 
-func (r *assetMaintenanceRepository) FindAll() ([]entity.AssetMaintenance, error) {
+func (r *assetMaintenanceRepository) FindAll(pagination utils.Pagination) ([]entity.AssetMaintenance, int64, error) {
+	var total int64
+
 	// Models
 	var assetMaintenance []entity.AssetMaintenance
 
+	// Pagination
+	offset := (pagination.Page - 1) * pagination.Limit
+	r.db.Model(&entity.AssetMaintenance{}).Count(&total)
+
 	// Query
-	err := r.db.Find(&assetMaintenance).Error
+	err := r.db.Order("created_at DESC").
+		Limit(pagination.Limit).
+		Offset(offset).
+		Find(&assetMaintenance).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
+		return nil, 0, err
 	}
 
-	return assetMaintenance, err
+	return assetMaintenance, total, nil
 }
 
 func (r *assetMaintenanceRepository) FindAllSchedule() ([]entity.AssetMaintenanceSchedule, error) {

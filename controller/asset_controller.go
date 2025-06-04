@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"math"
 	"mime/multipart"
 	"net/http"
 	"path/filepath"
@@ -33,8 +34,11 @@ var config = Config{
 }
 
 func (rc *AssetController) GetAllAsset(c *gin.Context) {
+	// Pagination
+	pagination := utils.GetPagination(c)
+
 	// Service: Get All Asset
-	asset, err := rc.AssetService.GetAllAsset()
+	asset, total, err := rc.AssetService.GetAllAsset(pagination)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
@@ -44,10 +48,17 @@ func (rc *AssetController) GetAllAsset(c *gin.Context) {
 	}
 
 	// Response
+	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
 	c.JSON(http.StatusOK, gin.H{
 		"message": "asset fetched",
 		"status":  "success",
 		"data":    asset,
+		"metadata": gin.H{
+			"total":       total,
+			"page":        pagination.Page,
+			"limit":       pagination.Limit,
+			"total_pages": totalPages,
+		},
 	})
 }
 

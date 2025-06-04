@@ -85,6 +85,7 @@ func MigrateAll(db *gorm.DB) {
 		&entity.AssetPlacement{},
 		&entity.AssetMaintenance{},
 		&entity.AssetFinding{},
+		&entity.History{},
 	)
 
 	if err != nil {

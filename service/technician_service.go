@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"pelita/entity"
 	"pelita/repository"
+	"pelita/utils"
 
 	"github.com/google/uuid"
 )
 
 type TechnicianService interface {
-	GetAllTechnician() ([]entity.Technician, error)
+	GetAllTechnician(pagination utils.Pagination) ([]entity.Technician, int64, error)
 	Create(technician *entity.Technician, adminId uuid.UUID) error
 	UpdateById(technician *entity.Technician, id uuid.UUID) error
 	DeleteById(id uuid.UUID) error
@@ -26,17 +27,17 @@ func NewTechnicianService(technicianRepo repository.TechnicianRepository) Techni
 	}
 }
 
-func (s *technicianService) GetAllTechnician() ([]entity.Technician, error) {
+func (s *technicianService) GetAllTechnician(pagination utils.Pagination) ([]entity.Technician, int64, error) {
 	// Repo : Get All Technician
-	technician, err := s.technicianRepo.FindAll()
+	technician, total, err := s.technicianRepo.FindAll(pagination)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	if technician == nil {
-		return nil, errors.New("technician not found")
+		return nil, 0, errors.New("technician not found")
 	}
 
-	return technician, nil
+	return technician, total, nil
 }
 
 func (s *technicianService) Create(technician *entity.Technician, adminId uuid.UUID) error {
