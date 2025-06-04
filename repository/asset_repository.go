@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 	"pelita/entity"
+	"pelita/utils"
 	"time"
 
 	"github.com/google/uuid"
@@ -10,7 +11,7 @@ import (
 )
 
 type AssetRepository interface {
-	FindAll() ([]entity.Asset, error)
+	FindAll(pagination utils.Pagination) ([]entity.Asset, int64, error)
 	Create(asset *entity.Asset, adminId uuid.UUID) error
 	FindByAssetPlacementId(id uuid.UUID) (*entity.Asset, error)
 	FindByAssetNameCategoryAndMerk(assetName, assetCategory string, assetMerk *string) (*entity.Asset, error)
@@ -30,20 +31,28 @@ func NewAssetRepository(db *gorm.DB) AssetRepository {
 	return &assetRepository{db: db}
 }
 
-func (r *assetRepository) FindAll() ([]entity.Asset, error) {
+func (r *assetRepository) FindAll(pagination utils.Pagination) ([]entity.Asset, int64, error) {
+	var total int64
+
 	// Models
 	var asset []entity.Asset
+
+	// Pagination
+	offset := (pagination.Page - 1) * pagination.Limit
+	r.db.Model(&entity.Asset{}).Where("deleted_at is null").Count(&total)
 
 	// Query
 	err := r.db.Order("created_at DESC").
 		Where("deleted_at is null").
+		Limit(pagination.Limit).
+		Offset(offset).
 		Find(&asset).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
+		return nil, 0, err
 	}
 
-	return asset, err
+	return asset, total, nil
 }
 
 func (r *assetRepository) FindByAssetPlacementId(id uuid.UUID) (*entity.Asset, error) {

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"pelita/entity"
+	"pelita/utils"
 	"strings"
 
 	"github.com/google/uuid"
@@ -11,7 +12,7 @@ import (
 )
 
 type RoomRepository interface {
-	FindAll() ([]entity.Room, error)
+	FindAll(pagination utils.Pagination) ([]entity.Room, int64, error)
 	Create(room *entity.Room) error
 	DeleteById(id uuid.UUID) error
 	UpdateById(room *entity.Room, id uuid.UUID) error
@@ -29,20 +30,28 @@ func NewRoomRepository(db *gorm.DB) RoomRepository {
 	return &roomRepository{db: db}
 }
 
-func (r *roomRepository) FindAll() ([]entity.Room, error) {
+func (r *roomRepository) FindAll(pagination utils.Pagination) ([]entity.Room, int64, error) {
+	var total int64
+
 	// Models
 	var room []entity.Room
+
+	// Pagination
+	offset := (pagination.Page - 1) * pagination.Limit
+	r.db.Model(&entity.Room{}).Count(&total)
 
 	// Query
 	err := r.db.Order("floor ASC").
 		Order("room_name ASC").
+		Limit(pagination.Limit).
+		Offset(offset).
 		Find(&room).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
+		return nil, 0, err
 	}
 
-	return room, err
+	return room, total, nil
 }
 
 func (r *roomRepository) FindRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error) {

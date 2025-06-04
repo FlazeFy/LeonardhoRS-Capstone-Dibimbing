@@ -4,14 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"pelita/entity"
+	"pelita/utils"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type HistoryRepository interface {
-	FindAll() ([]entity.AllHistory, error)
-	FindMy(id uuid.UUID, typeUser string) ([]entity.History, error)
+	FindAll(pagination utils.Pagination) ([]entity.AllHistory, int64, error)
+	FindMy(pagination utils.Pagination, id uuid.UUID, typeUser string) ([]entity.History, int64, error)
 }
 
 type historyRepository struct {
@@ -22,9 +23,15 @@ func NewHistoryRepository(db *gorm.DB) HistoryRepository {
 	return &historyRepository{db: db}
 }
 
-func (r *historyRepository) FindAll() ([]entity.AllHistory, error) {
+func (r *historyRepository) FindAll(pagination utils.Pagination) ([]entity.AllHistory, int64, error) {
+	var total int64
+
 	// Models
 	var history []entity.AllHistory
+
+	// Pagination
+	offset := (pagination.Page - 1) * pagination.Limit
+	r.db.Model(&entity.History{}).Count(&total)
 
 	// Query
 	err := r.db.Table("histories").
@@ -32,16 +39,20 @@ func (r *historyRepository) FindAll() ([]entity.AllHistory, error) {
 		Preload("Technician").
 		Preload("Admin").
 		Order("created_at DESC").
+		Limit(pagination.Limit).
+		Offset(offset).
 		Find(&history).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
+		return nil, total, nil
 	}
 
-	return history, err
+	return history, total, nil
 }
 
-func (r *historyRepository) FindMy(id uuid.UUID, typeUser string) ([]entity.History, error) {
+func (r *historyRepository) FindMy(pagination utils.Pagination, id uuid.UUID, typeUser string) ([]entity.History, int64, error) {
+	var total int64
+
 	// Models
 	var history []entity.History
 
@@ -55,14 +66,23 @@ func (r *historyRepository) FindMy(id uuid.UUID, typeUser string) ([]entity.Hist
 		targetCol = "user_id"
 	}
 
+	// Pagination
+	offset := (pagination.Page - 1) * pagination.Limit
+	r.db.Model(&entity.History{}).
+		Where(fmt.Sprintf("%s = ?", targetCol), id).
+		Where("type_user = ?", typeUser).
+		Count(&total)
+
 	err := r.db.Where(fmt.Sprintf("%s = ?", targetCol), id).
 		Where("type_user = ?", typeUser).
 		Order("created_at DESC").
+		Limit(pagination.Limit).
+		Offset(offset).
 		Find(&history).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
+		return nil, 0, nil
 	}
 
-	return history, err
+	return history, total, err
 }

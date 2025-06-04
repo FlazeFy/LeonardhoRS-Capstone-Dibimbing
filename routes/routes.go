@@ -80,7 +80,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		}
 		history := protected.Group("/history")
 		{
-			history.GET("/my", historyController.GetMyHistory, middleware.AuditTrailMiddleware(db, "get_my_history"))
+			history.GET("/my", historyController.GetMyHistory)
 		}
 	}
 
@@ -96,7 +96,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		}
 		history := protected_admin.Group("/history")
 		{
-			history.GET("/all", historyController.GetAllHistory, middleware.AuditTrailMiddleware(db, "get_all_history"))
+			history.GET("/all", historyController.GetAllHistory)
 		}
 		technician := protected_admin.Group("/technician")
 		{

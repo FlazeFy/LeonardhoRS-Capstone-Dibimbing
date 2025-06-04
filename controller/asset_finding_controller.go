@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"math"
 	"mime/multipart"
 	"net/http"
 	"path/filepath"
@@ -23,8 +24,11 @@ func NewAssetFindingRepository(assetFindingService service.AssetFindingService) 
 }
 
 func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
+	// Pagination
+	pagination := utils.GetPagination(c)
+
 	// Service: Get All Asset Finding
-	assetFinding, err := rc.AssetFindingService.GetAllAssetFinding()
+	assetFinding, total, err := rc.AssetFindingService.GetAllAssetFinding(pagination)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
@@ -34,10 +38,17 @@ func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 	}
 
 	// Response
+	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
 	c.JSON(http.StatusOK, gin.H{
 		"message": "asset finding fetched",
 		"status":  "success",
 		"data":    assetFinding,
+		"metadata": gin.H{
+			"total":       total,
+			"page":        pagination.Page,
+			"limit":       pagination.Limit,
+			"total_pages": totalPages,
+		},
 	})
 }
 

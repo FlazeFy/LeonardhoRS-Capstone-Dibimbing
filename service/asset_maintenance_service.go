@@ -7,6 +7,7 @@ import (
 	"os"
 	"pelita/entity"
 	"pelita/repository"
+	"pelita/utils"
 	"strconv"
 	"time"
 
@@ -15,7 +16,7 @@ import (
 )
 
 type AssetMaintenanceService interface {
-	GetAllAssetMaintenance() ([]entity.AssetMaintenance, error)
+	GetAllAssetMaintenance(pagination utils.Pagination) ([]entity.AssetMaintenance, int64, error)
 	GetAllAssetMaintenanceSchedule() ([]entity.AssetMaintenanceSchedule, error)
 	Create(assetMaintenance *entity.AssetMaintenance, adminId uuid.UUID) error
 	UpdateById(assetMaintenance *entity.AssetMaintenance, id uuid.UUID) error
@@ -39,17 +40,17 @@ func NewAssetMaintenanceService(assetMaintenanceRepo repository.AssetMaintenance
 	}
 }
 
-func (s *assetMaintenanceService) GetAllAssetMaintenance() ([]entity.AssetMaintenance, error) {
+func (s *assetMaintenanceService) GetAllAssetMaintenance(pagination utils.Pagination) ([]entity.AssetMaintenance, int64, error) {
 	// Repo : Get All Asset Maintenance
-	assetMaintenance, err := s.assetMaintenanceRepo.FindAll()
+	assetMaintenance, total, err := s.assetMaintenanceRepo.FindAll(pagination)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	if assetMaintenance == nil {
-		return nil, errors.New("asset maintenance not found")
+		return nil, 0, errors.New("asset maintenance not found")
 	}
 
-	return assetMaintenance, nil
+	return assetMaintenance, total, nil
 }
 
 func (s *assetMaintenanceService) GetAllAssetMaintenanceSchedule() ([]entity.AssetMaintenanceSchedule, error) {

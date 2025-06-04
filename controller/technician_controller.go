@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"math"
 	"net/http"
 	"pelita/entity"
 	"pelita/service"
@@ -21,8 +22,11 @@ func NewTechnicianController(technicianService service.TechnicianService) *Techn
 }
 
 func (rc *TechnicianController) GetAllTechnician(c *gin.Context) {
+	// Pagination
+	pagination := utils.GetPagination(c)
+
 	// Service: Get All Technician
-	technician, err := rc.TechnicianService.GetAllTechnician()
+	technician, total, err := rc.TechnicianService.GetAllTechnician(pagination)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
@@ -32,10 +36,17 @@ func (rc *TechnicianController) GetAllTechnician(c *gin.Context) {
 	}
 
 	// Response
+	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
 	c.JSON(http.StatusOK, gin.H{
 		"message": "technician fetched",
 		"status":  "success",
 		"data":    technician,
+		"metadata": gin.H{
+			"total":       total,
+			"page":        pagination.Page,
+			"limit":       pagination.Limit,
+			"total_pages": totalPages,
+		},
 	})
 }
 

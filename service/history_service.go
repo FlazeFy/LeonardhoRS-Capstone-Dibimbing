@@ -4,13 +4,14 @@ import (
 	"errors"
 	"pelita/entity"
 	"pelita/repository"
+	"pelita/utils"
 
 	"github.com/google/uuid"
 )
 
 type HistoryService interface {
-	GetAllHistory() ([]entity.AllHistory, error)
-	GetMyHistory(id uuid.UUID, typeUser string) ([]entity.History, error)
+	GetAllHistory(pagination utils.Pagination) ([]entity.AllHistory, int64, error)
+	GetMyHistory(pagination utils.Pagination, id uuid.UUID, typeUser string) ([]entity.History, int64, error)
 }
 
 type historyService struct {
@@ -23,28 +24,28 @@ func NewHistoryService(historyRepo repository.HistoryRepository) HistoryService 
 	}
 }
 
-func (s *historyService) GetAllHistory() ([]entity.AllHistory, error) {
+func (s *historyService) GetAllHistory(pagination utils.Pagination) ([]entity.AllHistory, int64, error) {
 	// Repo : Get All History
-	history, err := s.historyRepo.FindAll()
+	history, total, err := s.historyRepo.FindAll(pagination)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	if history == nil {
-		return nil, errors.New("history not found")
+		return nil, 0, errors.New("history not found")
 	}
 
-	return history, nil
+	return history, total, nil
 }
 
-func (s *historyService) GetMyHistory(id uuid.UUID, typeUser string) ([]entity.History, error) {
+func (s *historyService) GetMyHistory(pagination utils.Pagination, id uuid.UUID, typeUser string) ([]entity.History, int64, error) {
 	// Repo : Get My History
-	history, err := s.historyRepo.FindMy(id, typeUser)
+	history, total, err := s.historyRepo.FindMy(pagination, id, typeUser)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	if history == nil {
-		return nil, errors.New("history not found")
+		return nil, 0, errors.New("history not found")
 	}
 
-	return history, nil
+	return history, total, nil
 }

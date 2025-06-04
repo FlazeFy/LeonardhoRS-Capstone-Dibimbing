@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"math"
 	"net/http"
 	"pelita/entity"
 	"pelita/service"
+	"pelita/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -18,8 +20,11 @@ func NewRoomRepository(roomService service.RoomService) *RoomController {
 }
 
 func (rc *RoomController) GetAllRoom(c *gin.Context) {
+	// Pagination
+	pagination := utils.GetPagination(c)
+
 	// Service: Get All Room
-	room, err := rc.RoomService.GetAllRoom()
+	room, total, err := rc.RoomService.GetAllRoom(pagination)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
@@ -29,10 +34,17 @@ func (rc *RoomController) GetAllRoom(c *gin.Context) {
 	}
 
 	// Response
+	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
 	c.JSON(http.StatusOK, gin.H{
 		"message": "room fetched",
 		"status":  "success",
 		"data":    room,
+		"metadata": gin.H{
+			"total":       total,
+			"page":        pagination.Page,
+			"limit":       pagination.Limit,
+			"total_pages": totalPages,
+		},
 	})
 }
 
