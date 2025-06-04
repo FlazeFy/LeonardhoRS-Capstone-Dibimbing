@@ -14,6 +14,9 @@ type AssetFindingService interface {
 	GetAllAssetFinding() ([]entity.AssetFinding, error)
 	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID, file *multipart.FileHeader, fileExt string, fileSize int64) error
 	DeleteById(id uuid.UUID) error
+
+	// Scheduler Service
+	GetAllAssetFindingReport() ([]entity.AssetFindingReport, error)
 }
 
 type assetFindingService struct {
@@ -29,6 +32,19 @@ func NewAssetFindingService(assetFindingRepo repository.AssetFindingRepository) 
 func (s *assetFindingService) GetAllAssetFinding() ([]entity.AssetFinding, error) {
 	// Repo : Get All Asset Finding
 	assetFinding, err := s.assetFindingRepo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+	if assetFinding == nil {
+		return nil, errors.New("asset finding not found")
+	}
+
+	return assetFinding, nil
+}
+
+func (s *assetFindingService) GetAllAssetFindingReport() ([]entity.AssetFindingReport, error) {
+	// Repo : Get All Asset Finding
+	assetFinding, err := s.assetFindingRepo.FindAllReport()
 	if err != nil {
 		return nil, err
 	}

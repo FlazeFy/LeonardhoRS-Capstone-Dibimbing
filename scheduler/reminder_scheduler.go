@@ -7,21 +7,25 @@ import (
 	"pelita/service"
 	"pelita/utils"
 	"strconv"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 type AssetMaintenanceScheduler struct {
 	AssetMaintenanceService service.AssetMaintenanceService
+	AssetFindingService     service.AssetFindingService
 	AdminService            service.AdminService
 }
 
 func NewAssetMaintenanceScheduler(
 	assetMaintenanceService service.AssetMaintenanceService,
+	assetFindingService service.AssetFindingService,
 	adminService service.AdminService,
 ) *AssetMaintenanceScheduler {
 	return &AssetMaintenanceScheduler{
 		AssetMaintenanceService: assetMaintenanceService,
+		AssetFindingService:     assetFindingService,
 		AdminService:            adminService,
 	}
 }
@@ -126,6 +130,66 @@ func (s *AssetMaintenanceScheduler) ReminderSchedulerTodayMaintenance() {
 			log.Printf("Failed to send schedule to technician %s: %v\n", telegramUserID, err)
 		} else {
 			log.Printf("Personal schedule sent to technician (%s)\n", telegramUserID)
+		}
+	}
+}
+
+func (s *AssetMaintenanceScheduler) AuditSchedulerAssetFindingReport() {
+	// Service : Get All Asset Finding Report
+	findingMap, err := s.AssetFindingService.GetAllAssetFindingReport()
+	if err != nil {
+		log.Println("Failed to fetch today's maintenance schedules:", err)
+		return
+	}
+
+	// Service : Get All Admin Contact
+	adminContacts, err := s.AdminService.GetAllContact()
+	if err != nil {
+		log.Println("Failed to fetch admin contacts:", err)
+		return
+	}
+
+	if len(findingMap) == 0 {
+		log.Println("No finding found.")
+		return
+	}
+
+	bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_BOT_TOKEN"))
+	if err != nil {
+		log.Println("Failed to connect to Telegram bot:", err)
+		return
+	}
+
+	// Asset Finding Docs
+	datetime := time.Now()
+	filename := fmt.Sprintf("audit_asset_finding_%s.pdf", datetime)
+	err = utils.GeneratePDFAssetFindingReport(findingMap, filename)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
+	// Send Admin Message
+	for _, contact := range adminContacts {
+		if contact.TelegramUserId == nil || !contact.TelegramIsValid {
+			continue
+		}
+
+		telegramID, err := strconv.ParseInt(*contact.TelegramUserId, 10, 64)
+		if err != nil {
+			log.Printf("Invalid Telegram ID for admin %s: %v\n", contact.Username, err)
+			continue
+		}
+
+		msg := tgbotapi.NewDocumentUpload(telegramID, filename)
+		msg.ParseMode = "Markdown"
+		msg.Caption = fmt.Sprintf("[ADMIN] Hello %s, We're here to report asset finding that we've got so far. Here are the docs:", contact.Username)
+
+		_, err = bot.Send(msg)
+		if err != nil {
+			log.Printf("Failed to send message to admin %s: %v\n", contact.Username, err)
+		} else {
+			log.Printf("Full schedule sent to admin %s (%s)\n", contact.Username, *contact.TelegramUserId)
 		}
 	}
 }
