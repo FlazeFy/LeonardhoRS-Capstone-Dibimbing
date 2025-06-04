@@ -12,6 +12,7 @@ import (
 type TechnicianRepository interface {
 	FindByEmail(email string) (*entity.Technician, error)
 	FindByEmailAndId(email string, id uuid.UUID) (*entity.Technician, error)
+	FindById(id uuid.UUID) (*entity.Technician, error)
 	FindAll() ([]entity.Technician, error)
 	Create(technician *entity.Technician, adminId uuid.UUID) error
 	DeleteById(id uuid.UUID) error
@@ -32,6 +33,20 @@ func (r *technicianRepository) FindByEmail(email string) (*entity.Technician, er
 
 	// Query
 	err := r.db.Where("email = ?", email).First(&technician).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &technician, err
+}
+
+func (r *technicianRepository) FindById(id uuid.UUID) (*entity.Technician, error) {
+	// Models
+	var technician entity.Technician
+
+	// Query
+	err := r.db.Where("id = ?", id).First(&technician).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}

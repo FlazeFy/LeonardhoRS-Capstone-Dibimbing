@@ -39,9 +39,11 @@ func main() {
 	assetMaintenanceRepo := repository.NewAssetMaintenanceRepository(db)
 	assetFindingRepo := repository.NewAssetFindingRepository(db)
 	adminRepo := repository.NewAdminRepository(db)
+	assetRepo := repository.NewAssetRepository(db)
+	technicianRepo := repository.NewTechnicianRepository(db)
 
 	// Initialize Services
-	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo)
+	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo, technicianRepo, assetRepo)
 	assetFindingService := service.NewAssetFindingService(assetFindingRepo)
 	adminService := service.NewAdminService(adminRepo)
 

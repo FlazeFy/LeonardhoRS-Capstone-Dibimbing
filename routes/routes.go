@@ -44,7 +44,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 
 	// Asset Maintenance Module
 	assetMaintenanceRepo := repository.NewAssetMaintenanceRepository(db)
-	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo)
+	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo, technicianRepo, assetRepo)
 	assetMaintenanceController := controller.NewAssetMaintenanceRepository(assetMaintenanceService)
 
 	// Asset Finding Module
