@@ -135,6 +135,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			{
 				asset_finding.DELETE("/:id", assetFindingController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_asset_finding_by_id"))
 				asset_finding.GET("/most_context/:target_col", assetFindingController.GetMostContext, middleware.AuditTrailMiddleware(db, "get_most_context_asset_finding"))
+				asset_finding.GET("/hour_total", assetFindingController.GetFindingHourTotal, middleware.AuditTrailMiddleware(db, "get_asset_finding_hour_total"))
 			}
 		}
 	}
