@@ -13,6 +13,7 @@ import (
 type AssetService interface {
 	GetAllAsset(pagination utils.Pagination) ([]entity.Asset, int64, error)
 	GetDeleted() ([]entity.Asset, error)
+	GetMostContext(targetCol string) ([]entity.StatsContextTotal, error)
 	Create(asset *entity.Asset, adminId uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error
 	UpdateById(asset *entity.Asset, id uuid.UUID) error
 	HardDeleteById(id uuid.UUID) error
@@ -22,11 +23,13 @@ type AssetService interface {
 
 type assetService struct {
 	assetRepo repository.AssetRepository
+	statsRepo repository.StatsRepository
 }
 
-func NewAssetService(assetRepo repository.AssetRepository) AssetService {
+func NewAssetService(assetRepo repository.AssetRepository, statsRepo repository.StatsRepository) AssetService {
 	return &assetService{
 		assetRepo: assetRepo,
+		statsRepo: statsRepo,
 	}
 }
 
@@ -153,4 +156,17 @@ func (s *assetService) RecoverDeletedById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (s *assetService) GetMostContext(targetCol string) ([]entity.StatsContextTotal, error) {
+	// Repo : Get My History
+	asset, err := s.statsRepo.FindMostUsedContext("assets", targetCol)
+	if err != nil {
+		return nil, err
+	}
+	if asset == nil {
+		return nil, errors.New("asset not found")
+	}
+
+	return asset, nil
 }

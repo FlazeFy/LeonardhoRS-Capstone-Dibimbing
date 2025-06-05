@@ -188,3 +188,34 @@ func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 		"status":  "success",
 	})
 }
+
+func (rc *AssetMaintenanceController) GetMostContext(c *gin.Context) {
+	// Param
+	targetCol := c.Param("target_col")
+
+	// Validator : Target Column Validator
+	if targetCol != "maintenance_day" {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "target_col is not valid",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Service: Get Most Context
+	assetMaintenance, err := rc.AssetMaintenanceService.GetMostContext(targetCol)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "asset maintenance fetched",
+		"status":  "success",
+		"data":    assetMaintenance,
+	})
+}

@@ -12,6 +12,8 @@ import (
 
 type AssetFindingService interface {
 	GetAllAssetFinding(pagination utils.Pagination) ([]entity.AssetFinding, int64, error)
+	GetMostContext(targetCol string) ([]entity.StatsContextTotal, error)
+	GetFindingHourTotal() ([]entity.StatsContextTotal, error)
 	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID, file *multipart.FileHeader, fileExt string, fileSize int64) error
 	DeleteById(id uuid.UUID) error
 
@@ -21,11 +23,13 @@ type AssetFindingService interface {
 
 type assetFindingService struct {
 	assetFindingRepo repository.AssetFindingRepository
+	statsRepo        repository.StatsRepository
 }
 
-func NewAssetFindingService(assetFindingRepo repository.AssetFindingRepository) AssetFindingService {
+func NewAssetFindingService(assetFindingRepo repository.AssetFindingRepository, statsRepo repository.StatsRepository) AssetFindingService {
 	return &assetFindingService{
 		assetFindingRepo: assetFindingRepo,
+		statsRepo:        statsRepo,
 	}
 }
 
@@ -98,4 +102,30 @@ func (s *assetFindingService) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (s *assetFindingService) GetMostContext(targetCol string) ([]entity.StatsContextTotal, error) {
+	// Repo : Get Most Context
+	asset, err := s.statsRepo.FindMostUsedContext("asset_findings", targetCol)
+	if err != nil {
+		return nil, err
+	}
+	if asset == nil {
+		return nil, errors.New("asset finding not found")
+	}
+
+	return asset, nil
+}
+
+func (s *assetFindingService) GetFindingHourTotal() ([]entity.StatsContextTotal, error) {
+	// Repo : Get Finding Hour Total
+	asset, err := s.assetFindingRepo.FindAllFindingHourTotal()
+	if err != nil {
+		return nil, err
+	}
+	if asset == nil {
+		return nil, errors.New("asset finding not found")
+	}
+
+	return asset, nil
 }

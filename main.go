@@ -40,11 +40,12 @@ func main() {
 	assetFindingRepo := repository.NewAssetFindingRepository(db)
 	adminRepo := repository.NewAdminRepository(db)
 	assetRepo := repository.NewAssetRepository(db)
+	statsRepo := repository.NewStatsRepository(db)
 	technicianRepo := repository.NewTechnicianRepository(db)
 
 	// Initialize Services
-	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo, technicianRepo, assetRepo)
-	assetFindingService := service.NewAssetFindingService(assetFindingRepo)
+	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo, technicianRepo, assetRepo, statsRepo)
+	assetFindingService := service.NewAssetFindingService(assetFindingRepo, statsRepo)
 	adminService := service.NewAdminService(adminRepo)
 
 	// Initialize Scheduler

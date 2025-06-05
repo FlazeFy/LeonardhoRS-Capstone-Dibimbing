@@ -13,6 +13,7 @@ import (
 type AssetFindingRepository interface {
 	FindAll(pagination utils.Pagination) ([]entity.AssetFinding, int64, error)
 	FindAllReport() ([]entity.AssetFindingReport, error)
+	FindAllFindingHourTotal() ([]entity.StatsContextTotal, error)
 	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID) error
 	DeleteById(id uuid.UUID) error
 }
@@ -71,6 +72,24 @@ func (r *assetFindingRepository) FindAllReport() ([]entity.AssetFindingReport, e
 	}
 
 	return assetFinding, err
+}
+
+func (r *assetFindingRepository) FindAllFindingHourTotal() ([]entity.StatsContextTotal, error) {
+	// Models
+	var asset []entity.StatsContextTotal
+
+	// Query
+	err := r.db.Table("asset_maintenances").
+		Select("HOUR(created_at) as context, COUNT(1) as total").
+		Group("HOUR(created_at)").
+		Order("total DESC").
+		Find(&asset).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+
+	return asset, err
 }
 
 func (r *assetFindingRepository) Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID) error {

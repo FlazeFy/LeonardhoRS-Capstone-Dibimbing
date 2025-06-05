@@ -12,6 +12,9 @@ import (
 )
 
 func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
+	// Stats Module
+	statsRepo := repository.NewStatsRepository(db)
+
 	// Auth Module
 	userRepo := repository.NewUserRepository(db)
 	adminRepo := repository.NewAdminRepository(db)
@@ -29,12 +32,12 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 
 	// Room Module
 	roomRepo := repository.NewRoomRepository(db)
-	roomService := service.NewRoomService(roomRepo)
+	roomService := service.NewRoomService(roomRepo, statsRepo)
 	roomController := controller.NewRoomRepository(roomService)
 
 	// Asset Module
 	assetRepo := repository.NewAssetRepository(db)
-	assetService := service.NewAssetService(assetRepo)
+	assetService := service.NewAssetService(assetRepo, statsRepo)
 	assetController := controller.NewAssetRepository(assetService)
 
 	// Asset Placement Module
@@ -44,17 +47,17 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 
 	// Asset Maintenance Module
 	assetMaintenanceRepo := repository.NewAssetMaintenanceRepository(db)
-	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo, technicianRepo, assetRepo)
+	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo, technicianRepo, assetRepo, statsRepo)
 	assetMaintenanceController := controller.NewAssetMaintenanceRepository(assetMaintenanceService)
 
 	// Asset Finding Module
 	assetFindingRepo := repository.NewAssetFindingRepository(db)
-	assetFindingService := service.NewAssetFindingService(assetFindingRepo)
+	assetFindingService := service.NewAssetFindingService(assetFindingRepo, statsRepo)
 	assetFindingController := controller.NewAssetFindingRepository(assetFindingService)
 
 	// History Module
 	historyRepo := repository.NewHistoryRepository(db)
-	historyService := service.NewHistoryService(historyRepo)
+	historyService := service.NewHistoryService(historyRepo, statsRepo)
 	historyController := controller.NewHistoryRepository(historyService)
 
 	api := r.Group("/api/v1")
@@ -90,6 +93,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	{
 		room := protected_admin.Group("/room")
 		{
+			room.GET("/most_context/:target_col", roomController.GetMostContext, middleware.AuditTrailMiddleware(db, "get_most_context_room"))
 			room.POST("/", roomController.Create, middleware.AuditTrailMiddleware(db, "create_room"))
 			room.DELETE("/:id", roomController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_room_by_id"))
 			room.PUT("/:id", roomController.UpdateById, middleware.AuditTrailMiddleware(db, "update_room_by_id"))
@@ -97,6 +101,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		history := protected_admin.Group("/history")
 		{
 			history.GET("/all", historyController.GetAllHistory)
+			history.GET("/:target_col", historyController.GetMostContext)
 		}
 		technician := protected_admin.Group("/technician")
 		{
@@ -107,6 +112,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		asset := protected_admin.Group("/asset")
 		{
 			asset.POST("/", assetController.Create, middleware.AuditTrailMiddleware(db, "create_asset"))
+			asset.GET("/most_context/:target_col", assetController.GetMostContext, middleware.AuditTrailMiddleware(db, "get_most_context_asset"))
 			asset.GET("/", assetController.GetAllAsset, middleware.AuditTrailMiddleware(db, "get_all_asset"))
 			asset.DELETE("/destroy/:id", assetController.HardDeleteById, middleware.AuditTrailMiddleware(db, "hard_delete_asset_by_id"))
 			asset.DELETE("/:id", assetController.SoftDeleteById, middleware.AuditTrailMiddleware(db, "soft_delete_asset_by_id"))
@@ -120,6 +126,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			}
 			asset_maintenance := asset.Group("/maintenance")
 			{
+				asset_maintenance.GET("/most_context/:target_col", assetMaintenanceController.GetMostContext, middleware.AuditTrailMiddleware(db, "get_most_context_asset_maintenance"))
 				asset_maintenance.POST("/", assetMaintenanceController.Create, middleware.AuditTrailMiddleware(db, "create_asset_maintenance_by_id"))
 				asset_maintenance.PUT("/:id", assetMaintenanceController.UpdateById, middleware.AuditTrailMiddleware(db, "update_asset_maintenance_by_id"))
 				asset_maintenance.DELETE("/:id", assetMaintenanceController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_asset_maintenance_by_id"))
@@ -127,6 +134,8 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			asset_finding := asset.Group("/finding")
 			{
 				asset_finding.DELETE("/:id", assetFindingController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_asset_finding_by_id"))
+				asset_finding.GET("/most_context/:target_col", assetFindingController.GetMostContext, middleware.AuditTrailMiddleware(db, "get_most_context_asset_finding"))
+				asset_finding.GET("/hour_total", assetFindingController.GetFindingHourTotal, middleware.AuditTrailMiddleware(db, "get_asset_finding_hour_total"))
 			}
 		}
 	}

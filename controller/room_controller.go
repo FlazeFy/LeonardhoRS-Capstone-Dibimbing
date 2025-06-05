@@ -196,3 +196,35 @@ func (rc *RoomController) DeleteById(c *gin.Context) {
 		"status":  "success",
 	})
 }
+
+func (rc *RoomController) GetMostContext(c *gin.Context) {
+	// Param
+	targetCol := c.Param("target_col")
+
+	// Validator : Target Column Validator
+	validTarget := []string{"floor", "room_dept"}
+	if !utils.Contains(validTarget, targetCol) {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "target_col is not valid",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Service: Get My Room
+	room, err := rc.RoomService.GetMostContext(targetCol)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "room fetched",
+		"status":  "success",
+		"data":    room,
+	})
+}

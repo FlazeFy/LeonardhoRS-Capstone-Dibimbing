@@ -94,3 +94,35 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 		},
 	})
 }
+
+func (rc *HistoryController) GetMostContext(c *gin.Context) {
+	// Param
+	targetCol := c.Param("target_col")
+
+	// Validator : Target Column Validator
+	validTarget := []string{"type_user", "type_history"}
+	if !utils.Contains(validTarget, targetCol) {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "target_col is not valid",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Service: Get My History
+	history, err := rc.HistoryService.GetMostContext(targetCol)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "history fetched",
+		"status":  "success",
+		"data":    history,
+	})
+}

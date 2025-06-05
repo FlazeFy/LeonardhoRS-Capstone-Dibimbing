@@ -13,18 +13,21 @@ type RoomService interface {
 	GetAllRoom(pagination utils.Pagination) ([]entity.Room, int64, error)
 	GetRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error)
 	GetRoomAssetShortByFloorAndRoomName(floor, roomName string) ([]entity.RoomAssetShort, error)
+	GetMostContext(targetCol string) ([]entity.StatsContextTotal, error)
 	Create(room *entity.Room) error
 	UpdateById(room *entity.Room, id uuid.UUID) error
 	DeleteById(id uuid.UUID) error
 }
 
 type roomService struct {
-	roomRepo repository.RoomRepository
+	roomRepo  repository.RoomRepository
+	statsRepo repository.StatsRepository
 }
 
-func NewRoomService(roomRepo repository.RoomRepository) RoomService {
+func NewRoomService(roomRepo repository.RoomRepository, statsRepo repository.StatsRepository) RoomService {
 	return &roomService{
-		roomRepo: roomRepo,
+		roomRepo:  roomRepo,
+		statsRepo: statsRepo,
 	}
 }
 
@@ -133,4 +136,17 @@ func (s *roomService) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (s *roomService) GetMostContext(targetCol string) ([]entity.StatsContextTotal, error) {
+	// Repo : Get My Room
+	room, err := s.statsRepo.FindMostUsedContext("rooms", targetCol)
+	if err != nil {
+		return nil, err
+	}
+	if room == nil {
+		return nil, errors.New("room not found")
+	}
+
+	return room, nil
 }
