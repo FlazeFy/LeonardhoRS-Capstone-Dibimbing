@@ -32,7 +32,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 
 	// Room Module
 	roomRepo := repository.NewRoomRepository(db)
-	roomService := service.NewRoomService(roomRepo)
+	roomService := service.NewRoomService(roomRepo, statsRepo)
 	roomController := controller.NewRoomRepository(roomService)
 
 	// Asset Module
@@ -93,6 +93,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	{
 		room := protected_admin.Group("/room")
 		{
+			room.GET("/most_context/:target_col", roomController.GetMostContext, middleware.AuditTrailMiddleware(db, "get_most_context_room"))
 			room.POST("/", roomController.Create, middleware.AuditTrailMiddleware(db, "create_room"))
 			room.DELETE("/:id", roomController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_room_by_id"))
 			room.PUT("/:id", roomController.UpdateById, middleware.AuditTrailMiddleware(db, "update_room_by_id"))
