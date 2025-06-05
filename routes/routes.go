@@ -12,6 +12,9 @@ import (
 )
 
 func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
+	// Stats Module
+	statsRepo := repository.NewStatsRepository(db)
+
 	// Auth Module
 	userRepo := repository.NewUserRepository(db)
 	adminRepo := repository.NewAdminRepository(db)
@@ -54,7 +57,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 
 	// History Module
 	historyRepo := repository.NewHistoryRepository(db)
-	historyService := service.NewHistoryService(historyRepo)
+	historyService := service.NewHistoryService(historyRepo, statsRepo)
 	historyController := controller.NewHistoryRepository(historyService)
 
 	api := r.Group("/api/v1")
@@ -97,6 +100,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		history := protected_admin.Group("/history")
 		{
 			history.GET("/all", historyController.GetAllHistory)
+			history.GET("/:target_col", historyController.GetMostContext)
 		}
 		technician := protected_admin.Group("/technician")
 		{

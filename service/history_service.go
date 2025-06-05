@@ -12,15 +12,18 @@ import (
 type HistoryService interface {
 	GetAllHistory(pagination utils.Pagination) ([]entity.AllHistory, int64, error)
 	GetMyHistory(pagination utils.Pagination, id uuid.UUID, typeUser string) ([]entity.History, int64, error)
+	GetMostContext(targetCol string) ([]entity.StatsContextTotal, error)
 }
 
 type historyService struct {
 	historyRepo repository.HistoryRepository
+	statsRepo   repository.StatsRepository
 }
 
-func NewHistoryService(historyRepo repository.HistoryRepository) HistoryService {
+func NewHistoryService(historyRepo repository.HistoryRepository, statsRepo repository.StatsRepository) HistoryService {
 	return &historyService{
 		historyRepo: historyRepo,
+		statsRepo:   statsRepo,
 	}
 }
 
@@ -48,4 +51,17 @@ func (s *historyService) GetMyHistory(pagination utils.Pagination, id uuid.UUID,
 	}
 
 	return history, total, nil
+}
+
+func (s *historyService) GetMostContext(targetCol string) ([]entity.StatsContextTotal, error) {
+	// Repo : Get My History
+	history, err := s.statsRepo.FindMostUsedContext("histories", targetCol)
+	if err != nil {
+		return nil, err
+	}
+	if history == nil {
+		return nil, errors.New("history not found")
+	}
+
+	return history, nil
 }
