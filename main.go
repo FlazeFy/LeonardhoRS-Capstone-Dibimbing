@@ -45,7 +45,7 @@ func main() {
 
 	// Initialize Services
 	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo, technicianRepo, assetRepo, statsRepo)
-	assetFindingService := service.NewAssetFindingService(assetFindingRepo)
+	assetFindingService := service.NewAssetFindingService(assetFindingRepo, statsRepo)
 	adminService := service.NewAdminService(adminRepo)
 
 	// Initialize Scheduler

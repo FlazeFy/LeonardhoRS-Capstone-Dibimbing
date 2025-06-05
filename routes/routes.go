@@ -52,7 +52,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 
 	// Asset Finding Module
 	assetFindingRepo := repository.NewAssetFindingRepository(db)
-	assetFindingService := service.NewAssetFindingService(assetFindingRepo)
+	assetFindingService := service.NewAssetFindingService(assetFindingRepo, statsRepo)
 	assetFindingController := controller.NewAssetFindingRepository(assetFindingService)
 
 	// History Module
@@ -133,6 +133,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			asset_finding := asset.Group("/finding")
 			{
 				asset_finding.DELETE("/:id", assetFindingController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_asset_finding_by_id"))
+				asset_finding.GET("/most_context/:target_col", assetFindingController.GetMostContext, middleware.AuditTrailMiddleware(db, "get_most_context_asset_finding"))
 			}
 		}
 	}
