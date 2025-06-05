@@ -47,7 +47,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 
 	// Asset Maintenance Module
 	assetMaintenanceRepo := repository.NewAssetMaintenanceRepository(db)
-	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo, technicianRepo, assetRepo)
+	assetMaintenanceService := service.NewAssetMaintenanceService(assetMaintenanceRepo, technicianRepo, assetRepo, statsRepo)
 	assetMaintenanceController := controller.NewAssetMaintenanceRepository(assetMaintenanceService)
 
 	// Asset Finding Module
@@ -125,6 +125,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 			}
 			asset_maintenance := asset.Group("/maintenance")
 			{
+				asset_maintenance.GET("/most_context/:target_col", assetMaintenanceController.GetMostContext, middleware.AuditTrailMiddleware(db, "get_most_context_asset_maintenance"))
 				asset_maintenance.POST("/", assetMaintenanceController.Create, middleware.AuditTrailMiddleware(db, "create_asset_maintenance_by_id"))
 				asset_maintenance.PUT("/:id", assetMaintenanceController.UpdateById, middleware.AuditTrailMiddleware(db, "update_asset_maintenance_by_id"))
 				asset_maintenance.DELETE("/:id", assetMaintenanceController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_asset_maintenance_by_id"))

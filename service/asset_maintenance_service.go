@@ -18,6 +18,7 @@ import (
 type AssetMaintenanceService interface {
 	GetAllAssetMaintenance(pagination utils.Pagination) ([]entity.AssetMaintenance, int64, error)
 	GetAllAssetMaintenanceSchedule() ([]entity.AssetMaintenanceSchedule, error)
+	GetMostContext(targetCol string) ([]entity.StatsContextTotal, error)
 	Create(assetMaintenance *entity.AssetMaintenance, adminId uuid.UUID) error
 	UpdateById(assetMaintenance *entity.AssetMaintenance, id uuid.UUID) error
 	DeleteById(id uuid.UUID) error
@@ -30,13 +31,15 @@ type assetMaintenanceService struct {
 	assetMaintenanceRepo repository.AssetMaintenanceRepository
 	technicianRepo       repository.TechnicianRepository
 	assetRepo            repository.AssetRepository
+	statsRepo            repository.StatsRepository
 }
 
-func NewAssetMaintenanceService(assetMaintenanceRepo repository.AssetMaintenanceRepository, technicianRepo repository.TechnicianRepository, assetRepo repository.AssetRepository) AssetMaintenanceService {
+func NewAssetMaintenanceService(assetMaintenanceRepo repository.AssetMaintenanceRepository, technicianRepo repository.TechnicianRepository, assetRepo repository.AssetRepository, statsRepo repository.StatsRepository) AssetMaintenanceService {
 	return &assetMaintenanceService{
 		assetMaintenanceRepo: assetMaintenanceRepo,
 		technicianRepo:       technicianRepo,
 		assetRepo:            assetRepo,
+		statsRepo:            statsRepo,
 	}
 }
 
@@ -175,6 +178,19 @@ func (s *assetMaintenanceService) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (s *assetMaintenanceService) GetMostContext(targetCol string) ([]entity.StatsContextTotal, error) {
+	// Repo : Get My History
+	asset, err := s.statsRepo.FindMostUsedContext("asset_maintenances", targetCol)
+	if err != nil {
+		return nil, err
+	}
+	if asset == nil {
+		return nil, errors.New("asset maintenance not found")
+	}
+
+	return asset, nil
 }
 
 // Scheduler Service
