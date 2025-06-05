@@ -300,3 +300,35 @@ func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 		"status":  "success",
 	})
 }
+
+func (rc *AssetController) GetMostContext(c *gin.Context) {
+	// Param
+	targetCol := c.Param("target_col")
+
+	// Validator : Target Column Validator
+	validTarget := []string{"asset_merk", "asset_category", "asset_status"}
+	if !utils.Contains(validTarget, targetCol) {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "target_col is not valid",
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Service: Get Most Context
+	asset, err := rc.AssetService.GetMostContext(targetCol)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+			"status":  "failed",
+		})
+		return
+	}
+
+	// Response
+	c.JSON(http.StatusOK, gin.H{
+		"message": "asset fetched",
+		"status":  "success",
+		"data":    asset,
+	})
+}

@@ -37,7 +37,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 
 	// Asset Module
 	assetRepo := repository.NewAssetRepository(db)
-	assetService := service.NewAssetService(assetRepo)
+	assetService := service.NewAssetService(assetRepo, statsRepo)
 	assetController := controller.NewAssetRepository(assetService)
 
 	// Asset Placement Module
@@ -111,6 +111,7 @@ func SetUpRoutes(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 		asset := protected_admin.Group("/asset")
 		{
 			asset.POST("/", assetController.Create, middleware.AuditTrailMiddleware(db, "create_asset"))
+			asset.GET("/most_context/:target_col", assetController.GetMostContext, middleware.AuditTrailMiddleware(db, "get_most_context_asset"))
 			asset.GET("/", assetController.GetAllAsset, middleware.AuditTrailMiddleware(db, "get_all_asset"))
 			asset.DELETE("/destroy/:id", assetController.HardDeleteById, middleware.AuditTrailMiddleware(db, "hard_delete_asset_by_id"))
 			asset.DELETE("/:id", assetController.SoftDeleteById, middleware.AuditTrailMiddleware(db, "soft_delete_asset_by_id"))
