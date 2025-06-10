@@ -248,6 +248,143 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/asset/placement": {
+            "get": {
+                "description": "Returns a paginated list of assets placement",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get All Asset Placement",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllAssetPlacement"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/history/all": {
+            "get": {
+                "description": "Returns a paginated list of all users histories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "History"
+                ],
+                "summary": "Get All History",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllHistory"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/history/most_context/{targe_col}": {
+            "get": {
+                "description": "Returns a list of most appear item in history by given field",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "History"
+                ],
+                "summary": "Get Most Context History",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Target Column to Analyze (such as: type_user, type_history)",
+                        "name": "target_col",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetMostContext"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/history/my": {
+            "get": {
+                "description": "Returns a paginated list of my histories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "History"
+                ],
+                "summary": "Get My History",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetMyHistory"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/room": {
             "get": {
                 "description": "Returns a paginated list of room",
@@ -419,6 +556,70 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entity.Admin": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AllHistory": {
+            "type": "object",
+            "properties": {
+                "admin_id": {
+                    "description": "FK - Admin",
+                    "type": "string"
+                },
+                "admins": {
+                    "$ref": "#/definitions/entity.Admin"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "technician_id": {
+                    "description": "FK - Technician",
+                    "type": "string"
+                },
+                "technicians": {
+                    "$ref": "#/definitions/entity.Technician"
+                },
+                "type_history": {
+                    "type": "string"
+                },
+                "type_user": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "FK - User",
+                    "type": "string"
+                },
+                "users": {
+                    "$ref": "#/definitions/entity.User"
+                }
+            }
+        },
         "entity.Asset": {
             "type": "object",
             "properties": {
@@ -617,6 +818,32 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.History": {
+            "type": "object",
+            "properties": {
+                "admin_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "technician_id": {
+                    "type": "string"
+                },
+                "type_history": {
+                    "type": "string"
+                },
+                "type_user": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Metadata": {
             "type": "object",
             "properties": {
@@ -719,6 +946,50 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.ResponseGetAllAssetPlacement": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetPlacement"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset placement fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllHistory": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AllHistory"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "history fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
         "entity.ResponseGetAllRoom": {
             "type": "object",
             "properties": {
@@ -791,6 +1062,28 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "asset fetched"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetMyHistory": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.History"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "history fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
                 },
                 "status": {
                     "type": "string",
