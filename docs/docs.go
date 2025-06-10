@@ -385,6 +385,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/profile": {
+            "get": {
+                "description": "Returns a paginated list of handle",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Use"
+                ],
+                "summary": "Get My Profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetMyProfile"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/room": {
             "get": {
                 "description": "Returns a paginated list of room",
@@ -540,6 +572,38 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/entity.ResponseGetMostContext"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/technician": {
+            "get": {
+                "description": "Returns a paginated list of technician",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technician"
+                ],
+                "summary": "Get All Technician",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllTechnician"
                         }
                     },
                     "404": {
@@ -1012,6 +1076,28 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.ResponseGetAllTechnician": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Technician"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "technician fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
         "entity.ResponseGetDeletedAsset": {
             "type": "object",
             "properties": {
@@ -1084,6 +1170,25 @@ const docTemplate = `{
                 },
                 "metadata": {
                     "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetMyProfile": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.User"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "user fetched"
                 },
                 "status": {
                     "type": "string",

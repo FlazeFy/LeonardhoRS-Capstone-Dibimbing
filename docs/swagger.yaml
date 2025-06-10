@@ -308,6 +308,21 @@ definitions:
         example: success
         type: string
     type: object
+  entity.ResponseGetAllTechnician:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.Technician'
+        type: array
+      message:
+        example: technician fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
   entity.ResponseGetDeletedAsset:
     properties:
       data:
@@ -358,6 +373,19 @@ definitions:
         type: string
       metadata:
         $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetMyProfile:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.User'
+        type: array
+      message:
+        example: user fetched
+        type: string
       status:
         example: success
         type: string
@@ -728,6 +756,27 @@ paths:
       summary: Get My History
       tags:
       - History
+  /api/v1/profile:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of handle
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetMyProfile'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get My Profile
+      tags:
+      - Use
   /api/v1/room:
     get:
       consumes:
@@ -844,4 +893,25 @@ paths:
       summary: Get Most Context Room
       tags:
       - Room
+  /api/v1/technician:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of technician
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetAllTechnician'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get All Technician
+      tags:
+      - Technician
 swagger: "2.0"

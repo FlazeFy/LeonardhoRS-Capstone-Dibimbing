@@ -20,6 +20,18 @@ type (
 		Email    string `json:"email" binding:"required,email"`
 		Password string `json:"password" binding:"required"`
 	}
+	// For Response Only
+	ResponseGetAllUser struct {
+		Message  string   `json:"message" example:"user fetched"`
+		Status   string   `json:"status" example:"success"`
+		Data     []User   `json:"data"`
+		Metadata Metadata `json:"metadata"`
+	}
+	ResponseGetMyProfile struct {
+		Message string `json:"message" example:"user fetched"`
+		Status  string `json:"status" example:"success"`
+		Data    []User `json:"data"`
+	}
 )
 
 // For Generic Interface

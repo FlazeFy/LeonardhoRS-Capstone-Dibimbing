@@ -21,6 +21,14 @@ func NewTechnicianController(technicianService service.TechnicianService) *Techn
 	}
 }
 
+// @Summary      Get All Technician
+// @Description  Returns a paginated list of technician
+// @Tags         Technician
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetAllTechnician
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/technician [get]
 func (rc *TechnicianController) GetAllTechnician(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
