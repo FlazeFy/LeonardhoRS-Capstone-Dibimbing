@@ -23,6 +23,14 @@ func NewAssetFindingRepository(assetFindingService service.AssetFindingService) 
 	return &AssetFindingController{AssetFindingService: assetFindingService}
 }
 
+// @Summary      Get All Asset Finding
+// @Description  Returns a paginated list of assets finding
+// @Tags         Asset
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetAllAssetFinding
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/asset/finding [get]
 func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -52,6 +60,14 @@ func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 	})
 }
 
+// @Summary      Get All Asset Finding Hour Total
+// @Description  Returns a paginated list of assets finding total per hour
+// @Tags         Asset
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetFindingHourTotal
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/asset/finding/hour_total [get]
 func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 	// Service: Get All Asset Finding
 	assetFinding, err := rc.AssetFindingService.GetFindingHourTotal()
@@ -71,6 +87,15 @@ func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 	})
 }
 
+// @Summary      Get Most Context Asset Finding
+// @Description  Returns a list of most appear item in asset finding by given field
+// @Tags         Asset
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetMostContext
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/asset/most_context/{targe_col} [get]
+// @Param        target_col  path  string  true  "Target Column to Analyze (such as: finding_category)"
 func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 	// Param
 	targetCol := c.Param("target_col")
@@ -146,12 +171,11 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 	}
 
 	// Define The Role Id
-	var technicianId uuid.NullUUID
-	var userId uuid.NullUUID
+	var technicianId, userId *uuid.UUID
 	if role == "technician" {
-		technicianId = uuid.NullUUID{UUID: technicianOrUserId, Valid: true}
+		technicianId = &technicianOrUserId
 	} else {
-		userId = uuid.NullUUID{UUID: technicianOrUserId, Valid: true}
+		userId = &technicianOrUserId
 	}
 
 	// Default values

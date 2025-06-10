@@ -31,4 +31,23 @@ type (
 		AssetName     string `json:"asset_name"`
 		AssetCategory string `json:"asset_category"`
 	}
+	// For Response Only
+	ResponseGetAllRoom struct {
+		Message  string   `json:"message" example:"room fetched"`
+		Status   string   `json:"status" example:"success"`
+		Data     []Room   `json:"data"`
+		Metadata Metadata `json:"metadata"`
+	}
+	ResponseGetRoomAssetByFloorAndRoomName struct {
+		Message  string      `json:"message" example:"room fetched"`
+		Status   string      `json:"status" example:"success"`
+		Data     []RoomAsset `json:"data"`
+		Metadata Metadata    `json:"metadata"`
+	}
+	ResponseGetRoomAssetShortByFloorAndRoomName struct {
+		Message  string           `json:"message" example:"room fetched"`
+		Status   string           `json:"status" example:"success"`
+		Data     []RoomAssetShort `json:"data"`
+		Metadata Metadata         `json:"metadata"`
+	}
 )

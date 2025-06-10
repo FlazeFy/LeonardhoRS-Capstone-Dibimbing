@@ -19,6 +19,14 @@ func NewAssetPlacementRepository(assetPlacementService service.AssetPlacementSer
 	return &AssetPlacementController{AssetPlacementService: assetPlacementService}
 }
 
+// @Summary      Get All Asset Placement
+// @Description  Returns a paginated list of assets placement
+// @Tags         Asset
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetAllAssetPlacement
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/asset/placement [get]
 func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)

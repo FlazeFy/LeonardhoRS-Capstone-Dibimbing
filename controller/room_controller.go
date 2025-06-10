@@ -19,6 +19,14 @@ func NewRoomRepository(roomService service.RoomService) *RoomController {
 	return &RoomController{RoomService: roomService}
 }
 
+// @Summary      Get All Room
+// @Description  Returns a paginated list of room
+// @Tags         Room
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetAllRoom
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/room [get]
 func (rc *RoomController) GetAllRoom(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -48,6 +56,16 @@ func (rc *RoomController) GetAllRoom(c *gin.Context) {
 	})
 }
 
+// @Summary      Get Room Asset By Floor And Room Name (Detail)
+// @Description  Returns a paginated list of asset that found in a room
+// @Tags         Room
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetRoomAssetByFloorAndRoomName
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/room/asset/detail/{floor}/{room_name} [get]
+// @Param        room_name  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
+// @Param        floor  path  string  true  "In which Floor you want to find the asset."
 func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
 	// Params
 	roomName := c.Param("room_name")
@@ -71,6 +89,16 @@ func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
 	})
 }
 
+// @Summary      Get Room Asset By Floor And Room Name (Short)
+// @Description  Returns a paginated list of asset that found in a room. in short format
+// @Tags         Room
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetRoomAssetShortByFloorAndRoomName
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/room/asset/short/{floor}/{room_name} [get]
+// @Param        room_name  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
+// @Param        floor  path  string  true  "In which Floor you want to find the asset."
 func (rc *RoomController) GetRoomAssetShortByFloorAndRoomName(c *gin.Context) {
 	// Params
 	roomName := c.Param("room_name")
@@ -197,6 +225,15 @@ func (rc *RoomController) DeleteById(c *gin.Context) {
 	})
 }
 
+// @Summary      Get Most Context Room
+// @Description  Returns a list of most appear item in room by given field
+// @Tags         Room
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetMostContext
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/room/most_context/{targe_col} [get]
+// @Param        target_col  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
 func (rc *RoomController) GetMostContext(c *gin.Context) {
 	// Param
 	targetCol := c.Param("target_col")

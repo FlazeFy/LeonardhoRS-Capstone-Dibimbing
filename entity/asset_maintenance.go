@@ -41,4 +41,16 @@ type (
 		TelegramUserId  *string `json:"telegram_user_id"`
 		TelegramIsValid bool    `json:"telegram_is_valid"`
 	}
+	// For Response Only
+	ResponseGetAllAssetMaintenance struct {
+		Message  string             `json:"message" example:"asset maintenance fetched"`
+		Status   string             `json:"status" example:"success"`
+		Data     []AssetMaintenance `json:"data"`
+		Metadata Metadata           `json:"metadata"`
+	}
+	ResponseGetAllAssetMaintenanceSchedule struct {
+		Message string                     `json:"message" example:"asset maintenance schedule fetched"`
+		Status  string                     `json:"status" example:"success"`
+		Data    []AssetMaintenanceSchedule `json:"data"`
+	}
 )

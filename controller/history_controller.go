@@ -17,6 +17,14 @@ func NewHistoryRepository(historyService service.HistoryService) *HistoryControl
 	return &HistoryController{HistoryService: historyService}
 }
 
+// @Summary      Get All History
+// @Description  Returns a paginated list of all users histories
+// @Tags         History
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetAllHistory
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/history/all [get]
 func (rc *HistoryController) GetAllHistory(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -46,6 +54,14 @@ func (rc *HistoryController) GetAllHistory(c *gin.Context) {
 	})
 }
 
+// @Summary      Get My History
+// @Description  Returns a paginated list of my histories
+// @Tags         History
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetMyHistory
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/history/my [get]
 func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -95,6 +111,15 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 	})
 }
 
+// @Summary      Get Most Context History
+// @Description  Returns a list of most appear item in history by given field
+// @Tags         History
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetMostContext
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/history/most_context/{targe_col} [get]
+// @Param        target_col  path  string  true  "Target Column to Analyze (such as: type_user, type_history)"
 func (rc *HistoryController) GetMostContext(c *gin.Context) {
 	// Param
 	targetCol := c.Param("target_col")

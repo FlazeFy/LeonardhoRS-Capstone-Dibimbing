@@ -23,4 +23,16 @@ type (
 		CreatedBy uuid.UUID `json:"created_by" gorm:"not null"`
 		Admin     Admin     `json:"-" gorm:"foreignKey:CreatedBy;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	}
+	// For Response Only
+	ResponseGetAllAsset struct {
+		Message  string   `json:"message" example:"asset fetched"`
+		Status   string   `json:"status" example:"success"`
+		Data     []Asset  `json:"data"`
+		Metadata Metadata `json:"metadata"`
+	}
+	ResponseGetDeletedAsset struct {
+		Message string  `json:"message" example:"deleted asset fetched"`
+		Status  string  `json:"status" example:"success"`
+		Data    []Asset `json:"data"`
+	}
 )

@@ -31,4 +31,17 @@ type (
 		TechnicianID *uuid.UUID  `json:"technician_id"`
 		Technician   *Technician `json:"technicians" gorm:"foreignKey:TechnicianID;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	}
+	// For Response Only
+	ResponseGetAllHistory struct {
+		Message  string       `json:"message" example:"history fetched"`
+		Status   string       `json:"status" example:"success"`
+		Data     []AllHistory `json:"data"`
+		Metadata Metadata     `json:"metadata"`
+	}
+	ResponseGetMyHistory struct {
+		Message  string    `json:"message" example:"history fetched"`
+		Status   string    `json:"status" example:"success"`
+		Data     []History `json:"data"`
+		Metadata Metadata  `json:"metadata"`
+	}
 )

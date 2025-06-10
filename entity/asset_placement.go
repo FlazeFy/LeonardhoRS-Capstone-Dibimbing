@@ -26,4 +26,11 @@ type (
 		AssetOwner uuid.UUID  `json:"asset_owner" gorm:"not null"`
 		Technician Technician `json:"-" gorm:"foreignKey:AssetOwner;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	}
+	// For Response Only
+	ResponseGetAllAssetPlacement struct {
+		Message  string           `json:"message" example:"asset placement fetched"`
+		Status   string           `json:"status" example:"success"`
+		Data     []AssetPlacement `json:"data"`
+		Metadata Metadata         `json:"metadata"`
+	}
 )

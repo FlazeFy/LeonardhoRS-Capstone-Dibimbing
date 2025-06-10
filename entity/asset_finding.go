@@ -17,11 +17,11 @@ type (
 		AssetPlacementId uuid.UUID      `json:"asset_placement_id" gorm:"not null"`
 		AssetPlacement   AssetPlacement `json:"asset_placements" gorm:"foreignKey:AssetPlacementId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 		// FK - Technician
-		FindingByTechnician uuid.NullUUID `json:"finding_by_technician" gorm:"null"`
-		Technician          Technician    `json:"technicians" gorm:"foreignKey:FindingByTechnician;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+		FindingByTechnician *uuid.UUID `json:"finding_by_technician" gorm:"null"`
+		Technician          Technician `json:"technicians" gorm:"foreignKey:FindingByTechnician;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 		// FK - User / Guest
-		FindingByUser uuid.NullUUID `json:"finding_by_user" gorm:"null"`
-		User          User          `json:"users" gorm:"foreignKey:FindingByUser;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+		FindingByUser *uuid.UUID `json:"finding_by_user" gorm:"null"`
+		User          User       `json:"users" gorm:"foreignKey:FindingByUser;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	}
 	AssetFindingReport struct {
 		AssetName       string    `json:"asset_name"`
@@ -34,5 +34,17 @@ type (
 		// FK - Technician
 		Username string `json:"username"`
 		Email    string `json:"email"`
+	}
+	// For Response Only
+	ResponseGetAllAssetFinding struct {
+		Message  string         `json:"message" example:"asset finding fetched"`
+		Status   string         `json:"status" example:"success"`
+		Data     []AssetFinding `json:"data"`
+		Metadata Metadata       `json:"metadata"`
+	}
+	ResponseGetFindingHourTotal struct {
+		Message string              `json:"message" example:"asset finding fetched"`
+		Status  string              `json:"status" example:"success"`
+		Data    []StatsContextTotal `json:"data"`
 	}
 )
