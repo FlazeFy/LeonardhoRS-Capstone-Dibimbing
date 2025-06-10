@@ -14,7 +14,7 @@ type AssetFindingRepository interface {
 	FindAll(pagination utils.Pagination) ([]entity.AssetFinding, int64, error)
 	FindAllReport() ([]entity.AssetFindingReport, error)
 	FindAllFindingHourTotal() ([]entity.StatsContextTotal, error)
-	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID) error
+	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.UUID) error
 	DeleteById(id uuid.UUID) error
 }
 
@@ -92,12 +92,12 @@ func (r *assetFindingRepository) FindAllFindingHourTotal() ([]entity.StatsContex
 	return asset, err
 }
 
-func (r *assetFindingRepository) Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.NullUUID) error {
+func (r *assetFindingRepository) Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.UUID) error {
 	now := time.Now()
 
 	assetFinding.ID = uuid.New()
-	assetFinding.FindingByTechnician = technicianId
-	assetFinding.FindingByUser = userId
+	assetFinding.FindingByTechnician = &technicianId
+	assetFinding.FindingByUser = &userId
 	assetFinding.CreatedAt = now
 
 	// Query

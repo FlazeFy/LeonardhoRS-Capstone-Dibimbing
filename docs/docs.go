@@ -79,9 +79,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/asset/most_context/{targe_col}": {
+        "/api/v1/asset/finding": {
             "get": {
-                "description": "Returns a list of most appear item in asset by given field",
+                "description": "Returns a paginated list of assets finding",
                 "consumes": [
                     "application/json"
                 ],
@@ -91,11 +91,139 @@ const docTemplate = `{
                 "tags": [
                     "Asset"
                 ],
-                "summary": "Get Most Context Asset",
+                "summary": "Get All Asset Finding",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllAssetFinding"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/finding/hour_total": {
+            "get": {
+                "description": "Returns a paginated list of assets finding total per hour",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get All Asset Finding Hour Total",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetFindingHourTotal"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/maintenance": {
+            "get": {
+                "description": "Returns a paginated list of assets maintenance",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get All Asset Maintenance",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllAssetMaintenance"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/maintenance/schedule": {
+            "get": {
+                "description": "Returns a list of assets maintenance schedule",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get All Asset Maintenance Schedule",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllAssetMaintenanceSchedule"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/most_context/{targe_col}": {
+            "get": {
+                "description": "Returns a list of most appear item in asset maintenance by given field",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get Most Context Asset Maintenance",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)",
+                        "description": "Target Column to Analyze (such as: maintenance_day)",
                         "name": "target_col",
                         "in": "path",
                         "required": true
@@ -258,7 +386,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Asset"
+                    "Room"
                 ],
                 "summary": "Get Most Context Room",
                 "parameters": [
@@ -333,6 +461,162 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.AssetFinding": {
+            "type": "object",
+            "properties": {
+                "asset_placement_id": {
+                    "description": "FK - Asset Placement",
+                    "type": "string"
+                },
+                "asset_placements": {
+                    "$ref": "#/definitions/entity.AssetPlacement"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "finding_by_technician": {
+                    "description": "FK - Technician",
+                    "type": "string"
+                },
+                "finding_by_user": {
+                    "description": "FK - User / Guest",
+                    "type": "string"
+                },
+                "finding_category": {
+                    "type": "string"
+                },
+                "finding_image": {
+                    "type": "string"
+                },
+                "finding_notes": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "technicians": {
+                    "$ref": "#/definitions/entity.Technician"
+                },
+                "users": {
+                    "$ref": "#/definitions/entity.User"
+                }
+            }
+        },
+        "entity.AssetMaintenance": {
+            "type": "object",
+            "properties": {
+                "asset_placement_id": {
+                    "description": "FK - Asset Placement",
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "description": "FK - Admin",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "maintenance_by": {
+                    "description": "FK - Technician",
+                    "type": "string"
+                },
+                "maintenance_day": {
+                    "type": "string"
+                },
+                "maintenance_hour_end": {
+                    "type": "string"
+                },
+                "maintenance_hour_start": {
+                    "type": "string"
+                },
+                "maintenance_notes": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AssetMaintenanceSchedule": {
+            "type": "object",
+            "properties": {
+                "asset_category": {
+                    "type": "string"
+                },
+                "asset_name": {
+                    "description": "FK - Asset",
+                    "type": "string"
+                },
+                "asset_qty": {
+                    "description": "FK - Asset Placement",
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "maintenance_day": {
+                    "type": "string"
+                },
+                "maintenance_hour_end": {
+                    "type": "string"
+                },
+                "maintenance_hour_start": {
+                    "type": "string"
+                },
+                "maintenance_notes": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "description": "FK - Technician",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AssetPlacement": {
+            "type": "object",
+            "properties": {
+                "asset_desc": {
+                    "type": "string"
+                },
+                "asset_id": {
+                    "description": "FK - Asset",
+                    "type": "string"
+                },
+                "asset_owner": {
+                    "description": "FK - Technician",
+                    "type": "string"
+                },
+                "asset_qty": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "description": "FK - Admin",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "room_id": {
+                    "description": "FK - Room",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Metadata": {
             "type": "object",
             "properties": {
@@ -365,6 +649,69 @@ const docTemplate = `{
                 },
                 "metadata": {
                     "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllAssetFinding": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetFinding"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset finding fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllAssetMaintenance": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetMaintenance"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllAssetMaintenanceSchedule": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetMaintenanceSchedule"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance schedule fetched"
                 },
                 "status": {
                     "type": "string",
@@ -406,6 +753,25 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "deleted asset fetched"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetFindingHourTotal": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.StatsContextTotal"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset finding fetched"
                 },
                 "status": {
                     "type": "string",
@@ -553,6 +919,62 @@ const docTemplate = `{
                 },
                 "total": {
                     "type": "integer"
+                }
+            }
+        },
+        "entity.Technician": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "description": "FK - User",
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         }

@@ -227,7 +227,7 @@ func (rc *RoomController) DeleteById(c *gin.Context) {
 
 // @Summary      Get Most Context Room
 // @Description  Returns a list of most appear item in room by given field
-// @Tags         Asset
+// @Tags         Room
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext

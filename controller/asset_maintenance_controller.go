@@ -19,6 +19,14 @@ func NewAssetMaintenanceRepository(assetMaintenanceService service.AssetMaintena
 	return &AssetMaintenanceController{AssetMaintenanceService: assetMaintenanceService}
 }
 
+// @Summary      Get All Asset Maintenance
+// @Description  Returns a paginated list of assets maintenance
+// @Tags         Asset
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetAllAssetMaintenance
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/asset/maintenance [get]
 func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -48,6 +56,14 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
 	})
 }
 
+// @Summary      Get All Asset Maintenance Schedule
+// @Description  Returns a list of assets maintenance schedule
+// @Tags         Asset
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetAllAssetMaintenanceSchedule
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/asset/maintenance/schedule [get]
 func (rc *AssetMaintenanceController) GetAllAssetMaintenanceSchedule(c *gin.Context) {
 	// Service: Get All Asset Maintenance
 	assetMaintenance, err := rc.AssetMaintenanceService.GetAllAssetMaintenanceSchedule()
@@ -189,6 +205,15 @@ func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 	})
 }
 
+// @Summary      Get Most Context Asset Maintenance
+// @Description  Returns a list of most appear item in asset maintenance by given field
+// @Tags         Asset
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetMostContext
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/asset/most_context/{targe_col} [get]
+// @Param        target_col  path  string  true  "Target Column to Analyze (such as: maintenance_day)"
 func (rc *AssetMaintenanceController) GetMostContext(c *gin.Context) {
 	// Param
 	targetCol := c.Param("target_col")
