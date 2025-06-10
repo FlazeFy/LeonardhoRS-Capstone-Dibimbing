@@ -33,6 +33,14 @@ var config = Config{
 	AllowedFileType: []string{"jpg", "jpeg"},
 }
 
+// @Summary      Get All Asset
+// @Description  Returns a paginated list of assets available
+// @Tags         Asset
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetAllAsset
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/asset [get]
 func (rc *AssetController) GetAllAsset(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -62,6 +70,14 @@ func (rc *AssetController) GetAllAsset(c *gin.Context) {
 	})
 }
 
+// @Summary      Get Deleted Asset
+// @Description  Returns a list of deleted assets
+// @Tags         Asset
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetDeletedAsset
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/asset/deleted [get]
 func (rc *AssetController) GetDeletedAsset(c *gin.Context) {
 	// Service: Get All Deleted Asset
 	asset, err := rc.AssetService.GetDeleted()
@@ -301,6 +317,15 @@ func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 	})
 }
 
+// @Summary      Get Most Context Asset
+// @Description  Returns a list of most appear item in asset by given field
+// @Tags         Asset
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  entity.ResponseGetMostContext
+// @Failure      404  {object}  map[string]string
+// @Router       /api/v1/asset/most_context/{targe_col} [get]
+// @Param        target_col  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
 func (rc *AssetController) GetMostContext(c *gin.Context) {
 	// Param
 	targetCol := c.Param("target_col")

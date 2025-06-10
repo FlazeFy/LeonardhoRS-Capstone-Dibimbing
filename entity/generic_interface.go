@@ -7,6 +7,12 @@ import (
 )
 
 type (
+	Metadata struct {
+		Limit      int `json:"limit"`
+		Page       int `json:"page"`
+		Total      int `json:"total"`
+		TotalPages int `json:"total_pages"`
+	}
 	// All Role
 	Account interface {
 		GetID() uuid.UUID

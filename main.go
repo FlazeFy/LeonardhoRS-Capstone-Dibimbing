@@ -10,9 +10,13 @@ import (
 	"pelita/service"
 	"time"
 
+	_ "pelita/docs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/robfig/cron"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 )
 
@@ -33,6 +37,9 @@ func main() {
 	router := gin.Default()
 	redisClient := config.InitRedis()
 	routes.SetUpRoutes(router, db, redisClient)
+
+	// Swagger
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Task Scheduler
 	// Initialize Repositories

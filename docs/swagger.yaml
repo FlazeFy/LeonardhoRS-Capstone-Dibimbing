@@ -1,0 +1,368 @@
+definitions:
+  entity.Asset:
+    properties:
+      asset_category:
+        type: string
+      asset_desc:
+        type: string
+      asset_image_url:
+        type: string
+      asset_merk:
+        type: string
+      asset_name:
+        type: string
+      asset_price:
+        type: string
+      asset_status:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        description: FK - Admin
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.Metadata:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  entity.ResponseGetAllAsset:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.Asset'
+        type: array
+      message:
+        example: asset fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetAllRoom:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.Room'
+        type: array
+      message:
+        example: room fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetDeletedAsset:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.Asset'
+        type: array
+      message:
+        example: deleted asset fetched
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetMostContext:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.StatsContextTotal'
+        type: array
+      message:
+        example: asset fetched
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetRoomAssetByFloorAndRoomName:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.RoomAsset'
+        type: array
+      message:
+        example: room fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetRoomAssetShortByFloorAndRoomName:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.RoomAssetShort'
+        type: array
+      message:
+        example: room fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.Room:
+    properties:
+      created_at:
+        type: string
+      floor:
+        type: string
+      id:
+        type: string
+      room_dept:
+        type: string
+      room_name:
+        type: string
+    type: object
+  entity.RoomAsset:
+    properties:
+      asset_category:
+        type: string
+      asset_desc:
+        type: string
+      asset_merk:
+        type: string
+      asset_name:
+        type: string
+      floor:
+        type: string
+      room_dept:
+        type: string
+      room_name:
+        type: string
+      total_asset:
+        type: integer
+    type: object
+  entity.RoomAssetShort:
+    properties:
+      asset_category:
+        type: string
+      asset_name:
+        type: string
+      floor:
+        type: string
+      room_dept:
+        type: string
+      room_name:
+        type: string
+    type: object
+  entity.StatsContextTotal:
+    properties:
+      context:
+        type: string
+      total:
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/asset:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of assets available
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetAllAsset'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get All Asset
+      tags:
+      - Asset
+  /api/v1/asset/deleted:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of deleted assets
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetDeletedAsset'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Deleted Asset
+      tags:
+      - Asset
+  /api/v1/asset/most_context/{targe_col}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of most appear item in asset by given field
+      parameters:
+      - description: 'Target Column to Analyze (such as: asset_merk, asset_category,
+          or asset_status)'
+        in: path
+        name: target_col
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetMostContext'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Most Context Asset
+      tags:
+      - Asset
+  /api/v1/room:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of room
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetAllRoom'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get All Room
+      tags:
+      - Room
+  /api/v1/room/asset/detail/{floor}/{room_name}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of asset that found in a room
+      parameters:
+      - description: In which Room you want to find the asset. Type 'all' to search
+          in all room
+        in: path
+        name: room_name
+        required: true
+        type: string
+      - description: In which Floor you want to find the asset.
+        in: path
+        name: floor
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetRoomAssetByFloorAndRoomName'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Room Asset By Floor And Room Name (Detail)
+      tags:
+      - Room
+  /api/v1/room/asset/short/{floor}/{room_name}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of asset that found in a room. in short
+        format
+      parameters:
+      - description: In which Room you want to find the asset. Type 'all' to search
+          in all room
+        in: path
+        name: room_name
+        required: true
+        type: string
+      - description: In which Floor you want to find the asset.
+        in: path
+        name: floor
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetRoomAssetShortByFloorAndRoomName'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Room Asset By Floor And Room Name (Short)
+      tags:
+      - Room
+  /api/v1/room/most_context/{targe_col}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of most appear item in room by given field
+      parameters:
+      - description: 'Target Column to Analyze (such as: asset_merk, asset_category,
+          or asset_status)'
+        in: path
+        name: target_col
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetMostContext'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get Most Context Room
+      tags:
+      - Asset
+swagger: "2.0"
