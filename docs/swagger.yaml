@@ -226,6 +226,24 @@ definitions:
     - maintenance_hour_end
     - maintenance_hour_start
     type: object
+  entity.RequestCreateUpdateAssetPlacement:
+    properties:
+      asset_desc:
+        type: string
+      asset_id:
+        type: string
+      asset_owner:
+        type: string
+      asset_qty:
+        type: integer
+      room_id:
+        type: string
+    required:
+    - asset_id
+    - asset_owner
+    - asset_qty
+    - room_id
+    type: object
   entity.RequestUpdateAssetById:
     properties:
       asset_category:
@@ -275,6 +293,15 @@ definitions:
         example: success
         type: string
     type: object
+  entity.ResponseCreateAssetPlacement:
+    properties:
+      message:
+        example: asset placement created successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
   entity.ResponseDeleteAssetFindingById:
     properties:
       message:
@@ -288,6 +315,15 @@ definitions:
     properties:
       message:
         example: asset maintenance deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseDeleteAssetPlacementById:
+    properties:
+      message:
+        example: asset placement deleted
         type: string
       status:
         example: success
@@ -521,6 +557,15 @@ definitions:
     properties:
       message:
         example: asset maintenance updated successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponsePutUpdateAssetPlacement:
+    properties:
+      message:
+        example: asset placement updated successfully
         type: string
       status:
         example: success
@@ -1098,6 +1143,88 @@ paths:
               type: string
             type: object
       summary: Get All Asset Placement
+      tags:
+      - Asset
+    post:
+      consumes:
+      - application/json
+      description: Create an asset maintenance by Id
+      parameters:
+      - description: Create Asset Placement Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestCreateUpdateAssetPlacement'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponseCreateAssetPlacement'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Post Create Asset Placement By Id
+      tags:
+      - Asset
+  /api/v1/asset/placement/{id}:
+    delete:
+      description: Permanentally delete asset placement by id
+      parameters:
+      - description: Id of asset placement
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseDeleteAssetPlacementById'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete Asset Placement By Id
+      tags:
+      - Asset
+    put:
+      consumes:
+      - application/json
+      description: Create an asset placement by Id
+      parameters:
+      - description: Put Update Asset Placement Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestCreateUpdateAssetPlacement'
+      - description: Id of asset placement
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponsePutUpdateAssetPlacement'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Put Update Asset Placement By Id
       tags:
       - Asset
   /api/v1/asset/recover/{id}:

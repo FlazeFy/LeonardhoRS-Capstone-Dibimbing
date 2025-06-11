@@ -613,6 +613,130 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Create an asset maintenance by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset Placement By Id",
+                "parameters": [
+                    {
+                        "description": "Create Asset Placement Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetPlacement"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAssetPlacement"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/placement/{id}": {
+            "put": {
+                "description": "Create an asset placement by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Put Update Asset Placement By Id",
+                "parameters": [
+                    {
+                        "description": "Put Update Asset Placement Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetPlacement"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of asset placement",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePutUpdateAssetPlacement"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Permanentally delete asset placement by id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Delete Asset Placement By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset placement",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteAssetPlacementById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/asset/recover/{id}": {
@@ -1408,6 +1532,32 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.RequestCreateUpdateAssetPlacement": {
+            "type": "object",
+            "required": [
+                "asset_id",
+                "asset_owner",
+                "asset_qty",
+                "room_id"
+            ],
+            "properties": {
+                "asset_desc": {
+                    "type": "string"
+                },
+                "asset_id": {
+                    "type": "string"
+                },
+                "asset_owner": {
+                    "type": "string"
+                },
+                "asset_qty": {
+                    "type": "integer"
+                },
+                "room_id": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.RequestUpdateAssetById": {
             "type": "object",
             "required": [
@@ -1478,6 +1628,19 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.ResponseCreateAssetPlacement": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset placement created successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
         "entity.ResponseDeleteAssetFindingById": {
             "type": "object",
             "properties": {
@@ -1497,6 +1660,19 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "asset maintenance deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteAssetPlacementById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset placement deleted"
                 },
                 "status": {
                     "type": "string",
@@ -1838,6 +2014,19 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "asset maintenance updated successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePutUpdateAssetPlacement": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset placement updated successfully"
                 },
                 "status": {
                     "type": "string",

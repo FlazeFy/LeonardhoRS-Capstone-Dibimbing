@@ -91,7 +91,7 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenanceSchedule(c *gin.Cont
 // @Param        request  body  entity.RequestCreateUpdateAssetMaintenance  true  "Create Asset Maintenance Request Body"
 // @Success      201  {object}  entity.ResponseCreateAssetMaintenance
 // @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/maintenance [put]
+// @Router       /api/v1/asset/maintenance [post]
 func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetMaintenance
