@@ -83,6 +83,15 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenanceSchedule(c *gin.Cont
 	})
 }
 
+// @Summary      Post Create Asset Maintenance By Id
+// @Description  Create an asset maintenance by Id
+// @Tags         Asset
+// @Accept       application/json
+// @Produce      json
+// @Param        request  body  entity.RequestCreateUpdateAssetMaintenance  true  "Create Asset Maintenance Request Body"
+// @Success      201  {object}  entity.ResponseCreateAssetMaintenance
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/maintenance [put]
 func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetMaintenance
@@ -133,6 +142,16 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	})
 }
 
+// @Summary      Put Update Asset Maintenance By Id
+// @Description  Create an asset maintenance by Id
+// @Tags         Asset
+// @Accept       application/json
+// @Produce      json
+// @Param        request  body  entity.RequestCreateUpdateAssetMaintenance  true  "Put Update Asset Maintenance Request Body"
+// @Success      200  {object}  entity.ResponsePutUpdateAssetMaintenance
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/maintenance/{id} [put]
+// @Param        id  path  string  true  "Id of asset maintenance"
 func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 	// Param
 	id := c.Param("id")
@@ -175,6 +194,13 @@ func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 	})
 }
 
+// @Summary      Delete Asset Maintenance By Id
+// @Description  Permanentally delete asset maintenance by id
+// @Tags         Asset
+// @Success      200  {object}  entity.ResponseDeleteAssetMaintenanceById
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/maintenance/{id} [delete]
+// @Param        id  path  string  true  "Id of asset maintenance"
 func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 	// Param
 	id := c.Param("id")

@@ -225,6 +225,66 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Create an asset finding",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset Finding",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Finding Category",
+                        "name": "finding_category",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Finding Notes",
+                        "name": "finding_notes",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Finding Image (JPG,PNG,JPEG)",
+                        "name": "finding_image",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Placement Id",
+                        "name": "asset_placement_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAssetFinding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/asset/finding/hour_total": {
@@ -249,6 +309,41 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/finding/{id}": {
+            "delete": {
+                "description": "Permanentally delete asset finding by id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Delete Asset Finding By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset finding",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteAssetFindingById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -289,6 +384,47 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Create an asset maintenance by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset Maintenance By Id",
+                "parameters": [
+                    {
+                        "description": "Create Asset Maintenance Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetMaintenance"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAssetMaintenance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/asset/maintenance/schedule": {
@@ -313,6 +449,89 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/maintenance/{id}": {
+            "put": {
+                "description": "Create an asset maintenance by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Put Update Asset Maintenance By Id",
+                "parameters": [
+                    {
+                        "description": "Put Update Asset Maintenance Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetMaintenance"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of asset maintenance",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePutUpdateAssetMaintenance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Permanentally delete asset maintenance by id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Delete Asset Maintenance By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset maintenance",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteAssetMaintenanceById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1159,6 +1378,36 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.RequestCreateUpdateAssetMaintenance": {
+            "type": "object",
+            "required": [
+                "asset_placement_id",
+                "maintenance_by",
+                "maintenance_day",
+                "maintenance_hour_end",
+                "maintenance_hour_start"
+            ],
+            "properties": {
+                "asset_placement_id": {
+                    "type": "string"
+                },
+                "maintenance_by": {
+                    "type": "string"
+                },
+                "maintenance_day": {
+                    "type": "string"
+                },
+                "maintenance_hour_end": {
+                    "type": "string"
+                },
+                "maintenance_hour_start": {
+                    "type": "string"
+                },
+                "maintenance_notes": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.RequestUpdateAssetById": {
             "type": "object",
             "required": [
@@ -1196,6 +1445,58 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "asset created successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseCreateAssetFinding": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset finding created successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseCreateAssetMaintenance": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance created successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteAssetFindingById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset finding deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteAssetMaintenanceById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance deleted"
                 },
                 "status": {
                     "type": "string",
@@ -1524,6 +1825,19 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "asset permanentally deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePutUpdateAssetMaintenance": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance updated successfully"
                 },
                 "status": {
                     "type": "string",

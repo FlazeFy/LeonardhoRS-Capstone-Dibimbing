@@ -127,6 +127,18 @@ func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 	})
 }
 
+// @Summary      Post Create Asset Finding
+// @Description  Create an asset finding
+// @Tags         Asset
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        finding_category     	formData  string  true  "Finding Category"
+// @Param        finding_notes     		formData  string  true  "Finding Notes"
+// @Param        finding_image     		formData  file    true  "Finding Image (JPG,PNG,JPEG)"
+// @Param        asset_placement_id 	formData  string  true  "Asset Placement Id"
+// @Success      201  {object}  entity.ResponseCreateAssetFinding
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/finding [post]
 func (rc *AssetFindingController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetFinding
@@ -237,6 +249,13 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 	})
 }
 
+// @Summary      Delete Asset Finding By Id
+// @Description  Permanentally delete asset finding by id
+// @Tags         Asset
+// @Success      200  {object}  entity.ResponseDeleteAssetFindingById
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/finding/{id} [delete]
+// @Param        id  path  string  true  "Id of asset finding"
 func (rc *AssetFindingController) DeleteById(c *gin.Context) {
 	// Param
 	id := c.Param("id")

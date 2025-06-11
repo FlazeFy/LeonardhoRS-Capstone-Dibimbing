@@ -205,6 +205,27 @@ definitions:
       total_pages:
         type: integer
     type: object
+  entity.RequestCreateUpdateAssetMaintenance:
+    properties:
+      asset_placement_id:
+        type: string
+      maintenance_by:
+        type: string
+      maintenance_day:
+        type: string
+      maintenance_hour_end:
+        type: string
+      maintenance_hour_start:
+        type: string
+      maintenance_notes:
+        type: string
+    required:
+    - asset_placement_id
+    - maintenance_by
+    - maintenance_day
+    - maintenance_hour_end
+    - maintenance_hour_start
+    type: object
   entity.RequestUpdateAssetById:
     properties:
       asset_category:
@@ -231,6 +252,42 @@ definitions:
     properties:
       message:
         example: asset created successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseCreateAssetFinding:
+    properties:
+      message:
+        example: asset finding created successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseCreateAssetMaintenance:
+    properties:
+      message:
+        example: asset maintenance created successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseDeleteAssetFindingById:
+    properties:
+      message:
+        example: asset finding deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseDeleteAssetMaintenanceById:
+    properties:
+      message:
+        example: asset maintenance deleted
         type: string
       status:
         example: success
@@ -455,6 +512,15 @@ definitions:
     properties:
       message:
         example: asset permanentally deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponsePutUpdateAssetMaintenance:
+    properties:
+      message:
+        example: asset maintenance updated successfully
         type: string
       status:
         example: success
@@ -776,6 +842,70 @@ paths:
       summary: Get All Asset Finding
       tags:
       - Asset
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create an asset finding
+      parameters:
+      - description: Finding Category
+        in: formData
+        name: finding_category
+        required: true
+        type: string
+      - description: Finding Notes
+        in: formData
+        name: finding_notes
+        required: true
+        type: string
+      - description: Finding Image (JPG,PNG,JPEG)
+        in: formData
+        name: finding_image
+        required: true
+        type: file
+      - description: Asset Placement Id
+        in: formData
+        name: asset_placement_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponseCreateAssetFinding'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Post Create Asset Finding
+      tags:
+      - Asset
+  /api/v1/asset/finding/{id}:
+    delete:
+      description: Permanentally delete asset finding by id
+      parameters:
+      - description: Id of asset finding
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseDeleteAssetFindingById'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete Asset Finding By Id
+      tags:
+      - Asset
   /api/v1/asset/finding/hour_total:
     get:
       consumes:
@@ -816,6 +946,88 @@ paths:
               type: string
             type: object
       summary: Get All Asset Maintenance
+      tags:
+      - Asset
+    put:
+      consumes:
+      - application/json
+      description: Create an asset maintenance by Id
+      parameters:
+      - description: Create Asset Maintenance Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestCreateUpdateAssetMaintenance'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponseCreateAssetMaintenance'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Post Create Asset Maintenance By Id
+      tags:
+      - Asset
+  /api/v1/asset/maintenance/{id}:
+    delete:
+      description: Permanentally delete asset maintenance by id
+      parameters:
+      - description: Id of asset maintenance
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseDeleteAssetMaintenanceById'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete Asset Maintenance By Id
+      tags:
+      - Asset
+    put:
+      consumes:
+      - application/json
+      description: Create an asset maintenance by Id
+      parameters:
+      - description: Put Update Asset Maintenance Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestCreateUpdateAssetMaintenance'
+      - description: Id of asset maintenance
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponsePutUpdateAssetMaintenance'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Put Update Asset Maintenance By Id
       tags:
       - Asset
   /api/v1/asset/maintenance/schedule:
