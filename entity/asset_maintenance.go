@@ -53,4 +53,24 @@ type (
 		Status  string                     `json:"status" example:"success"`
 		Data    []AssetMaintenanceSchedule `json:"data"`
 	}
+	ResponseDeleteAssetMaintenanceById struct {
+		Message string `json:"message" example:"asset maintenance deleted"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponseCreateAssetMaintenance struct {
+		Message string `json:"message" example:"asset maintenance created successfully"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponsePutUpdateAssetMaintenance struct {
+		Message string `json:"message" example:"asset maintenance updated successfully"`
+		Status  string `json:"status" example:"success"`
+	}
+	RequestCreateUpdateAssetMaintenance struct {
+		MaintenanceDay       string  `json:"maintenance_day" binding:"required"`
+		MaintenanceHourStart string  `json:"maintenance_hour_start" binding:"required"`
+		MaintenanceHourEnd   string  `json:"maintenance_hour_end" binding:"required"`
+		MaintenanceNotes     *string `json:"maintenance_notes" binding:"omitempty"`
+		AssetPlacementId     string  `json:"asset_placement_id" binding:"required"`
+		MaintenanceBy        string  `json:"maintenance_by" binding:"required"`
+	}
 )

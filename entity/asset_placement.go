@@ -33,4 +33,23 @@ type (
 		Data     []AssetPlacement `json:"data"`
 		Metadata Metadata         `json:"metadata"`
 	}
+	ResponseDeleteAssetPlacementById struct {
+		Message string `json:"message" example:"asset placement deleted"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponseCreateAssetPlacement struct {
+		Message string `json:"message" example:"asset placement created successfully"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponsePutUpdateAssetPlacement struct {
+		Message string `json:"message" example:"asset placement updated successfully"`
+		Status  string `json:"status" example:"success"`
+	}
+	RequestCreateUpdateAssetPlacement struct {
+		AssetQty   int     `json:"asset_qty" binding:"required"`
+		AssetDesc  *string `json:"asset_desc" binding:"omitempty"`
+		RoomId     string  `json:"room_id" binding:"required"`
+		AssetId    string  `json:"asset_id" binding:"required"`
+		AssetOwner string  `json:"asset_owner" binding:"required"`
+	}
 )

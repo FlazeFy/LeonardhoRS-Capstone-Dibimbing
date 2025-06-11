@@ -45,6 +45,87 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Create an asset",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Asset Name",
+                        "name": "asset_name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Description",
+                        "name": "asset_desc",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Merk",
+                        "name": "asset_merk",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Category",
+                        "name": "asset_category",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Asset Price",
+                        "name": "asset_price",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Status",
+                        "name": "asset_status",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Asset Image (JPG,PNG,JPEG)",
+                        "name": "asset_image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAsset"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/asset/deleted": {
@@ -79,6 +160,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/asset/destroy/{id}": {
+            "delete": {
+                "description": "Permanentally Delete Asset By Id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Hard Delete Asset By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseHardDeleteAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/asset/finding": {
             "get": {
                 "description": "Returns a paginated list of assets finding",
@@ -101,6 +217,66 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create an asset finding",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset Finding",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Finding Category",
+                        "name": "finding_category",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Finding Notes",
+                        "name": "finding_notes",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Finding Image (JPG,PNG,JPEG)",
+                        "name": "finding_image",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Placement Id",
+                        "name": "asset_placement_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAssetFinding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -143,6 +319,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/asset/finding/{id}": {
+            "delete": {
+                "description": "Permanentally delete asset finding by id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Delete Asset Finding By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset finding",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteAssetFindingById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/asset/maintenance": {
             "get": {
                 "description": "Returns a paginated list of assets maintenance",
@@ -165,6 +376,47 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create an asset maintenance by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset Maintenance By Id",
+                "parameters": [
+                    {
+                        "description": "Create Asset Maintenance Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetMaintenance"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAssetMaintenance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -197,6 +449,89 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/maintenance/{id}": {
+            "put": {
+                "description": "Create an asset maintenance by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Put Update Asset Maintenance By Id",
+                "parameters": [
+                    {
+                        "description": "Put Update Asset Maintenance Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetMaintenance"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of asset maintenance",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePutUpdateAssetMaintenance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Permanentally delete asset maintenance by id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Delete Asset Maintenance By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset maintenance",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteAssetMaintenanceById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -270,6 +605,248 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create an asset maintenance by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset Placement By Id",
+                "parameters": [
+                    {
+                        "description": "Create Asset Placement Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetPlacement"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAssetPlacement"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/placement/{id}": {
+            "put": {
+                "description": "Create an asset placement by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Put Update Asset Placement By Id",
+                "parameters": [
+                    {
+                        "description": "Put Update Asset Placement Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetPlacement"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of asset placement",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePutUpdateAssetPlacement"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Permanentally delete asset placement by id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Delete Asset Placement By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset placement",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteAssetPlacementById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/recover/{id}": {
+            "put": {
+                "description": "Recover Deleted Asset By Id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Recover Put Deleted Asset By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseRecoverDeleteAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/{id}": {
+            "put": {
+                "description": "Update an asset by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Put Update Asset By Id",
+                "parameters": [
+                    {
+                        "description": "Update Asset Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestUpdateAssetById"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseUpdateAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete Asset By Id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Soft Delete Asset By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseSoftDeleteAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -447,6 +1024,54 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Update an room by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Put Update Room",
+                "parameters": [
+                    {
+                        "description": "Put Update Room Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestPostCreateUpdateRoom"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of room",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePutUpdateRoom"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/room/asset/detail/{floor}/{room_name}": {
@@ -576,6 +1201,41 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/room/{id}": {
+            "delete": {
+                "description": "Permanentally delete room by id",
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Delete Room By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of room",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteRoomById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -925,6 +1585,216 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.RequestCreateUpdateAssetMaintenance": {
+            "type": "object",
+            "required": [
+                "asset_placement_id",
+                "maintenance_by",
+                "maintenance_day",
+                "maintenance_hour_end",
+                "maintenance_hour_start"
+            ],
+            "properties": {
+                "asset_placement_id": {
+                    "type": "string"
+                },
+                "maintenance_by": {
+                    "type": "string"
+                },
+                "maintenance_day": {
+                    "type": "string"
+                },
+                "maintenance_hour_end": {
+                    "type": "string"
+                },
+                "maintenance_hour_start": {
+                    "type": "string"
+                },
+                "maintenance_notes": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.RequestCreateUpdateAssetPlacement": {
+            "type": "object",
+            "required": [
+                "asset_id",
+                "asset_owner",
+                "asset_qty",
+                "room_id"
+            ],
+            "properties": {
+                "asset_desc": {
+                    "type": "string"
+                },
+                "asset_id": {
+                    "type": "string"
+                },
+                "asset_owner": {
+                    "type": "string"
+                },
+                "asset_qty": {
+                    "type": "integer"
+                },
+                "room_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.RequestPostCreateUpdateRoom": {
+            "type": "object",
+            "required": [
+                "floor",
+                "room_dept",
+                "room_name"
+            ],
+            "properties": {
+                "floor": {
+                    "type": "string"
+                },
+                "room_dept": {
+                    "type": "string"
+                },
+                "room_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.RequestUpdateAssetById": {
+            "type": "object",
+            "required": [
+                "asset_category",
+                "asset_desc",
+                "asset_merk",
+                "asset_name",
+                "asset_price",
+                "asset_status"
+            ],
+            "properties": {
+                "asset_category": {
+                    "type": "string"
+                },
+                "asset_desc": {
+                    "type": "string"
+                },
+                "asset_merk": {
+                    "type": "string"
+                },
+                "asset_name": {
+                    "type": "string"
+                },
+                "asset_price": {
+                    "type": "string"
+                },
+                "asset_status": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.ResponseCreateAsset": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset created successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseCreateAssetFinding": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset finding created successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseCreateAssetMaintenance": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance created successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseCreateAssetPlacement": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset placement created successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteAssetFindingById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset finding deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteAssetMaintenanceById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteAssetPlacementById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset placement deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteRoomById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "room deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
         "entity.ResponseGetAllAsset": {
             "type": "object",
             "properties": {
@@ -1233,6 +2103,97 @@ const docTemplate = `{
                 },
                 "metadata": {
                     "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseHardDeleteAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset permanentally deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePutUpdateAssetMaintenance": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance updated successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePutUpdateAssetPlacement": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset placement updated successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePutUpdateRoom": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "room updated successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseRecoverDeleteAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset recovered"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseSoftDeleteAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseUpdateAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset updated successfully"
                 },
                 "status": {
                     "type": "string",

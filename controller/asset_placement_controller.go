@@ -56,6 +56,15 @@ func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
 	})
 }
 
+// @Summary      Post Create Asset Placement By Id
+// @Description  Create an asset maintenance by Id
+// @Tags         Asset
+// @Accept       application/json
+// @Produce      json
+// @Param        request  body  entity.RequestCreateUpdateAssetPlacement  true  "Create Asset Placement Request Body"
+// @Success      201  {object}  entity.ResponseCreateAssetPlacement
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/placement [post]
 func (rc *AssetPlacementController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetPlacement
@@ -96,6 +105,16 @@ func (rc *AssetPlacementController) Create(c *gin.Context) {
 	})
 }
 
+// @Summary      Put Update Asset Placement By Id
+// @Description  Create an asset placement by Id
+// @Tags         Asset
+// @Accept       application/json
+// @Produce      json
+// @Param        request  body  entity.RequestCreateUpdateAssetPlacement  true  "Put Update Asset Placement Request Body"
+// @Success      200  {object}  entity.ResponsePutUpdateAssetPlacement
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/placement/{id} [put]
+// @Param        id  path  string  true  "Id of asset placement"
 func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
 	// Param
 	id := c.Param("id")
@@ -138,6 +157,13 @@ func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
 	})
 }
 
+// @Summary      Delete Asset Placement By Id
+// @Description  Permanentally delete asset placement by id
+// @Tags         Asset
+// @Success      200  {object}  entity.ResponseDeleteAssetPlacementById
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/placement/{id} [delete]
+// @Param        id  path  string  true  "Id of asset placement"
 func (rc *AssetPlacementController) DeleteById(c *gin.Context) {
 	// Param
 	id := c.Param("id")

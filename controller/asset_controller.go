@@ -97,6 +97,21 @@ func (rc *AssetController) GetDeletedAsset(c *gin.Context) {
 	})
 }
 
+// @Summary      Post Create Asset
+// @Description  Create an asset
+// @Tags         Asset
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        asset_name     formData  string  true  "Asset Name"
+// @Param        asset_desc     formData  string  true  "Asset Description"
+// @Param        asset_merk     formData  string  true  "Asset Merk"
+// @Param        asset_category formData  string  true  "Asset Category"
+// @Param        asset_price    formData  number  true  "Asset Price"
+// @Param        asset_status   formData  string  true  "Asset Status"
+// @Param        asset_image    formData  file    true  "Asset Image (JPG,PNG,JPEG)"
+// @Success      201  {object}  entity.ResponseCreateAsset
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset [post]
 func (rc *AssetController) Create(c *gin.Context) {
 	// Model
 	var req entity.Asset
@@ -185,6 +200,16 @@ func (rc *AssetController) Create(c *gin.Context) {
 	})
 }
 
+// @Summary      Put Update Asset By Id
+// @Description  Update an asset by Id
+// @Tags         Asset
+// @Accept       application/json
+// @Produce      json
+// @Param        request  body  entity.RequestUpdateAssetById  true  "Update Asset Request Body"
+// @Success      200  {object}  entity.ResponseUpdateAssetById
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/{id} [put]
+// @Param        id  path  string  true  "Id of asset"
 func (rc *AssetController) UpdateById(c *gin.Context) {
 	// Param
 	id := c.Param("id")
@@ -227,6 +252,13 @@ func (rc *AssetController) UpdateById(c *gin.Context) {
 	})
 }
 
+// @Summary      Hard Delete Asset By Id
+// @Description  Permanentally Delete Asset By Id
+// @Tags         Asset
+// @Success      200  {object}  entity.ResponseHardDeleteAssetById
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/destroy/{id} [delete]
+// @Param        id  path  string  true  "Id of asset"
 func (rc *AssetController) HardDeleteById(c *gin.Context) {
 	// Param
 	id := c.Param("id")
@@ -257,6 +289,13 @@ func (rc *AssetController) HardDeleteById(c *gin.Context) {
 	})
 }
 
+// @Summary      Soft Delete Asset By Id
+// @Description  Delete Asset By Id
+// @Tags         Asset
+// @Success      200  {object}  entity.ResponseSoftDeleteAssetById
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/{id} [delete]
+// @Param        id  path  string  true  "Id of asset"
 func (rc *AssetController) SoftDeleteById(c *gin.Context) {
 	// Param
 	id := c.Param("id")
@@ -287,6 +326,13 @@ func (rc *AssetController) SoftDeleteById(c *gin.Context) {
 	})
 }
 
+// @Summary      Recover Put Deleted Asset By Id
+// @Description  Recover Deleted Asset By Id
+// @Tags         Asset
+// @Success      200  {object}  entity.ResponseRecoverDeleteAssetById
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/asset/recover/{id} [put]
+// @Param        id  path  string  true  "Id of asset"
 func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 	// Param
 	id := c.Param("id")

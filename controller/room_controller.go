@@ -122,6 +122,16 @@ func (rc *RoomController) GetRoomAssetShortByFloorAndRoomName(c *gin.Context) {
 	})
 }
 
+// @Summary      Post Create Room
+// @Description  Create an room
+// @Tags         Room
+// @Accept       application/json
+// @Produce      json
+// @Param        request  body  entity.RequestPostCreateUpdateRoom true  "Post Create Room Request Body"
+// @Success      200  {object}  entity.ResponsePutUpdateRoom
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/room [post]
+// @Param        id  path  string  true  "Id of asset placement"
 func (rc *RoomController) Create(c *gin.Context) {
 	// Model
 	var req entity.Room
@@ -153,6 +163,16 @@ func (rc *RoomController) Create(c *gin.Context) {
 	})
 }
 
+// @Summary      Put Update Room
+// @Description  Update an room by id
+// @Tags         Room
+// @Accept       application/json
+// @Produce      json
+// @Param        request  body  entity.RequestPostCreateUpdateRoom true  "Put Update Room Request Body"
+// @Success      200  {object}  entity.ResponsePutUpdateRoom
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/room [post]
+// @Param        id  path  string  true  "Id of room"
 func (rc *RoomController) UpdateById(c *gin.Context) {
 	// Param
 	id := c.Param("id")
@@ -195,6 +215,13 @@ func (rc *RoomController) UpdateById(c *gin.Context) {
 	})
 }
 
+// @Summary      Delete Room By Id
+// @Description  Permanentally delete room by id
+// @Tags         Room
+// @Success      200  {object}  entity.ResponseDeleteRoomById
+// @Failure      400  {object}  map[string]string
+// @Router       /api/v1/room/{id} [delete]
+// @Param        id  path  string  true  "Id of room"
 func (rc *RoomController) DeleteById(c *gin.Context) {
 	// Param
 	id := c.Param("id")

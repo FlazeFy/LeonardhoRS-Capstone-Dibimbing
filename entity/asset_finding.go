@@ -47,4 +47,12 @@ type (
 		Status  string              `json:"status" example:"success"`
 		Data    []StatsContextTotal `json:"data"`
 	}
+	ResponseDeleteAssetFindingById struct {
+		Message string `json:"message" example:"asset finding deleted"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponseCreateAssetFinding struct {
+		Message string `json:"message" example:"asset finding created successfully"`
+		Status  string `json:"status" example:"success"`
+	}
 )
