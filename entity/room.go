@@ -50,4 +50,21 @@ type (
 		Data     []RoomAssetShort `json:"data"`
 		Metadata Metadata         `json:"metadata"`
 	}
+	ResponseDeleteRoomById struct {
+		Message string `json:"message" example:"room deleted"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponseCreateAssetRoom struct {
+		Message string `json:"message" example:"room created successfully"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponsePutUpdateRoom struct {
+		Message string `json:"message" example:"room updated successfully"`
+		Status  string `json:"status" example:"success"`
+	}
+	RequestPostCreateUpdateRoom struct {
+		Floor    string `json:"floor" binding:"required"`
+		RoomName string `json:"room_name" binding:"required"`
+		RoomDept string `json:"room_dept" binding:"required"`
+	}
 )

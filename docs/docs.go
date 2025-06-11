@@ -385,7 +385,7 @@ const docTemplate = `{
                     }
                 }
             },
-            "put": {
+            "post": {
                 "description": "Create an asset maintenance by Id",
                 "consumes": [
                     "application/json"
@@ -1024,6 +1024,54 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Update an room by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Put Update Room",
+                "parameters": [
+                    {
+                        "description": "Put Update Room Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestPostCreateUpdateRoom"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of room",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePutUpdateRoom"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/room/asset/detail/{floor}/{room_name}": {
@@ -1153,6 +1201,41 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/room/{id}": {
+            "delete": {
+                "description": "Permanentally delete room by id",
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Delete Room By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of room",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteRoomById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1558,6 +1641,25 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.RequestPostCreateUpdateRoom": {
+            "type": "object",
+            "required": [
+                "floor",
+                "room_dept",
+                "room_name"
+            ],
+            "properties": {
+                "floor": {
+                    "type": "string"
+                },
+                "room_dept": {
+                    "type": "string"
+                },
+                "room_name": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.RequestUpdateAssetById": {
             "type": "object",
             "required": [
@@ -1673,6 +1775,19 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "asset placement deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteRoomById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "room deleted"
                 },
                 "status": {
                     "type": "string",
@@ -2027,6 +2142,19 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "asset placement updated successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePutUpdateRoom": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "room updated successfully"
                 },
                 "status": {
                     "type": "string",

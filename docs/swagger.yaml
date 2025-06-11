@@ -244,6 +244,19 @@ definitions:
     - asset_qty
     - room_id
     type: object
+  entity.RequestPostCreateUpdateRoom:
+    properties:
+      floor:
+        type: string
+      room_dept:
+        type: string
+      room_name:
+        type: string
+    required:
+    - floor
+    - room_dept
+    - room_name
+    type: object
   entity.RequestUpdateAssetById:
     properties:
       asset_category:
@@ -324,6 +337,15 @@ definitions:
     properties:
       message:
         example: asset placement deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseDeleteRoomById:
+    properties:
+      message:
+        example: room deleted
         type: string
       status:
         example: success
@@ -566,6 +588,15 @@ definitions:
     properties:
       message:
         example: asset placement updated successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponsePutUpdateRoom:
+    properties:
+      message:
+        example: room updated successfully
         type: string
       status:
         example: success
@@ -993,7 +1024,7 @@ paths:
       summary: Get All Asset Maintenance
       tags:
       - Asset
-    put:
+    post:
       consumes:
       - application/json
       description: Create an asset maintenance by Id
@@ -1359,6 +1390,61 @@ paths:
               type: string
             type: object
       summary: Get All Room
+      tags:
+      - Room
+    post:
+      consumes:
+      - application/json
+      description: Update an room by id
+      parameters:
+      - description: Put Update Room Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestPostCreateUpdateRoom'
+      - description: Id of room
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponsePutUpdateRoom'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Put Update Room
+      tags:
+      - Room
+  /api/v1/room/{id}:
+    delete:
+      description: Permanentally delete room by id
+      parameters:
+      - description: Id of room
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseDeleteRoomById'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete Room By Id
       tags:
       - Room
   /api/v1/room/asset/detail/{floor}/{room_name}:
