@@ -205,6 +205,37 @@ definitions:
       total_pages:
         type: integer
     type: object
+  entity.RequestUpdateAssetById:
+    properties:
+      asset_category:
+        type: string
+      asset_desc:
+        type: string
+      asset_merk:
+        type: string
+      asset_name:
+        type: string
+      asset_price:
+        type: string
+      asset_status:
+        type: string
+    required:
+    - asset_category
+    - asset_desc
+    - asset_merk
+    - asset_name
+    - asset_price
+    - asset_status
+    type: object
+  entity.ResponseCreateAsset:
+    properties:
+      message:
+        example: asset created successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
   entity.ResponseGetAllAsset:
     properties:
       data:
@@ -420,6 +451,42 @@ definitions:
         example: success
         type: string
     type: object
+  entity.ResponseHardDeleteAssetById:
+    properties:
+      message:
+        example: asset permanentally deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseRecoverDeleteAssetById:
+    properties:
+      message:
+        example: asset recovered
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseSoftDeleteAssetById:
+    properties:
+      message:
+        example: asset deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseUpdateAssetById:
+    properties:
+      message:
+        example: asset updated successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
   entity.Room:
     properties:
       created_at:
@@ -533,6 +600,117 @@ paths:
       summary: Get All Asset
       tags:
       - Asset
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create an asset
+      parameters:
+      - description: Asset Name
+        in: formData
+        name: asset_name
+        required: true
+        type: string
+      - description: Asset Description
+        in: formData
+        name: asset_desc
+        required: true
+        type: string
+      - description: Asset Merk
+        in: formData
+        name: asset_merk
+        required: true
+        type: string
+      - description: Asset Category
+        in: formData
+        name: asset_category
+        required: true
+        type: string
+      - description: Asset Price
+        in: formData
+        name: asset_price
+        required: true
+        type: number
+      - description: Asset Status
+        in: formData
+        name: asset_status
+        required: true
+        type: string
+      - description: Asset Image (JPG,PNG,JPEG)
+        in: formData
+        name: asset_image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponseCreateAsset'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Post Create Asset
+      tags:
+      - Asset
+  /api/v1/asset/{id}:
+    delete:
+      description: Delete Asset By Id
+      parameters:
+      - description: Id of asset
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseSoftDeleteAssetById'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Soft Delete Asset By Id
+      tags:
+      - Asset
+    put:
+      consumes:
+      - application/json
+      description: Update an asset by Id
+      parameters:
+      - description: Update Asset Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestUpdateAssetById'
+      - description: Id of asset
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseUpdateAssetById'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Put Update Asset By Id
+      tags:
+      - Asset
   /api/v1/asset/deleted:
     get:
       consumes:
@@ -552,6 +730,29 @@ paths:
               type: string
             type: object
       summary: Get Deleted Asset
+      tags:
+      - Asset
+  /api/v1/asset/destroy/{id}:
+    delete:
+      description: Permanentally Delete Asset By Id
+      parameters:
+      - description: Id of asset
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseHardDeleteAssetById'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Hard Delete Asset By Id
       tags:
       - Asset
   /api/v1/asset/finding:
@@ -685,6 +886,29 @@ paths:
               type: string
             type: object
       summary: Get All Asset Placement
+      tags:
+      - Asset
+  /api/v1/asset/recover/{id}:
+    put:
+      description: Recover Deleted Asset By Id
+      parameters:
+      - description: Id of asset
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseRecoverDeleteAssetById'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Recover Put Deleted Asset By Id
       tags:
       - Asset
   /api/v1/history/all:

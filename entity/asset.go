@@ -35,4 +35,32 @@ type (
 		Status  string  `json:"status" example:"success"`
 		Data    []Asset `json:"data"`
 	}
+	ResponseCreateAsset struct {
+		Message string `json:"message" example:"asset created successfully"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponseUpdateAssetById struct {
+		Message string `json:"message" example:"asset updated successfully"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponseHardDeleteAssetById struct {
+		Message string `json:"message" example:"asset permanentally deleted"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponseSoftDeleteAssetById struct {
+		Message string `json:"message" example:"asset deleted"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponseRecoverDeleteAssetById struct {
+		Message string `json:"message" example:"asset recovered"`
+		Status  string `json:"status" example:"success"`
+	}
+	RequestUpdateAssetById struct {
+		AssetName     string `json:"asset_name" binding:"required"`
+		AssetDesc     string `json:"asset_desc" binding:"required"`
+		AssetMerk     string `json:"asset_merk" binding:"required"`
+		AssetCategory string `json:"asset_category" binding:"required"`
+		AssetPrice    string `json:"asset_price" binding:"required"`
+		AssetStatus   string `json:"asset_status" binding:"required"`
+	}
 )

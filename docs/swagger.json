@@ -34,6 +34,87 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Create an asset",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Asset Name",
+                        "name": "asset_name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Description",
+                        "name": "asset_desc",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Merk",
+                        "name": "asset_merk",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Category",
+                        "name": "asset_category",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Asset Price",
+                        "name": "asset_price",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Status",
+                        "name": "asset_status",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Asset Image (JPG,PNG,JPEG)",
+                        "name": "asset_image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAsset"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/v1/asset/deleted": {
@@ -58,6 +139,41 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/destroy/{id}": {
+            "delete": {
+                "description": "Permanentally Delete Asset By Id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Hard Delete Asset By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseHardDeleteAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -259,6 +375,124 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/recover/{id}": {
+            "put": {
+                "description": "Recover Deleted Asset By Id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Recover Put Deleted Asset By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseRecoverDeleteAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/asset/{id}": {
+            "put": {
+                "description": "Update an asset by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Put Update Asset By Id",
+                "parameters": [
+                    {
+                        "description": "Update Asset Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestUpdateAssetById"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseUpdateAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete Asset By Id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Soft Delete Asset By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseSoftDeleteAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -914,6 +1148,50 @@
                 }
             }
         },
+        "entity.RequestUpdateAssetById": {
+            "type": "object",
+            "required": [
+                "asset_category",
+                "asset_desc",
+                "asset_merk",
+                "asset_name",
+                "asset_price",
+                "asset_status"
+            ],
+            "properties": {
+                "asset_category": {
+                    "type": "string"
+                },
+                "asset_desc": {
+                    "type": "string"
+                },
+                "asset_merk": {
+                    "type": "string"
+                },
+                "asset_name": {
+                    "type": "string"
+                },
+                "asset_price": {
+                    "type": "string"
+                },
+                "asset_status": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.ResponseCreateAsset": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset created successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
         "entity.ResponseGetAllAsset": {
             "type": "object",
             "properties": {
@@ -1222,6 +1500,58 @@
                 },
                 "metadata": {
                     "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseHardDeleteAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset permanentally deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseRecoverDeleteAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset recovered"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseSoftDeleteAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseUpdateAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset updated successfully"
                 },
                 "status": {
                     "type": "string",
