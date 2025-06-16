@@ -32,26 +32,19 @@ func (rc *HistoryController) GetAllHistory(c *gin.Context) {
 	// Service: Get All History
 	history, total, err := rc.HistoryService.GetAllHistory(pagination)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "history fetched",
-		"status":  "success",
-		"data":    history,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "history", "get", http.StatusOK, history, metadata)
 }
 
 // @Summary      Get My History
@@ -69,46 +62,33 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 	// Get User Id
 	userId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Get Role
 	role, err := utils.GetCurrentRole(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Service: Get My History
 	history, total, err := rc.HistoryService.GetMyHistory(pagination, userId, role)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "history fetched",
-		"status":  "success",
-		"data":    history,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "history", "get", http.StatusOK, history, metadata)
 }
 
 // @Summary      Get Most Context History
@@ -118,17 +98,17 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/history/most_context/{targe_col} [get]
-// @Param        target_col  path  string  true  "Target Column to Analyze (such as: type_user, type_history)"
+// @Router       /api/v1/history/most-context/{targetCol} [get]
+// @Param        targetCol  path  string  true  "Target Column to Analyze (such as: type_user, type_history)"
 func (rc *HistoryController) GetMostContext(c *gin.Context) {
 	// Param
-	targetCol := c.Param("target_col")
+	targetCol := c.Param("targetCol")
 
 	// Validator : Target Column Validator
 	validTarget := []string{"type_user", "type_history"}
 	if !utils.Contains(validTarget, targetCol) {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "target_col is not valid",
+			"message": "targetCol is not valid",
 			"status":  "failed",
 		})
 		return
@@ -145,9 +125,5 @@ func (rc *HistoryController) GetMostContext(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "history fetched",
-		"status":  "success",
-		"data":    history,
-	})
+	utils.BuildResponseMessage(c, "success", "history", "get", http.StatusOK, history, nil)
 }

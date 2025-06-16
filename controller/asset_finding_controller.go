@@ -38,26 +38,19 @@ func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 	// Service: Get All Asset Finding
 	assetFinding, total, err := rc.AssetFindingService.GetAllAssetFinding(pagination)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset finding fetched",
-		"status":  "success",
-		"data":    assetFinding,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "asset finding", "get", http.StatusOK, assetFinding, metadata)
 }
 
 // @Summary      Get All Asset Finding Hour Total
@@ -67,24 +60,17 @@ func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetFindingHourTotal
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/finding/hour_total [get]
+// @Router       /api/v1/asset/finding/hour-total [get]
 func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 	// Service: Get All Asset Finding
 	assetFinding, err := rc.AssetFindingService.GetFindingHourTotal()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset finding fetched",
-		"status":  "success",
-		"data":    assetFinding,
-	})
+	utils.BuildResponseMessage(c, "success", "asset finding", "get", http.StatusOK, assetFinding, nil)
 }
 
 // @Summary      Get Most Context Asset Finding
@@ -94,16 +80,16 @@ func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/most_context/{targe_col} [get]
-// @Param        target_col  path  string  true  "Target Column to Analyze (such as: finding_category)"
+// @Router       /api/v1/asset/most-context/{targetCol} [get]
+// @Param        targetCol  path  string  true  "Target Column to Analyze (such as: finding_category)"
 func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 	// Param
-	targetCol := c.Param("target_col")
+	targetCol := c.Param("targetCol")
 
 	// Validator : Target Column Validator
 	if targetCol != "finding_category" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "target_col is not valid",
+			"message": "targetCol is not valid",
 			"status":  "failed",
 		})
 		return
@@ -112,19 +98,12 @@ func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 	// Service: Get Most Context
 	assetFinding, err := rc.AssetFindingService.GetMostContext(targetCol)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset finding fetched",
-		"status":  "success",
-		"data":    assetFinding,
-	})
+	utils.BuildResponseMessage(c, "success", "asset finding", "get", http.StatusOK, assetFinding, nil)
 }
 
 // @Summary      Post Create Asset Finding
@@ -145,10 +124,7 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -165,20 +141,14 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 	// Get User Id / Technician Id
 	technicianOrUserId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Get Role
 	role, err := utils.GetCurrentRole(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -232,21 +202,13 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 
 	// Service : Create Asset Finding
 	if err := rc.AssetFindingService.Create(&req, technicianId, userId, fileHeader, fileExt, fileSize); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	cleanedRes := utils.CleanResponse(req, "users", "technicians", "asset_placements")
-
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset finding created successfully",
-		"status":  "success",
-		"data":    cleanedRes,
-	})
+	cleanedData := utils.CleanResponse(req, "users", "technicians", "asset_placements")
+	utils.BuildResponseMessage(c, "success", "asset finding", "post", http.StatusCreated, cleanedData, nil)
 }
 
 // @Summary      Delete Asset Finding By Id
@@ -272,16 +234,10 @@ func (rc *AssetFindingController) DeleteById(c *gin.Context) {
 
 	// Service : Delete Asset Finding By Id
 	if err := rc.AssetFindingService.DeleteById(assetFindingID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset finding deleted",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset finding", "soft delete", http.StatusOK, nil, nil)
 }

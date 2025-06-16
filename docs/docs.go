@@ -287,7 +287,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/asset/finding/hour_total": {
+        "/api/v1/asset/finding/hour-total": {
             "get": {
                 "description": "Returns a paginated list of assets finding total per hour",
                 "consumes": [
@@ -542,7 +542,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/asset/most_context/{targe_col}": {
+        "/api/v1/asset/most-context/{targetCol}": {
             "get": {
                 "description": "Returns a list of most appear item in asset maintenance by given field",
                 "consumes": [
@@ -559,7 +559,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Target Column to Analyze (such as: maintenance_day)",
-                        "name": "target_col",
+                        "name": "targetCol",
                         "in": "path",
                         "required": true
                     }
@@ -889,7 +889,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/history/most_context/{targe_col}": {
+        "/api/v1/history/most-context/{targetCol}": {
             "get": {
                 "description": "Returns a list of most appear item in history by given field",
                 "consumes": [
@@ -906,7 +906,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Target Column to Analyze (such as: type_user, type_history)",
-                        "name": "target_col",
+                        "name": "targetCol",
                         "in": "path",
                         "required": true
                     }
@@ -1074,7 +1074,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/room/asset/detail/{floor}/{room_name}": {
+        "/api/v1/room/asset/detail/{floor}/{roomName}": {
             "get": {
                 "description": "Returns a paginated list of asset that found in a room",
                 "consumes": [
@@ -1091,7 +1091,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "In which Room you want to find the asset. Type 'all' to search in all room",
-                        "name": "room_name",
+                        "name": "roomName",
                         "in": "path",
                         "required": true
                     },
@@ -1122,7 +1122,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/room/asset/short/{floor}/{room_name}": {
+        "/api/v1/room/asset/short/{floor}/{roomName}": {
             "get": {
                 "description": "Returns a paginated list of asset that found in a room. in short format",
                 "consumes": [
@@ -1139,7 +1139,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "In which Room you want to find the asset. Type 'all' to search in all room",
-                        "name": "room_name",
+                        "name": "roomName",
                         "in": "path",
                         "required": true
                     },
@@ -1170,7 +1170,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/room/most_context/{targe_col}": {
+        "/api/v1/room/most-context/{targetCol}": {
             "get": {
                 "description": "Returns a list of most appear item in room by given field",
                 "consumes": [
@@ -1187,7 +1187,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)",
-                        "name": "target_col",
+                        "name": "targetCol",
                         "in": "path",
                         "required": true
                     }

@@ -34,26 +34,19 @@ func (rc *RoomController) GetAllRoom(c *gin.Context) {
 	// Service: Get All Room
 	room, total, err := rc.RoomService.GetAllRoom(pagination)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "room fetched",
-		"status":  "success",
-		"data":    room,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "room", "get", http.StatusOK, room, metadata)
 }
 
 // @Summary      Get Room Asset By Floor And Room Name (Detail)
@@ -63,30 +56,23 @@ func (rc *RoomController) GetAllRoom(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetRoomAssetByFloorAndRoomName
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/room/asset/detail/{floor}/{room_name} [get]
-// @Param        room_name  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
+// @Router       /api/v1/room/asset/detail/{floor}/{roomName} [get]
+// @Param        roomName  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
 // @Param        floor  path  string  true  "In which Floor you want to find the asset."
 func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
 	// Params
-	roomName := c.Param("room_name")
+	roomName := c.Param("roomName")
 	floor := c.Param("floor")
 
 	// Service: Get Find Room Asset By Floor And Room Name
 	room, err := rc.RoomService.GetRoomAssetByFloorAndRoomName(floor, roomName)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "room asset fetched",
-		"status":  "success",
-		"data":    room,
-	})
+	utils.BuildResponseMessage(c, "success", "room asset", "get", http.StatusOK, room, nil)
 }
 
 // @Summary      Get Room Asset By Floor And Room Name (Short)
@@ -96,30 +82,23 @@ func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetRoomAssetShortByFloorAndRoomName
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/room/asset/short/{floor}/{room_name} [get]
-// @Param        room_name  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
+// @Router       /api/v1/room/asset/short/{floor}/{roomName} [get]
+// @Param        roomName  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
 // @Param        floor  path  string  true  "In which Floor you want to find the asset."
 func (rc *RoomController) GetRoomAssetShortByFloorAndRoomName(c *gin.Context) {
 	// Params
-	roomName := c.Param("room_name")
+	roomName := c.Param("roomName")
 	floor := c.Param("floor")
 
 	// Service: Get Find Room Asset Short By Floor And Room Name
 	room, err := rc.RoomService.GetRoomAssetShortByFloorAndRoomName(floor, roomName)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "room asset fetched",
-		"status":  "success",
-		"data":    room,
-	})
+	utils.BuildResponseMessage(c, "success", "room asset", "get", http.StatusOK, room, nil)
 }
 
 // @Summary      Post Create Room
@@ -138,29 +117,19 @@ func (rc *RoomController) Create(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Service : Create Room
 	err := rc.RoomService.Create(&req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "room created successfully",
-		"status":  "success",
-		"data":    &req,
-	})
+	utils.BuildResponseMessage(c, "success", "room", "post", http.StatusCreated, &req, nil)
 }
 
 // @Summary      Put Update Room
@@ -182,10 +151,7 @@ func (rc *RoomController) UpdateById(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -201,18 +167,12 @@ func (rc *RoomController) UpdateById(c *gin.Context) {
 
 	// Service : Update Room
 	if err := rc.RoomService.UpdateById(&req, roomID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "room update successfully",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "room", "put", http.StatusOK, &req, nil)
 }
 
 // @Summary      Delete Room By Id
@@ -238,18 +198,12 @@ func (rc *RoomController) DeleteById(c *gin.Context) {
 
 	// Service : Delete Room By Id
 	if err := rc.RoomService.DeleteById(roomID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "room deleted",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "room", "delete", http.StatusOK, nil, nil)
 }
 
 // @Summary      Get Most Context Room
@@ -259,17 +213,17 @@ func (rc *RoomController) DeleteById(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/room/most_context/{targe_col} [get]
-// @Param        target_col  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
+// @Router       /api/v1/room/most-context/{targetCol} [get]
+// @Param        targetCol  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
 func (rc *RoomController) GetMostContext(c *gin.Context) {
 	// Param
-	targetCol := c.Param("target_col")
+	targetCol := c.Param("targetCol")
 
 	// Validator : Target Column Validator
 	validTarget := []string{"floor", "room_dept"}
 	if !utils.Contains(validTarget, targetCol) {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "target_col is not valid",
+			"message": "targetCol is not valid",
 			"status":  "failed",
 		})
 		return
@@ -278,17 +232,10 @@ func (rc *RoomController) GetMostContext(c *gin.Context) {
 	// Service: Get My Room
 	room, err := rc.RoomService.GetMostContext(targetCol)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "room fetched",
-		"status":  "success",
-		"data":    room,
-	})
+	utils.BuildResponseMessage(c, "success", "room", "get", http.StatusOK, room, nil)
 }

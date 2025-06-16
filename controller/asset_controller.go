@@ -48,26 +48,19 @@ func (rc *AssetController) GetAllAsset(c *gin.Context) {
 	// Service: Get All Asset
 	asset, total, err := rc.AssetService.GetAllAsset(pagination)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset fetched",
-		"status":  "success",
-		"data":    asset,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "asset", "get", http.StatusOK, asset, metadata)
 }
 
 // @Summary      Get Deleted Asset
@@ -82,19 +75,12 @@ func (rc *AssetController) GetDeletedAsset(c *gin.Context) {
 	// Service: Get All Deleted Asset
 	asset, err := rc.AssetService.GetDeleted()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "deleted asset fetched",
-		"status":  "success",
-		"data":    asset,
-	})
+	utils.BuildResponseMessage(c, "success", "deleted asset", "get", http.StatusOK, asset, nil)
 }
 
 // @Summary      Post Create Asset
@@ -118,10 +104,7 @@ func (rc *AssetController) Create(c *gin.Context) {
 
 	// Multipart Form
 	if err := c.Request.ParseMultipartForm(20 << 20); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "failed to parse form data",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -136,10 +119,7 @@ func (rc *AssetController) Create(c *gin.Context) {
 	// Get User Id
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -185,19 +165,12 @@ func (rc *AssetController) Create(c *gin.Context) {
 
 	// Service : Create Asset
 	if err := rc.AssetService.Create(&req, adminId, fileHeader, fileExt, fileSize); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset created successfully",
-		"status":  "success",
-		"data":    &req,
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "post", http.StatusCreated, &req, nil)
 }
 
 // @Summary      Put Update Asset By Id
@@ -219,10 +192,7 @@ func (rc *AssetController) UpdateById(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -238,18 +208,12 @@ func (rc *AssetController) UpdateById(c *gin.Context) {
 
 	// Service : Update Asset
 	if err := rc.AssetService.UpdateById(&req, assetID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset update successfully",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "put", http.StatusOK, &req, nil)
 }
 
 // @Summary      Hard Delete Asset By Id
@@ -275,18 +239,12 @@ func (rc *AssetController) HardDeleteById(c *gin.Context) {
 
 	// Service : Hard Delete Asset By Id
 	if err := rc.AssetService.HardDeleteById(assetID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset permanentally deleted",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "hard delete", http.StatusOK, nil, nil)
 }
 
 // @Summary      Soft Delete Asset By Id
@@ -312,18 +270,12 @@ func (rc *AssetController) SoftDeleteById(c *gin.Context) {
 
 	// Service : Soft Delete Asset By Id
 	if err := rc.AssetService.SoftDeleteById(assetID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset deleted",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "soft delete", http.StatusOK, nil, nil)
 }
 
 // @Summary      Recover Put Deleted Asset By Id
@@ -349,18 +301,12 @@ func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 
 	// Service : Recover Delete Asset By Id
 	if err := rc.AssetService.RecoverDeletedById(assetID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset recovered",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "recover", http.StatusOK, nil, nil)
 }
 
 // @Summary      Get Most Context Asset
@@ -370,17 +316,17 @@ func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/most_context/{targe_col} [get]
-// @Param        target_col  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
+// @Router       /api/v1/asset/most-context/{targetCol} [get]
+// @Param        targetCol  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
 func (rc *AssetController) GetMostContext(c *gin.Context) {
 	// Param
-	targetCol := c.Param("target_col")
+	targetCol := c.Param("targetCol")
 
 	// Validator : Target Column Validator
 	validTarget := []string{"asset_merk", "asset_category", "asset_status"}
 	if !utils.Contains(validTarget, targetCol) {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "target_col is not valid",
+			"message": "targetCol is not valid",
 			"status":  "failed",
 		})
 		return
@@ -389,17 +335,10 @@ func (rc *AssetController) GetMostContext(c *gin.Context) {
 	// Service: Get Most Context
 	asset, err := rc.AssetService.GetMostContext(targetCol)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset fetched",
-		"status":  "success",
-		"data":    asset,
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "get", http.StatusOK, asset, nil)
 }

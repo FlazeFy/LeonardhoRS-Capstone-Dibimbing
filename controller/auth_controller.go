@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"pelita/entity"
 	"pelita/service"
+	"pelita/utils"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -23,20 +24,14 @@ func (ac *AuthController) Register(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Register Token
 	token, err := ac.AuthService.Register(&req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -56,20 +51,14 @@ func (ac *AuthController) Login(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Token Generate
 	token, role, err := ac.AuthService.Login(req.Email, req.Password)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -109,10 +98,7 @@ func (ac *AuthController) SignOut(c *gin.Context) {
 	// Reset Token By Adding Blacklist Redis
 	err := ac.AuthService.SignOut(token)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 

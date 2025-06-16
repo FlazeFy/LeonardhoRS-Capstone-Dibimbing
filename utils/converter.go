@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"unicode"
 )
 
 func OptionalString(value string) *string {
@@ -30,4 +31,13 @@ func CleanResponse(data interface{}, keysToRemove ...string) map[string]interfac
 	}
 
 	return result
+}
+
+func Capitalize(s string) string {
+	if len(s) == 0 {
+		return s
+	}
+	runes := []rune(s)
+	runes[0] = unicode.ToUpper(runes[0])
+	return string(runes)
 }
