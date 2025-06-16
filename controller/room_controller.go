@@ -34,10 +34,7 @@ func (rc *RoomController) GetAllRoom(c *gin.Context) {
 	// Service: Get All Room
 	room, total, err := rc.RoomService.GetAllRoom(pagination)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -70,10 +67,7 @@ func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
 	// Service: Get Find Room Asset By Floor And Room Name
 	room, err := rc.RoomService.GetRoomAssetByFloorAndRoomName(floor, roomName)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -99,10 +93,7 @@ func (rc *RoomController) GetRoomAssetShortByFloorAndRoomName(c *gin.Context) {
 	// Service: Get Find Room Asset Short By Floor And Room Name
 	room, err := rc.RoomService.GetRoomAssetShortByFloorAndRoomName(floor, roomName)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -126,20 +117,14 @@ func (rc *RoomController) Create(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Service : Create Room
 	err := rc.RoomService.Create(&req)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -166,10 +151,7 @@ func (rc *RoomController) UpdateById(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -185,10 +167,7 @@ func (rc *RoomController) UpdateById(c *gin.Context) {
 
 	// Service : Update Room
 	if err := rc.RoomService.UpdateById(&req, roomID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -219,10 +198,7 @@ func (rc *RoomController) DeleteById(c *gin.Context) {
 
 	// Service : Delete Room By Id
 	if err := rc.RoomService.DeleteById(roomID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -256,10 +232,7 @@ func (rc *RoomController) GetMostContext(c *gin.Context) {
 	// Service: Get My Room
 	room, err := rc.RoomService.GetMostContext(targetCol)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 

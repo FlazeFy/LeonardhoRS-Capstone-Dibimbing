@@ -34,10 +34,7 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
 	// Service: Get All Asset Maintenance
 	assetMaintenance, total, err := rc.AssetMaintenanceService.GetAllAssetMaintenance(pagination)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -64,10 +61,7 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenanceSchedule(c *gin.Cont
 	// Service: Get All Asset Maintenance
 	assetMaintenance, err := rc.AssetMaintenanceService.GetAllAssetMaintenanceSchedule()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -90,10 +84,7 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -110,19 +101,13 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	// Get User Id
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Service : Create Asset Maintenance
 	if err := rc.AssetMaintenanceService.Create(&req, adminId); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -149,10 +134,7 @@ func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -168,10 +150,7 @@ func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 
 	// Service : Update Asset Maintenance
 	if err := rc.AssetMaintenanceService.UpdateById(&req, assetMaintenanceID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -202,10 +181,7 @@ func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 
 	// Service : Delete Asset Maintenance By Id
 	if err := rc.AssetMaintenanceService.DeleteById(assetMaintenanceID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -238,10 +214,7 @@ func (rc *AssetMaintenanceController) GetMostContext(c *gin.Context) {
 	// Service: Get Most Context
 	assetMaintenance, err := rc.AssetMaintenanceService.GetMostContext(targetCol)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 

@@ -28,30 +28,21 @@ func (ac *UserController) GetMyProfile(c *gin.Context) {
 	// Get User Id
 	userID, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Get Role
 	role, err := utils.GetCurrentRole(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Service: Get Profile by User ID
 	user, err := ac.UserService.GetMyProfile(userID, role)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 

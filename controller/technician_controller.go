@@ -36,10 +36,7 @@ func (rc *TechnicianController) GetAllTechnician(c *gin.Context) {
 	// Service: Get All Technician
 	technician, total, err := rc.TechnicianService.GetAllTechnician(pagination)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -60,20 +57,14 @@ func (rc *TechnicianController) Create(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Get User Id
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -99,10 +90,7 @@ func (rc *TechnicianController) UpdateById(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -118,10 +106,7 @@ func (rc *TechnicianController) UpdateById(c *gin.Context) {
 
 	// Service : Update Technician
 	if err := rc.TechnicianService.UpdateById(&req, technicianID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -145,10 +130,7 @@ func (rc *TechnicianController) DeleteById(c *gin.Context) {
 
 	// Service : Delete Technician By Id
 	if err := rc.TechnicianService.DeleteById(technicianID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 

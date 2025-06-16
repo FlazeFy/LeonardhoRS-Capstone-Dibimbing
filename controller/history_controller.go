@@ -32,10 +32,7 @@ func (rc *HistoryController) GetAllHistory(c *gin.Context) {
 	// Service: Get All History
 	history, total, err := rc.HistoryService.GetAllHistory(pagination)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -65,30 +62,21 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 	// Get User Id
 	userId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Get Role
 	role, err := utils.GetCurrentRole(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Service: Get My History
 	history, total, err := rc.HistoryService.GetMyHistory(pagination, userId, role)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 

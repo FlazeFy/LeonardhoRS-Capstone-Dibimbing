@@ -38,10 +38,7 @@ func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 	// Service: Get All Asset Finding
 	assetFinding, total, err := rc.AssetFindingService.GetAllAssetFinding(pagination)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -68,10 +65,7 @@ func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 	// Service: Get All Asset Finding
 	assetFinding, err := rc.AssetFindingService.GetFindingHourTotal()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -104,10 +98,7 @@ func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 	// Service: Get Most Context
 	assetFinding, err := rc.AssetFindingService.GetMostContext(targetCol)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -133,10 +124,7 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -153,20 +141,14 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 	// Get User Id / Technician Id
 	technicianOrUserId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
 	// Get Role
 	role, err := utils.GetCurrentRole(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -220,10 +202,7 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 
 	// Service : Create Asset Finding
 	if err := rc.AssetFindingService.Create(&req, technicianId, userId, fileHeader, fileExt, fileSize); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -255,10 +234,7 @@ func (rc *AssetFindingController) DeleteById(c *gin.Context) {
 
 	// Service : Delete Asset Finding By Id
 	if err := rc.AssetFindingService.DeleteById(assetFindingID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 

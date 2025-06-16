@@ -48,10 +48,7 @@ func (rc *AssetController) GetAllAsset(c *gin.Context) {
 	// Service: Get All Asset
 	asset, total, err := rc.AssetService.GetAllAsset(pagination)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -78,10 +75,7 @@ func (rc *AssetController) GetDeletedAsset(c *gin.Context) {
 	// Service: Get All Deleted Asset
 	asset, err := rc.AssetService.GetDeleted()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -110,10 +104,7 @@ func (rc *AssetController) Create(c *gin.Context) {
 
 	// Multipart Form
 	if err := c.Request.ParseMultipartForm(20 << 20); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "failed to parse form data",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -128,10 +119,7 @@ func (rc *AssetController) Create(c *gin.Context) {
 	// Get User Id
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -177,10 +165,7 @@ func (rc *AssetController) Create(c *gin.Context) {
 
 	// Service : Create Asset
 	if err := rc.AssetService.Create(&req, adminId, fileHeader, fileExt, fileSize); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -207,10 +192,7 @@ func (rc *AssetController) UpdateById(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -226,10 +208,7 @@ func (rc *AssetController) UpdateById(c *gin.Context) {
 
 	// Service : Update Asset
 	if err := rc.AssetService.UpdateById(&req, assetID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -260,10 +239,7 @@ func (rc *AssetController) HardDeleteById(c *gin.Context) {
 
 	// Service : Hard Delete Asset By Id
 	if err := rc.AssetService.HardDeleteById(assetID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -294,10 +270,7 @@ func (rc *AssetController) SoftDeleteById(c *gin.Context) {
 
 	// Service : Soft Delete Asset By Id
 	if err := rc.AssetService.SoftDeleteById(assetID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -328,10 +301,7 @@ func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 
 	// Service : Recover Delete Asset By Id
 	if err := rc.AssetService.RecoverDeletedById(assetID); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
@@ -365,10 +335,7 @@ func (rc *AssetController) GetMostContext(c *gin.Context) {
 	// Service: Get Most Context
 	asset, err := rc.AssetService.GetMostContext(targetCol)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, err.Error())
 		return
 	}
 
