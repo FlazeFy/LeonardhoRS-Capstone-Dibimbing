@@ -57,17 +57,13 @@ func (rc *AssetController) GetAllAsset(c *gin.Context) {
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset fetched",
-		"status":  "success",
-		"data":    asset,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "asset", "get", http.StatusOK, asset, metadata)
 }
 
 // @Summary      Get Deleted Asset
@@ -90,11 +86,7 @@ func (rc *AssetController) GetDeletedAsset(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "deleted asset fetched",
-		"status":  "success",
-		"data":    asset,
-	})
+	utils.BuildResponseMessage(c, "success", "deleted asset", "get", http.StatusOK, asset, nil)
 }
 
 // @Summary      Post Create Asset
@@ -193,11 +185,7 @@ func (rc *AssetController) Create(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset created successfully",
-		"status":  "success",
-		"data":    &req,
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "post", http.StatusCreated, &req, nil)
 }
 
 // @Summary      Put Update Asset By Id
@@ -246,10 +234,7 @@ func (rc *AssetController) UpdateById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset update successfully",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "put", http.StatusOK, &req, nil)
 }
 
 // @Summary      Hard Delete Asset By Id
@@ -283,10 +268,7 @@ func (rc *AssetController) HardDeleteById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset permanentally deleted",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "hard delete", http.StatusOK, nil, nil)
 }
 
 // @Summary      Soft Delete Asset By Id
@@ -320,10 +302,7 @@ func (rc *AssetController) SoftDeleteById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset deleted",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "soft delete", http.StatusOK, nil, nil)
 }
 
 // @Summary      Recover Put Deleted Asset By Id
@@ -357,10 +336,7 @@ func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset recovered",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "recover", http.StatusOK, nil, nil)
 }
 
 // @Summary      Get Most Context Asset
@@ -397,9 +373,5 @@ func (rc *AssetController) GetMostContext(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset fetched",
-		"status":  "success",
-		"data":    asset,
-	})
+	utils.BuildResponseMessage(c, "success", "asset", "get", http.StatusOK, asset, nil)
 }

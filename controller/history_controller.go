@@ -41,17 +41,13 @@ func (rc *HistoryController) GetAllHistory(c *gin.Context) {
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "history fetched",
-		"status":  "success",
-		"data":    history,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "history", "get", http.StatusOK, history, metadata)
 }
 
 // @Summary      Get My History
@@ -98,17 +94,13 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "history fetched",
-		"status":  "success",
-		"data":    history,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "history", "get", http.StatusOK, history, metadata)
 }
 
 // @Summary      Get Most Context History
@@ -145,9 +137,5 @@ func (rc *HistoryController) GetMostContext(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "history fetched",
-		"status":  "success",
-		"data":    history,
-	})
+	utils.BuildResponseMessage(c, "success", "history", "get", http.StatusOK, history, nil)
 }

@@ -43,17 +43,13 @@ func (rc *RoomController) GetAllRoom(c *gin.Context) {
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "room fetched",
-		"status":  "success",
-		"data":    room,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "room", "get", http.StatusOK, room, metadata)
 }
 
 // @Summary      Get Room Asset By Floor And Room Name (Detail)
@@ -82,11 +78,7 @@ func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "room asset fetched",
-		"status":  "success",
-		"data":    room,
-	})
+	utils.BuildResponseMessage(c, "success", "room asset", "get", http.StatusOK, room, nil)
 }
 
 // @Summary      Get Room Asset By Floor And Room Name (Short)
@@ -115,11 +107,7 @@ func (rc *RoomController) GetRoomAssetShortByFloorAndRoomName(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "room asset fetched",
-		"status":  "success",
-		"data":    room,
-	})
+	utils.BuildResponseMessage(c, "success", "room asset", "get", http.StatusOK, room, nil)
 }
 
 // @Summary      Post Create Room
@@ -156,11 +144,7 @@ func (rc *RoomController) Create(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "room created successfully",
-		"status":  "success",
-		"data":    &req,
-	})
+	utils.BuildResponseMessage(c, "success", "room", "post", http.StatusCreated, &req, nil)
 }
 
 // @Summary      Put Update Room
@@ -209,10 +193,7 @@ func (rc *RoomController) UpdateById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "room update successfully",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "room", "put", http.StatusOK, &req, nil)
 }
 
 // @Summary      Delete Room By Id
@@ -246,10 +227,7 @@ func (rc *RoomController) DeleteById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "room deleted",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "room", "delete", http.StatusOK, nil, nil)
 }
 
 // @Summary      Get Most Context Room
@@ -286,9 +264,5 @@ func (rc *RoomController) GetMostContext(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "room fetched",
-		"status":  "success",
-		"data":    room,
-	})
+	utils.BuildResponseMessage(c, "success", "room", "get", http.StatusOK, room, nil)
 }

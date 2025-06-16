@@ -43,17 +43,13 @@ func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset placement fetched",
-		"status":  "success",
-		"data":    assetPlacement,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "asset placement", "get", http.StatusOK, assetPlacement, metadata)
 }
 
 // @Summary      Post Create Asset Placement By Id
@@ -98,11 +94,7 @@ func (rc *AssetPlacementController) Create(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset placement created successfully",
-		"status":  "success",
-		"data":    &req,
-	})
+	utils.BuildResponseMessage(c, "success", "asset placement", "post", http.StatusCreated, &req, nil)
 }
 
 // @Summary      Put Update Asset Placement By Id
@@ -151,10 +143,7 @@ func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset placement update successfully",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset placement", "put", http.StatusOK, &req, nil)
 }
 
 // @Summary      Delete Asset Placement By Id
@@ -188,8 +177,5 @@ func (rc *AssetPlacementController) DeleteById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset placement deleted",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset placement", "soft delete", http.StatusOK, nil, nil)
 }

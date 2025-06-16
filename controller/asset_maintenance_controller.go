@@ -43,17 +43,13 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset maintenance fetched",
-		"status":  "success",
-		"data":    assetMaintenance,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "asset maintenance", "get", http.StatusOK, assetMaintenance, metadata)
 }
 
 // @Summary      Get All Asset Maintenance Schedule
@@ -76,11 +72,7 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenanceSchedule(c *gin.Cont
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset maintenance schedule fetched",
-		"status":  "success",
-		"data":    assetMaintenance,
-	})
+	utils.BuildResponseMessage(c, "success", "asset maintenance", "get", http.StatusOK, assetMaintenance, nil)
 }
 
 // @Summary      Post Create Asset Maintenance By Id
@@ -135,11 +127,7 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset maintenance created successfully",
-		"status":  "success",
-		"data":    &req,
-	})
+	utils.BuildResponseMessage(c, "success", "asset maintenance", "post", http.StatusCreated, &req, nil)
 }
 
 // @Summary      Put Update Asset Maintenance By Id
@@ -188,10 +176,7 @@ func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset maintenance update successfully",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset maintenance", "put", http.StatusOK, &req, nil)
 }
 
 // @Summary      Delete Asset Maintenance By Id
@@ -225,10 +210,7 @@ func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset maintenance deleted",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset maintenance", "soft delete", http.StatusOK, nil, nil)
 }
 
 // @Summary      Get Most Context Asset Maintenance
@@ -264,9 +246,5 @@ func (rc *AssetMaintenanceController) GetMostContext(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset maintenance fetched",
-		"status":  "success",
-		"data":    assetMaintenance,
-	})
+	utils.BuildResponseMessage(c, "success", "asset maintenance", "get", http.StatusOK, assetMaintenance, nil)
 }

@@ -47,17 +47,13 @@ func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset finding fetched",
-		"status":  "success",
-		"data":    assetFinding,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "asset finding", "get", http.StatusOK, assetFinding, metadata)
 }
 
 // @Summary      Get All Asset Finding Hour Total
@@ -80,11 +76,7 @@ func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset finding fetched",
-		"status":  "success",
-		"data":    assetFinding,
-	})
+	utils.BuildResponseMessage(c, "success", "asset finding", "get", http.StatusOK, assetFinding, nil)
 }
 
 // @Summary      Get Most Context Asset Finding
@@ -120,11 +112,7 @@ func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset finding fetched",
-		"status":  "success",
-		"data":    assetFinding,
-	})
+	utils.BuildResponseMessage(c, "success", "asset finding", "get", http.StatusOK, assetFinding, nil)
 }
 
 // @Summary      Post Create Asset Finding
@@ -240,13 +228,8 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 	}
 
 	// Response
-	cleanedRes := utils.CleanResponse(req, "users", "technicians", "asset_placements")
-
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "asset finding created successfully",
-		"status":  "success",
-		"data":    cleanedRes,
-	})
+	cleanedData := utils.CleanResponse(req, "users", "technicians", "asset_placements")
+	utils.BuildResponseMessage(c, "success", "asset finding", "post", http.StatusCreated, cleanedData, nil)
 }
 
 // @Summary      Delete Asset Finding By Id
@@ -280,8 +263,5 @@ func (rc *AssetFindingController) DeleteById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "asset finding deleted",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "asset finding", "soft delete", http.StatusOK, nil, nil)
 }

@@ -56,9 +56,5 @@ func (ac *UserController) GetMyProfile(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "user fetched",
-		"status":  "success",
-		"data":    user,
-	})
+	utils.BuildResponseMessage(c, "success", "user", "get", http.StatusOK, user, nil)
 }

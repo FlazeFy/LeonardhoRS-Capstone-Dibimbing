@@ -45,17 +45,13 @@ func (rc *TechnicianController) GetAllTechnician(c *gin.Context) {
 
 	// Response
 	totalPages := int(math.Ceil(float64(total) / float64(pagination.Limit)))
-	c.JSON(http.StatusOK, gin.H{
-		"message": "technician fetched",
-		"status":  "success",
-		"data":    technician,
-		"metadata": gin.H{
-			"total":       total,
-			"page":        pagination.Page,
-			"limit":       pagination.Limit,
-			"total_pages": totalPages,
-		},
-	})
+	metadata := gin.H{
+		"total":       total,
+		"page":        pagination.Page,
+		"limit":       pagination.Limit,
+		"total_pages": totalPages,
+	}
+	utils.BuildResponseMessage(c, "success", "technician", "get", http.StatusOK, technician, metadata)
 }
 
 func (rc *TechnicianController) Create(c *gin.Context) {
@@ -91,11 +87,7 @@ func (rc *TechnicianController) Create(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "technician created successfully",
-		"status":  "success",
-		"data":    &req,
-	})
+	utils.BuildResponseMessage(c, "success", "technician", "post", http.StatusCreated, &req, nil)
 }
 
 func (rc *TechnicianController) UpdateById(c *gin.Context) {
@@ -134,10 +126,7 @@ func (rc *TechnicianController) UpdateById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "technician update successfully",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "technician", "put", http.StatusOK, nil, nil)
 }
 
 func (rc *TechnicianController) DeleteById(c *gin.Context) {
@@ -164,8 +153,5 @@ func (rc *TechnicianController) DeleteById(c *gin.Context) {
 	}
 
 	// Response
-	c.JSON(http.StatusOK, gin.H{
-		"message": "technician deleted",
-		"status":  "success",
-	})
+	utils.BuildResponseMessage(c, "success", "technician", "soft delete", http.StatusOK, nil, nil)
 }
