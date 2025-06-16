@@ -48,7 +48,7 @@ func (rc *AssetController) GetAllAsset(c *gin.Context) {
 	// Service: Get All Asset
 	asset, total, err := rc.AssetService.GetAllAsset(pagination)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -75,7 +75,7 @@ func (rc *AssetController) GetDeletedAsset(c *gin.Context) {
 	// Service: Get All Deleted Asset
 	asset, err := rc.AssetService.GetDeleted()
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -104,7 +104,7 @@ func (rc *AssetController) Create(c *gin.Context) {
 
 	// Multipart Form
 	if err := c.Request.ParseMultipartForm(20 << 20); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -119,7 +119,7 @@ func (rc *AssetController) Create(c *gin.Context) {
 	// Get User Id
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized,, err.Error())
 		return
 	}
 
@@ -131,10 +131,7 @@ func (rc *AssetController) Create(c *gin.Context) {
 	file, err := c.FormFile("asset_image")
 	if file != nil {
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "failed to retrieve the file",
-				"status":  "failed",
-			})
+			utils.BuildErrorMessage(c, http.StatusBadRequest, "failed to retrieve the file")
 			return
 		}
 
@@ -144,20 +141,14 @@ func (rc *AssetController) Create(c *gin.Context) {
 
 		// Validate file size
 		if fileSize > config.MaxSizeFile {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": fmt.Sprintf("The file size must be under %.2f MB", float64(config.MaxSizeFile)/1000000),
-				"status":  "failed",
-			})
+			utils.BuildErrorMessage(c, http.StatusBadRequest, fmt.Sprintf("The file size must be under %.2f MB", float64(config.MaxSizeFile)/1000000))
 			return
 		}
 
 		// Optional: open file to validate it can be read
 		fileReader, err := file.Open()
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "Failed to open the file",
-				"status":  "failed",
-			})
+			utils.BuildErrorMessage(c, http.StatusBadRequest, "Failed to open the file")
 			return
 		}
 		defer fileReader.Close()
@@ -165,7 +156,7 @@ func (rc *AssetController) Create(c *gin.Context) {
 
 	// Service : Create Asset
 	if err := rc.AssetService.Create(&req, adminId, fileHeader, fileExt, fileSize); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -192,23 +183,20 @@ func (rc *AssetController) UpdateById(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Parse Id
 	assetID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
 		return
 	}
 
 	// Service : Update Asset
 	if err := rc.AssetService.UpdateById(&req, assetID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -230,16 +218,13 @@ func (rc *AssetController) HardDeleteById(c *gin.Context) {
 	// Parse Id
 	assetID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
 		return
 	}
 
 	// Service : Hard Delete Asset By Id
 	if err := rc.AssetService.HardDeleteById(assetID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -261,16 +246,13 @@ func (rc *AssetController) SoftDeleteById(c *gin.Context) {
 	// Parse Id
 	assetID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
 		return
 	}
 
 	// Service : Soft Delete Asset By Id
 	if err := rc.AssetService.SoftDeleteById(assetID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -292,16 +274,13 @@ func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 	// Parse Id
 	assetID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
 		return
 	}
 
 	// Service : Recover Delete Asset By Id
 	if err := rc.AssetService.RecoverDeletedById(assetID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -325,17 +304,14 @@ func (rc *AssetController) GetMostContext(c *gin.Context) {
 	// Validator : Target Column Validator
 	validTarget := []string{"asset_merk", "asset_category", "asset_status"}
 	if !utils.Contains(validTarget, targetCol) {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "targetCol is not valid",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "targetCol is not valid")
 		return
 	}
 
 	// Service: Get Most Context
 	asset, err := rc.AssetService.GetMostContext(targetCol)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

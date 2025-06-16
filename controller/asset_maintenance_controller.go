@@ -34,7 +34,7 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
 	// Service: Get All Asset Maintenance
 	assetMaintenance, total, err := rc.AssetMaintenanceService.GetAllAssetMaintenance(pagination)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -61,7 +61,7 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenanceSchedule(c *gin.Cont
 	// Service: Get All Asset Maintenance
 	assetMaintenance, err := rc.AssetMaintenanceService.GetAllAssetMaintenanceSchedule()
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -84,30 +84,27 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Validator Rules
 	validDays := map[string]bool{"Sun": true, "Mon": true, "Tue": true, "Wed": true, "Thu": true, "Fri": true, "Sat": true}
 	if !validDays[req.MaintenanceDay] {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "maintenance day must be one of: Sun, Mon, Tue, Wed, Thu, Fri, Sat",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "maintenance day must be one of: Sun, Mon, Tue, Wed, Thu, Fri, Sat")
 		return
 	}
 
 	// Get User Id
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	// Service : Create Asset Maintenance
 	if err := rc.AssetMaintenanceService.Create(&req, adminId); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -134,23 +131,20 @@ func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Parse Id
 	assetMaintenanceID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
 		return
 	}
 
 	// Service : Update Asset Maintenance
 	if err := rc.AssetMaintenanceService.UpdateById(&req, assetMaintenanceID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -172,16 +166,13 @@ func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 	// Parse Id
 	assetMaintenanceID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
 		return
 	}
 
 	// Service : Delete Asset Maintenance By Id
 	if err := rc.AssetMaintenanceService.DeleteById(assetMaintenanceID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -204,17 +195,14 @@ func (rc *AssetMaintenanceController) GetMostContext(c *gin.Context) {
 
 	// Validator : Target Column Validator
 	if targetCol != "maintenance_day" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "targetCol is not valid",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "targetCol is not valid")
 		return
 	}
 
 	// Service: Get Most Context
 	assetMaintenance, err := rc.AssetMaintenanceService.GetMostContext(targetCol)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

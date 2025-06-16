@@ -7,4 +7,6 @@ var ResponseMessages = map[string]string{
 	"soft delete": "deleted",
 	"recover":     "recovered",
 	"get":         "fetched",
+	"login":       "login",
+	"sign out":    "signed out",
 }

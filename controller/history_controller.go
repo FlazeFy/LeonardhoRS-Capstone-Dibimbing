@@ -32,7 +32,7 @@ func (rc *HistoryController) GetAllHistory(c *gin.Context) {
 	// Service: Get All History
 	history, total, err := rc.HistoryService.GetAllHistory(pagination)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -62,21 +62,21 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 	// Get User Id
 	userId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	// Get Role
 	role, err := utils.GetCurrentRole(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	// Service: Get My History
 	history, total, err := rc.HistoryService.GetMyHistory(pagination, userId, role)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -107,20 +107,14 @@ func (rc *HistoryController) GetMostContext(c *gin.Context) {
 	// Validator : Target Column Validator
 	validTarget := []string{"type_user", "type_history"}
 	if !utils.Contains(validTarget, targetCol) {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "targetCol is not valid",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "targetCol is not valid")
 		return
 	}
 
 	// Service: Get My History
 	history, err := rc.HistoryService.GetMostContext(targetCol)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

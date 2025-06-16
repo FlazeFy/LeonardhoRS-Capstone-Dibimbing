@@ -38,7 +38,7 @@ func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 	// Service: Get All Asset Finding
 	assetFinding, total, err := rc.AssetFindingService.GetAllAssetFinding(pagination)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -65,7 +65,7 @@ func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 	// Service: Get All Asset Finding
 	assetFinding, err := rc.AssetFindingService.GetFindingHourTotal()
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -88,17 +88,14 @@ func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 
 	// Validator : Target Column Validator
 	if targetCol != "finding_category" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "targetCol is not valid",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "targetCol is not valid")
 		return
 	}
 
 	// Service: Get Most Context
 	assetFinding, err := rc.AssetFindingService.GetMostContext(targetCol)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -124,31 +121,28 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Validator Rules
 	validDays := map[string]bool{"Missing": true, "Broken": true, "Empty": true, "Dirty": true}
 	if !validDays[req.FindingCategory] {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "finding category must be one of: Missing, Broken, Empty, Dirty",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "finding category must be one of: Missing, Broken, Empty, Dirty")
 		return
 	}
 
 	// Get User Id / Technician Id
 	technicianOrUserId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	// Get Role
 	role, err := utils.GetCurrentRole(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
@@ -168,10 +162,7 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 	file, err := c.FormFile("asset_image")
 	if file != nil {
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "failed to retrieve the file",
-				"status":  "failed",
-			})
+			utils.BuildErrorMessage(c, http.StatusBadRequest, "failed to retrieve the file")
 			return
 		}
 
@@ -181,20 +172,14 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 
 		// Validate file size
 		if fileSize > config.MaxSizeFile {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": fmt.Sprintf("The file size must be under %.2f MB", float64(config.MaxSizeFile)/1000000),
-				"status":  "failed",
-			})
+			utils.BuildErrorMessage(c, http.StatusBadRequest, fmt.Sprintf("The file size must be under %.2f MB", float64(config.MaxSizeFile)/1000000))
 			return
 		}
 
 		// Optional: open file to validate it can be read
 		fileReader, err := file.Open()
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "Failed to open the file",
-				"status":  "failed",
-			})
+			utils.BuildErrorMessage(c, http.StatusBadRequest, "failed to open the file")
 			return
 		}
 		defer fileReader.Close()
@@ -202,7 +187,7 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 
 	// Service : Create Asset Finding
 	if err := rc.AssetFindingService.Create(&req, technicianId, userId, fileHeader, fileExt, fileSize); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -225,16 +210,13 @@ func (rc *AssetFindingController) DeleteById(c *gin.Context) {
 	// Parse Id
 	assetFindingID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
 		return
 	}
 
 	// Service : Delete Asset Finding By Id
 	if err := rc.AssetFindingService.DeleteById(assetFindingID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

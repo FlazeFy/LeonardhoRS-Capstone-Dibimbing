@@ -71,6 +71,15 @@ func (s *assetService) Create(asset *entity.Asset, adminId uuid.UUID, file *mult
 		return errors.New("asset status is required")
 	}
 
+	// Repo : Get Asset by Asset Name & Category & Merk
+	is_exist, err := s.assetRepo.FindByAssetNameCategoryAndMerk(asset.AssetName, asset.AssetCategory, asset.AssetMerk)
+	if err != nil {
+		return err
+	}
+	if is_exist != nil {
+		return errors.New("asset already exist on the same floor")
+	}
+
 	// Utils : Firebase Upload image
 	if file != nil {
 		assetImage, err := utils.UploadFile(adminId, "asset", file, fileExt)
@@ -80,15 +89,6 @@ func (s *assetService) Create(asset *entity.Asset, adminId uuid.UUID, file *mult
 		asset.AssetImageURL = &assetImage
 	} else {
 		asset.AssetImageURL = nil
-	}
-
-	// Repo : Get Asset by Asset Name & Category & Merk
-	is_exist, err := s.assetRepo.FindByAssetNameCategoryAndMerk(asset.AssetName, asset.AssetCategory, asset.AssetMerk)
-	if err != nil {
-		return err
-	}
-	if is_exist != nil {
-		return errors.New("asset already exist on the same floor")
 	}
 
 	// Repo : Create Asset

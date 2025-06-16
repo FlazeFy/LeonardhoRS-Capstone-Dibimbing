@@ -34,7 +34,7 @@ func (rc *RoomController) GetAllRoom(c *gin.Context) {
 	// Service: Get All Room
 	room, total, err := rc.RoomService.GetAllRoom(pagination)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -67,7 +67,7 @@ func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
 	// Service: Get Find Room Asset By Floor And Room Name
 	room, err := rc.RoomService.GetRoomAssetByFloorAndRoomName(floor, roomName)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -93,7 +93,7 @@ func (rc *RoomController) GetRoomAssetShortByFloorAndRoomName(c *gin.Context) {
 	// Service: Get Find Room Asset Short By Floor And Room Name
 	room, err := rc.RoomService.GetRoomAssetShortByFloorAndRoomName(floor, roomName)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -117,14 +117,14 @@ func (rc *RoomController) Create(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Service : Create Room
 	err := rc.RoomService.Create(&req)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -151,23 +151,20 @@ func (rc *RoomController) UpdateById(c *gin.Context) {
 
 	// Validator
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Parse Id
 	roomID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID Format")
 		return
 	}
 
 	// Service : Update Room
 	if err := rc.RoomService.UpdateById(&req, roomID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -189,16 +186,13 @@ func (rc *RoomController) DeleteById(c *gin.Context) {
 	// Parse Id
 	roomID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
 		return
 	}
 
 	// Service : Delete Room By Id
 	if err := rc.RoomService.DeleteById(roomID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -222,17 +216,14 @@ func (rc *RoomController) GetMostContext(c *gin.Context) {
 	// Validator : Target Column Validator
 	validTarget := []string{"floor", "room_dept"}
 	if !utils.Contains(validTarget, targetCol) {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "targetCol is not valid",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "targetCol is not valid")
 		return
 	}
 
 	// Service: Get My Room
 	room, err := rc.RoomService.GetMostContext(targetCol)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
