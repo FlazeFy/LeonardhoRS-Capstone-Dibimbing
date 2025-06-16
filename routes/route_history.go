@@ -13,7 +13,7 @@ func SetUpRouteHistory(api *gin.RouterGroup, historyController *controller.Histo
 	protected := api.Group("/")
 	protected.Use(middleware.AuthMiddleware(redisClient, "admin", "technician", "guest"))
 	{
-		history := protected.Group("/history")
+		history := protected.Group("/histories")
 		{
 			history.GET("/my", historyController.GetMyHistory)
 		}
@@ -22,7 +22,7 @@ func SetUpRouteHistory(api *gin.RouterGroup, historyController *controller.Histo
 	protected_admin := api.Group("/")
 	protected_admin.Use(middleware.AuthMiddleware(redisClient, "admin"))
 	{
-		history := protected_admin.Group("/history")
+		history := protected_admin.Group("/histories")
 		{
 			history.GET("/all", historyController.GetAllHistory)
 			history.GET("/:targetCol", historyController.GetMostContext)

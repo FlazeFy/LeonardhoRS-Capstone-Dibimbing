@@ -287,7 +287,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/asset/finding/hour_total": {
+        "/api/v1/asset/finding/hour-total": {
             "get": {
                 "description": "Returns a paginated list of assets finding total per hour",
                 "consumes": [
@@ -542,7 +542,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/asset/mostContext/{targe_col}": {
+        "/api/v1/asset/most-context/{targetCol}": {
             "get": {
                 "description": "Returns a list of most appear item in asset maintenance by given field",
                 "consumes": [
@@ -889,7 +889,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/history/mostContext/{targe_col}": {
+        "/api/v1/history/most-context/{targetCol}": {
             "get": {
                 "description": "Returns a list of most appear item in history by given field",
                 "consumes": [
@@ -1170,7 +1170,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/room/mostContext/{targe_col}": {
+        "/api/v1/room/most-context/{targetCol}": {
             "get": {
                 "description": "Returns a list of most appear item in room by given field",
                 "consumes": [
@@ -1646,7 +1646,7 @@ const docTemplate = `{
             "required": [
                 "floor",
                 "room_dept",
-                "roomName"
+                "room_name"
             ],
             "properties": {
                 "floor": {
@@ -1655,7 +1655,7 @@ const docTemplate = `{
                 "room_dept": {
                     "type": "string"
                 },
-                "roomName": {
+                "room_name": {
                     "type": "string"
                 }
             }
@@ -2216,7 +2216,7 @@ const docTemplate = `{
                 "room_dept": {
                     "type": "string"
                 },
-                "roomName": {
+                "room_name": {
                     "type": "string"
                 }
             }
@@ -2242,7 +2242,7 @@ const docTemplate = `{
                 "room_dept": {
                     "type": "string"
                 },
-                "roomName": {
+                "room_name": {
                     "type": "string"
                 },
                 "total_asset": {
@@ -2265,7 +2265,7 @@ const docTemplate = `{
                 "room_dept": {
                     "type": "string"
                 },
-                "roomName": {
+                "room_name": {
                     "type": "string"
                 }
             }

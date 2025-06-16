@@ -60,7 +60,7 @@ func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetFindingHourTotal
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/finding/hour_total [get]
+// @Router       /api/v1/asset/finding/hour-total [get]
 func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 	// Service: Get All Asset Finding
 	assetFinding, err := rc.AssetFindingService.GetFindingHourTotal()
@@ -80,7 +80,7 @@ func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/mostContext/{targetCol} [get]
+// @Router       /api/v1/asset/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: finding_category)"
 func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 	// Param

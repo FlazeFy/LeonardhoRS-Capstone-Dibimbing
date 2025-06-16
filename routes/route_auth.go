@@ -8,7 +8,7 @@ import (
 
 func SetUpRouteAuth(api *gin.RouterGroup, authController *controller.AuthController) {
 	// Public Routes
-	auth := api.Group("/auth")
+	auth := api.Group("/auths")
 	{
 		auth.POST("/register", authController.Register)
 		auth.POST("/login", authController.Login)

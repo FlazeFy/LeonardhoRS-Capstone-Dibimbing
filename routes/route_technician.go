@@ -14,7 +14,7 @@ func SetUpRouteTechnician(api *gin.RouterGroup, technicianController *controller
 	protected_admin := api.Group("/")
 	protected_admin.Use(middleware.AuthMiddleware(redisClient, "admin"))
 	{
-		technician := protected_admin.Group("/technician")
+		technician := protected_admin.Group("/technicians")
 		{
 			technician.POST("/", technicianController.Create, middleware.AuditTrailMiddleware(db, "create_technician"))
 			technician.PUT("/:id", technicianController.UpdateById, middleware.AuditTrailMiddleware(db, "update_technician_by_id"))
@@ -25,7 +25,7 @@ func SetUpRouteTechnician(api *gin.RouterGroup, technicianController *controller
 	protected_admin_technician := api.Group("/")
 	protected_admin_technician.Use(middleware.AuthMiddleware(redisClient, "admin", "technician"))
 	{
-		technician := protected_admin_technician.Group("/technician")
+		technician := protected_admin_technician.Group("/technicians")
 		{
 			technician.GET("/", technicianController.GetAllTechnician)
 		}

@@ -98,7 +98,7 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/history/mostContext/{targetCol} [get]
+// @Router       /api/v1/history/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: type_user, type_history)"
 func (rc *HistoryController) GetMostContext(c *gin.Context) {
 	// Param

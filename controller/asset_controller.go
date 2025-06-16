@@ -316,7 +316,7 @@ func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/mostContext/{targetCol} [get]
+// @Router       /api/v1/asset/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
 func (rc *AssetController) GetMostContext(c *gin.Context) {
 	// Param

@@ -196,7 +196,7 @@ func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/mostContext/{targetCol} [get]
+// @Router       /api/v1/asset/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: maintenance_day)"
 func (rc *AssetMaintenanceController) GetMostContext(c *gin.Context) {
 	// Param

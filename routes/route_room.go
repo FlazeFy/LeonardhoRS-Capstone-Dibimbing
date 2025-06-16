@@ -14,7 +14,7 @@ func SetUpRouteRoom(api *gin.RouterGroup, roomController *controller.RoomControl
 	protected := api.Group("/")
 	protected.Use(middleware.AuthMiddleware(redisClient, "admin", "technician", "guest"))
 	{
-		room := protected.Group("/room")
+		room := protected.Group("/rooms")
 		{
 			room.GET("/", roomController.GetAllRoom)
 		}
@@ -23,9 +23,9 @@ func SetUpRouteRoom(api *gin.RouterGroup, roomController *controller.RoomControl
 	protected_admin := api.Group("/")
 	protected_admin.Use(middleware.AuthMiddleware(redisClient, "admin"))
 	{
-		room := protected_admin.Group("/room")
+		room := protected_admin.Group("/rooms")
 		{
-			room.GET("/mostContext/:targetCol", roomController.GetMostContext)
+			room.GET("/most-context/:targetCol", roomController.GetMostContext)
 			room.POST("/", roomController.Create, middleware.AuditTrailMiddleware(db, "create_room"))
 			room.DELETE("/:id", roomController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_room_by_id"))
 			room.PUT("/:id", roomController.UpdateById, middleware.AuditTrailMiddleware(db, "update_room_by_id"))
@@ -35,7 +35,7 @@ func SetUpRouteRoom(api *gin.RouterGroup, roomController *controller.RoomControl
 	protected_admin_technician := api.Group("/")
 	protected_admin_technician.Use(middleware.AuthMiddleware(redisClient, "admin", "technician"))
 	{
-		room := protected_admin_technician.Group("/room/asset")
+		room := protected_admin_technician.Group("/rooms/assets")
 		{
 			room.GET("/detail/:floor/:roomName", roomController.GetRoomAssetByFloorAndRoomName)
 			room.GET("/short/:floor/:roomName", roomController.GetRoomAssetShortByFloorAndRoomName)
