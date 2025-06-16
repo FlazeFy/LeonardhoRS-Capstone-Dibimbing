@@ -98,17 +98,17 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/history/most_context/{targe_col} [get]
-// @Param        target_col  path  string  true  "Target Column to Analyze (such as: type_user, type_history)"
+// @Router       /api/v1/history/mostContext/{targetCol} [get]
+// @Param        targetCol  path  string  true  "Target Column to Analyze (such as: type_user, type_history)"
 func (rc *HistoryController) GetMostContext(c *gin.Context) {
 	// Param
-	targetCol := c.Param("target_col")
+	targetCol := c.Param("targetCol")
 
 	// Validator : Target Column Validator
 	validTarget := []string{"type_user", "type_history"}
 	if !utils.Contains(validTarget, targetCol) {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "target_col is not valid",
+			"message": "targetCol is not valid",
 			"status":  "failed",
 		})
 		return

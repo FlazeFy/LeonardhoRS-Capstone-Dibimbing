@@ -56,12 +56,12 @@ func (rc *RoomController) GetAllRoom(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetRoomAssetByFloorAndRoomName
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/room/asset/detail/{floor}/{room_name} [get]
-// @Param        room_name  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
+// @Router       /api/v1/room/asset/detail/{floor}/{roomName} [get]
+// @Param        roomName  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
 // @Param        floor  path  string  true  "In which Floor you want to find the asset."
 func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
 	// Params
-	roomName := c.Param("room_name")
+	roomName := c.Param("roomName")
 	floor := c.Param("floor")
 
 	// Service: Get Find Room Asset By Floor And Room Name
@@ -82,12 +82,12 @@ func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetRoomAssetShortByFloorAndRoomName
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/room/asset/short/{floor}/{room_name} [get]
-// @Param        room_name  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
+// @Router       /api/v1/room/asset/short/{floor}/{roomName} [get]
+// @Param        roomName  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
 // @Param        floor  path  string  true  "In which Floor you want to find the asset."
 func (rc *RoomController) GetRoomAssetShortByFloorAndRoomName(c *gin.Context) {
 	// Params
-	roomName := c.Param("room_name")
+	roomName := c.Param("roomName")
 	floor := c.Param("floor")
 
 	// Service: Get Find Room Asset Short By Floor And Room Name
@@ -213,17 +213,17 @@ func (rc *RoomController) DeleteById(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/room/most_context/{targe_col} [get]
-// @Param        target_col  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
+// @Router       /api/v1/room/mostContext/{targetCol} [get]
+// @Param        targetCol  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
 func (rc *RoomController) GetMostContext(c *gin.Context) {
 	// Param
-	targetCol := c.Param("target_col")
+	targetCol := c.Param("targetCol")
 
 	// Validator : Target Column Validator
 	validTarget := []string{"floor", "room_dept"}
 	if !utils.Contains(validTarget, targetCol) {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "target_col is not valid",
+			"message": "targetCol is not valid",
 			"status":  "failed",
 		})
 		return

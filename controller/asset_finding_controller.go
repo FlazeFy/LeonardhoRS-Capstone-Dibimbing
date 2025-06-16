@@ -80,16 +80,16 @@ func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/most_context/{targe_col} [get]
-// @Param        target_col  path  string  true  "Target Column to Analyze (such as: finding_category)"
+// @Router       /api/v1/asset/mostContext/{targetCol} [get]
+// @Param        targetCol  path  string  true  "Target Column to Analyze (such as: finding_category)"
 func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 	// Param
-	targetCol := c.Param("target_col")
+	targetCol := c.Param("targetCol")
 
 	// Validator : Target Column Validator
 	if targetCol != "finding_category" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "target_col is not valid",
+			"message": "targetCol is not valid",
 			"status":  "failed",
 		})
 		return

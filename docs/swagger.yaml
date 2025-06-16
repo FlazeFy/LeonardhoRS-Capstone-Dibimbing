@@ -250,12 +250,12 @@ definitions:
         type: string
       room_dept:
         type: string
-      room_name:
+      roomName:
         type: string
     required:
     - floor
     - room_dept
-    - room_name
+    - roomName
     type: object
   entity.RequestUpdateAssetById:
     properties:
@@ -639,7 +639,7 @@ definitions:
         type: string
       room_dept:
         type: string
-      room_name:
+      roomName:
         type: string
     type: object
   entity.RoomAsset:
@@ -656,7 +656,7 @@ definitions:
         type: string
       room_dept:
         type: string
-      room_name:
+      roomName:
         type: string
       total_asset:
         type: integer
@@ -671,7 +671,7 @@ definitions:
         type: string
       room_dept:
         type: string
-      room_name:
+      roomName:
         type: string
     type: object
   entity.StatsContextTotal:
@@ -1127,7 +1127,7 @@ paths:
       summary: Get All Asset Maintenance Schedule
       tags:
       - Asset
-  /api/v1/asset/most_context/{targe_col}:
+  /api/v1/asset/mostContext/{targe_col}:
     get:
       consumes:
       - application/json
@@ -1136,7 +1136,7 @@ paths:
       parameters:
       - description: 'Target Column to Analyze (such as: maintenance_day)'
         in: path
-        name: target_col
+        name: targetCol
         required: true
         type: string
       produces:
@@ -1302,7 +1302,7 @@ paths:
       summary: Get All History
       tags:
       - History
-  /api/v1/history/most_context/{targe_col}:
+  /api/v1/history/mostContext/{targe_col}:
     get:
       consumes:
       - application/json
@@ -1310,7 +1310,7 @@ paths:
       parameters:
       - description: 'Target Column to Analyze (such as: type_user, type_history)'
         in: path
-        name: target_col
+        name: targetCol
         required: true
         type: string
       produces:
@@ -1447,7 +1447,7 @@ paths:
       summary: Delete Room By Id
       tags:
       - Room
-  /api/v1/room/asset/detail/{floor}/{room_name}:
+  /api/v1/room/asset/detail/{floor}/{roomName}:
     get:
       consumes:
       - application/json
@@ -1456,7 +1456,7 @@ paths:
       - description: In which Room you want to find the asset. Type 'all' to search
           in all room
         in: path
-        name: room_name
+        name: roomName
         required: true
         type: string
       - description: In which Floor you want to find the asset.
@@ -1480,7 +1480,7 @@ paths:
       summary: Get Room Asset By Floor And Room Name (Detail)
       tags:
       - Room
-  /api/v1/room/asset/short/{floor}/{room_name}:
+  /api/v1/room/asset/short/{floor}/{roomName}:
     get:
       consumes:
       - application/json
@@ -1490,7 +1490,7 @@ paths:
       - description: In which Room you want to find the asset. Type 'all' to search
           in all room
         in: path
-        name: room_name
+        name: roomName
         required: true
         type: string
       - description: In which Floor you want to find the asset.
@@ -1514,7 +1514,7 @@ paths:
       summary: Get Room Asset By Floor And Room Name (Short)
       tags:
       - Room
-  /api/v1/room/most_context/{targe_col}:
+  /api/v1/room/mostContext/{targe_col}:
     get:
       consumes:
       - application/json
@@ -1523,7 +1523,7 @@ paths:
       - description: 'Target Column to Analyze (such as: asset_merk, asset_category,
           or asset_status)'
         in: path
-        name: target_col
+        name: targetCol
         required: true
         type: string
       produces:

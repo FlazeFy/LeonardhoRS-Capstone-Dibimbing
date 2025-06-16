@@ -25,7 +25,7 @@ func SetUpRouteHistory(api *gin.RouterGroup, historyController *controller.Histo
 		history := protected_admin.Group("/history")
 		{
 			history.GET("/all", historyController.GetAllHistory)
-			history.GET("/:target_col", historyController.GetMostContext)
+			history.GET("/:targetCol", historyController.GetMostContext)
 		}
 	}
 }

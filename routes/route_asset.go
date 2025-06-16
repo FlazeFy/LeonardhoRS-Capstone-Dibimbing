@@ -17,7 +17,7 @@ func SetUpRouteAsset(api *gin.RouterGroup, assetController *controller.AssetCont
 		asset := protected_admin.Group("/asset")
 		{
 			asset.POST("/", assetController.Create, middleware.AuditTrailMiddleware(db, "create_asset"))
-			asset.GET("/most_context/:target_col", assetController.GetMostContext)
+			asset.GET("/mostContext/:targetCol", assetController.GetMostContext)
 			asset.GET("/", assetController.GetAllAsset)
 			asset.DELETE("/destroy/:id", assetController.HardDeleteById, middleware.AuditTrailMiddleware(db, "hard_delete_asset_by_id"))
 			asset.DELETE("/:id", assetController.SoftDeleteById, middleware.AuditTrailMiddleware(db, "soft_delete_asset_by_id"))
@@ -31,7 +31,7 @@ func SetUpRouteAsset(api *gin.RouterGroup, assetController *controller.AssetCont
 			}
 			asset_maintenance := asset.Group("/maintenance")
 			{
-				asset_maintenance.GET("/most_context/:target_col", assetMaintenanceController.GetMostContext)
+				asset_maintenance.GET("/mostContext/:targetCol", assetMaintenanceController.GetMostContext)
 				asset_maintenance.POST("/", assetMaintenanceController.Create, middleware.AuditTrailMiddleware(db, "create_asset_maintenance_by_id"))
 				asset_maintenance.PUT("/:id", assetMaintenanceController.UpdateById, middleware.AuditTrailMiddleware(db, "update_asset_maintenance_by_id"))
 				asset_maintenance.DELETE("/:id", assetMaintenanceController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_asset_maintenance_by_id"))
@@ -39,7 +39,7 @@ func SetUpRouteAsset(api *gin.RouterGroup, assetController *controller.AssetCont
 			asset_finding := asset.Group("/finding")
 			{
 				asset_finding.DELETE("/:id", assetFindingController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_asset_finding_by_id"))
-				asset_finding.GET("/most_context/:target_col", assetFindingController.GetMostContext)
+				asset_finding.GET("/mostContext/:targetCol", assetFindingController.GetMostContext)
 				asset_finding.GET("/hour_total", assetFindingController.GetFindingHourTotal)
 			}
 		}

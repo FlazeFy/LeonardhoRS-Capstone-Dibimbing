@@ -25,7 +25,7 @@ func SetUpRouteRoom(api *gin.RouterGroup, roomController *controller.RoomControl
 	{
 		room := protected_admin.Group("/room")
 		{
-			room.GET("/most_context/:target_col", roomController.GetMostContext)
+			room.GET("/mostContext/:targetCol", roomController.GetMostContext)
 			room.POST("/", roomController.Create, middleware.AuditTrailMiddleware(db, "create_room"))
 			room.DELETE("/:id", roomController.DeleteById, middleware.AuditTrailMiddleware(db, "delete_room_by_id"))
 			room.PUT("/:id", roomController.UpdateById, middleware.AuditTrailMiddleware(db, "update_room_by_id"))
@@ -37,8 +37,8 @@ func SetUpRouteRoom(api *gin.RouterGroup, roomController *controller.RoomControl
 	{
 		room := protected_admin_technician.Group("/room/asset")
 		{
-			room.GET("/detail/:floor/:room_name", roomController.GetRoomAssetByFloorAndRoomName)
-			room.GET("/short/:floor/:room_name", roomController.GetRoomAssetShortByFloorAndRoomName)
+			room.GET("/detail/:floor/:roomName", roomController.GetRoomAssetByFloorAndRoomName)
+			room.GET("/short/:floor/:roomName", roomController.GetRoomAssetShortByFloorAndRoomName)
 		}
 	}
 }

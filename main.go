@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"pelita/config"
 	"pelita/entity"
 	"pelita/routes"
@@ -39,7 +40,7 @@ func main() {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Run server
-	router.Run(":9000")
+	router.Run(":" + os.Getenv("PORT"))
 }
 
 func MigrateAll(db *gorm.DB) {

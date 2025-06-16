@@ -316,17 +316,17 @@ func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
 // @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/most_context/{targe_col} [get]
-// @Param        target_col  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
+// @Router       /api/v1/asset/mostContext/{targetCol} [get]
+// @Param        targetCol  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
 func (rc *AssetController) GetMostContext(c *gin.Context) {
 	// Param
-	targetCol := c.Param("target_col")
+	targetCol := c.Param("targetCol")
 
 	// Validator : Target Column Validator
 	validTarget := []string{"asset_merk", "asset_category", "asset_status"}
 	if !utils.Contains(validTarget, targetCol) {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "target_col is not valid",
+			"message": "targetCol is not valid",
 			"status":  "failed",
 		})
 		return
