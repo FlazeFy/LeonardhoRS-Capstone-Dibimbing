@@ -56,7 +56,10 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
 	assert.NoError(t, err, "failed to connect test DB")
 
-	err = db.AutoMigrate(&entity.Admin{})
+	err = db.AutoMigrate(
+		&entity.Admin{},
+		&entity.User{},
+	)
 	assert.NoError(t, err, "failed to migrate admin schema")
 
 	return db
