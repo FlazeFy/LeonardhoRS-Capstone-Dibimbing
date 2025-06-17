@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// User Interface
 type UserRepository interface {
 	FindByUsernameOrEmail(username, email string) (*entity.User, error)
 	FindByEmail(email string) (*entity.User, error)
@@ -16,10 +17,12 @@ type UserRepository interface {
 	Create(user *entity.User) error
 }
 
+// User Struct
 type userRepository struct {
 	db *gorm.DB
 }
 
+// User Constructor
 func NewUserRepository(db *gorm.DB) UserRepository {
 	return &userRepository{db: db}
 }

@@ -194,6 +194,15 @@ definitions:
       user_id:
         type: string
     type: object
+  entity.LoginData:
+    properties:
+      access_token:
+        example: <your_access_token>
+        type: string
+      role:
+        example: admin
+        type: string
+    type: object
   entity.Metadata:
     properties:
       limit:
@@ -257,6 +266,32 @@ definitions:
     - room_dept
     - room_name
     type: object
+  entity.RequestPostRegister:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      telegram_is_valid:
+        type: boolean
+      telegram_user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  entity.RequestPostUpdateTechnicianById:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      telegram_is_valid:
+        type: boolean
+      telegram_user_id:
+        type: string
+      username:
+        type: string
+    type: object
   entity.RequestUpdateAssetById:
     properties:
       asset_category:
@@ -279,10 +314,19 @@ definitions:
     - asset_price
     - asset_status
     type: object
+  entity.ResponseBadRequest:
+    properties:
+      message:
+        example: targetCol is not valid
+        type: string
+      status:
+        example: failed
+        type: string
+    type: object
   entity.ResponseCreateAsset:
     properties:
       message:
-        example: asset created successfully
+        example: asset created
         type: string
       status:
         example: success
@@ -291,7 +335,7 @@ definitions:
   entity.ResponseCreateAssetFinding:
     properties:
       message:
-        example: asset finding created successfully
+        example: asset finding created
         type: string
       status:
         example: success
@@ -300,7 +344,7 @@ definitions:
   entity.ResponseCreateAssetMaintenance:
     properties:
       message:
-        example: asset maintenance created successfully
+        example: asset maintenance created
         type: string
       status:
         example: success
@@ -309,7 +353,7 @@ definitions:
   entity.ResponseCreateAssetPlacement:
     properties:
       message:
-        example: asset placement created successfully
+        example: asset placement created
         type: string
       status:
         example: success
@@ -346,6 +390,15 @@ definitions:
     properties:
       message:
         example: room deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseDeleteTechnicianById:
+    properties:
+      message:
+        example: technician deleted
         type: string
       status:
         example: success
@@ -575,10 +628,48 @@ definitions:
         example: success
         type: string
     type: object
+  entity.ResponseNotFound:
+    properties:
+      message:
+        example: asset not found
+        type: string
+      status:
+        example: failed
+        type: string
+    type: object
+  entity.ResponsePostLogin:
+    properties:
+      data:
+        $ref: '#/definitions/entity.LoginData'
+      message:
+        example: user login successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponsePostSignOut:
+    properties:
+      message:
+        example: User signed out
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponsePostTechnician:
+    properties:
+      message:
+        example: technician created
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
   entity.ResponsePutUpdateAssetMaintenance:
     properties:
       message:
-        example: asset maintenance updated successfully
+        example: asset maintenance updated
         type: string
       status:
         example: success
@@ -587,7 +678,7 @@ definitions:
   entity.ResponsePutUpdateAssetPlacement:
     properties:
       message:
-        example: asset placement updated successfully
+        example: asset placement updated
         type: string
       status:
         example: success
@@ -596,7 +687,7 @@ definitions:
   entity.ResponsePutUpdateRoom:
     properties:
       message:
-        example: room updated successfully
+        example: room updated
         type: string
       status:
         example: success
@@ -623,7 +714,16 @@ definitions:
   entity.ResponseUpdateAssetById:
     properties:
       message:
-        example: asset updated successfully
+        example: asset updated
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseUpdateTechnicianById:
+    properties:
+      message:
+        example: technician updated
         type: string
       status:
         example: success
@@ -718,10 +818,20 @@ definitions:
       username:
         type: string
     type: object
+  entity.UserAuth:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
 info:
   contact: {}
 paths:
-  /api/v1/asset:
+  /api/v1/assets:
     get:
       consumes:
       - application/json
@@ -736,9 +846,7 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get All Asset
       tags:
       - Asset
@@ -792,13 +900,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Post Create Asset
       tags:
       - Asset
-  /api/v1/asset/{id}:
+  /api/v1/assets/{id}:
     delete:
       description: Delete Asset By Id
       parameters:
@@ -815,9 +921,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Soft Delete Asset By Id
       tags:
       - Asset
@@ -847,13 +951,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Put Update Asset By Id
       tags:
       - Asset
-  /api/v1/asset/deleted:
+  /api/v1/assets/deleted:
     get:
       consumes:
       - application/json
@@ -868,13 +970,11 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get Deleted Asset
       tags:
       - Asset
-  /api/v1/asset/destroy/{id}:
+  /api/v1/assets/destroy/{id}:
     delete:
       description: Permanentally Delete Asset By Id
       parameters:
@@ -891,13 +991,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Hard Delete Asset By Id
       tags:
       - Asset
-  /api/v1/asset/finding:
+  /api/v1/assets/findings:
     get:
       consumes:
       - application/json
@@ -912,9 +1010,7 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get All Asset Finding
       tags:
       - Asset
@@ -953,13 +1049,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Post Create Asset Finding
       tags:
       - Asset
-  /api/v1/asset/finding/{id}:
+  /api/v1/assets/findings/{id}:
     delete:
       description: Permanentally delete asset finding by id
       parameters:
@@ -976,13 +1070,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Delete Asset Finding By Id
       tags:
       - Asset
-  /api/v1/asset/finding/hour-total:
+  /api/v1/assets/findings/hour-total:
     get:
       consumes:
       - application/json
@@ -997,13 +1089,11 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get All Asset Finding Hour Total
       tags:
       - Asset
-  /api/v1/asset/maintenance:
+  /api/v1/assets/maintenances:
     get:
       consumes:
       - application/json
@@ -1018,9 +1108,7 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get All Asset Maintenance
       tags:
       - Asset
@@ -1045,13 +1133,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Post Create Asset Maintenance By Id
       tags:
       - Asset
-  /api/v1/asset/maintenance/{id}:
+  /api/v1/assets/maintenances/{id}:
     delete:
       description: Permanentally delete asset maintenance by id
       parameters:
@@ -1068,9 +1154,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Delete Asset Maintenance By Id
       tags:
       - Asset
@@ -1100,13 +1184,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Put Update Asset Maintenance By Id
       tags:
       - Asset
-  /api/v1/asset/maintenance/schedule:
+  /api/v1/assets/maintenances/schedule:
     get:
       consumes:
       - application/json
@@ -1121,13 +1203,11 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get All Asset Maintenance Schedule
       tags:
       - Asset
-  /api/v1/asset/most-context/{targetCol}:
+  /api/v1/assets/most-context/{targetCol}:
     get:
       consumes:
       - application/json
@@ -1149,13 +1229,11 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get Most Context Asset Maintenance
       tags:
       - Asset
-  /api/v1/asset/placement:
+  /api/v1/assets/placements:
     get:
       consumes:
       - application/json
@@ -1170,9 +1248,7 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get All Asset Placement
       tags:
       - Asset
@@ -1197,13 +1273,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Post Create Asset Placement By Id
       tags:
       - Asset
-  /api/v1/asset/placement/{id}:
+  /api/v1/assets/placements/{id}:
     delete:
       description: Permanentally delete asset placement by id
       parameters:
@@ -1220,9 +1294,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Delete Asset Placement By Id
       tags:
       - Asset
@@ -1252,13 +1324,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Put Update Asset Placement By Id
       tags:
       - Asset
-  /api/v1/asset/recover/{id}:
+  /api/v1/assets/recover/{id}:
     put:
       description: Recover Deleted Asset By Id
       parameters:
@@ -1275,13 +1345,82 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Recover Put Deleted Asset By Id
       tags:
       - Asset
-  /api/v1/history/all:
+  /api/v1/auths/login:
+    post:
+      consumes:
+      - application/json
+      description: Login to the Apps
+      parameters:
+      - description: Post Login Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UserAuth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponsePostLogin'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Login
+      tags:
+      - Auth
+  /api/v1/auths/register:
+    post:
+      consumes:
+      - application/json
+      description: Register User / Guest
+      parameters:
+      - description: Post Register Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestPostRegister'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponsePostLogin'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Register
+      tags:
+      - Auth
+  /api/v1/auths/signout:
+    post:
+      consumes:
+      - application/json
+      description: Sign Out to the Apps
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponsePostSignOut'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Sign Out
+      tags:
+      - Auth
+  /api/v1/histories/all:
     get:
       consumes:
       - application/json
@@ -1296,13 +1435,11 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get All History
       tags:
       - History
-  /api/v1/history/most-context/{targetCol}:
+  /api/v1/histories/most-context/{targetCol}:
     get:
       consumes:
       - application/json
@@ -1323,13 +1460,11 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get Most Context History
       tags:
       - History
-  /api/v1/history/my:
+  /api/v1/histories/my:
     get:
       consumes:
       - application/json
@@ -1344,9 +1479,7 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get My History
       tags:
       - History
@@ -1365,13 +1498,11 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get My Profile
       tags:
-      - Use
-  /api/v1/room:
+      - User
+  /api/v1/rooms:
     get:
       consumes:
       - application/json
@@ -1386,9 +1517,7 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get All Room
       tags:
       - Room
@@ -1418,13 +1547,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Put Update Room
       tags:
       - Room
-  /api/v1/room/{id}:
+  /api/v1/rooms/{id}:
     delete:
       description: Permanentally delete room by id
       parameters:
@@ -1441,13 +1568,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseBadRequest'
       summary: Delete Room By Id
       tags:
       - Room
-  /api/v1/room/asset/detail/{floor}/{roomName}:
+  /api/v1/rooms/asset/detail/{floor}/{roomName}:
     get:
       consumes:
       - application/json
@@ -1474,13 +1599,11 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get Room Asset By Floor And Room Name (Detail)
       tags:
       - Room
-  /api/v1/room/asset/short/{floor}/{roomName}:
+  /api/v1/rooms/asset/short/{floor}/{roomName}:
     get:
       consumes:
       - application/json
@@ -1508,13 +1631,11 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get Room Asset By Floor And Room Name (Short)
       tags:
       - Room
-  /api/v1/room/most-context/{targetCol}:
+  /api/v1/rooms/most-context/{targetCol}:
     get:
       consumes:
       - application/json
@@ -1536,13 +1657,11 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get Most Context Room
       tags:
       - Room
-  /api/v1/technician:
+  /api/v1/technicians:
     get:
       consumes:
       - application/json
@@ -1557,10 +1676,89 @@ paths:
         "404":
           description: Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/entity.ResponseNotFound'
       summary: Get All Technician
+      tags:
+      - Technician
+    post:
+      consumes:
+      - application/json
+      description: Create a technician
+      parameters:
+      - description: Post Technician Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestPostUpdateTechnicianById'
+      - description: Id of asset technician
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponsePostTechnician'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Create Technician
+      tags:
+      - Technician
+  /api/v1/technicians/{id}:
+    delete:
+      description: Permanentally delete technician by id
+      parameters:
+      - description: Id of technician
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseDeleteTechnicianById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Delete Technician By Id
+      tags:
+      - Technician
+    put:
+      consumes:
+      - application/json
+      description: Update a Technician by Id
+      parameters:
+      - description: Update Technician Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestPostUpdateTechnicianById'
+      - description: Id of technician
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseUpdateTechnicianById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Put Update Technician By Id
       tags:
       - Technician
 swagger: "2.0"

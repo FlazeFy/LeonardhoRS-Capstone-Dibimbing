@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Room Interface
 type RoomService interface {
 	GetAllRoom(pagination utils.Pagination) ([]entity.Room, int64, error)
 	GetRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error)
@@ -19,11 +20,13 @@ type RoomService interface {
 	DeleteById(id uuid.UUID) error
 }
 
+// Room Struct
 type roomService struct {
 	roomRepo  repository.RoomRepository
 	statsRepo repository.StatsRepository
 }
 
+// Room Constructor
 func NewRoomService(roomRepo repository.RoomRepository, statsRepo repository.StatsRepository) RoomService {
 	return &roomService{
 		roomRepo:  roomRepo,

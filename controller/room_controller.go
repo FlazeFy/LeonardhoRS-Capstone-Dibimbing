@@ -25,8 +25,8 @@ func NewRoomRepository(roomService service.RoomService) *RoomController {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllRoom
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/room [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/rooms [get]
 func (rc *RoomController) GetAllRoom(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -55,8 +55,8 @@ func (rc *RoomController) GetAllRoom(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetRoomAssetByFloorAndRoomName
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/room/asset/detail/{floor}/{roomName} [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/rooms/asset/detail/{floor}/{roomName} [get]
 // @Param        roomName  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
 // @Param        floor  path  string  true  "In which Floor you want to find the asset."
 func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
@@ -81,8 +81,8 @@ func (rc *RoomController) GetRoomAssetByFloorAndRoomName(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetRoomAssetShortByFloorAndRoomName
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/room/asset/short/{floor}/{roomName} [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/rooms/asset/short/{floor}/{roomName} [get]
 // @Param        roomName  path  string  true  "In which Room you want to find the asset. Type 'all' to search in all room"
 // @Param        floor  path  string  true  "In which Floor you want to find the asset."
 func (rc *RoomController) GetRoomAssetShortByFloorAndRoomName(c *gin.Context) {
@@ -102,15 +102,14 @@ func (rc *RoomController) GetRoomAssetShortByFloorAndRoomName(c *gin.Context) {
 }
 
 // @Summary      Post Create Room
-// @Description  Create an room
+// @Description  Create a room
 // @Tags         Room
 // @Accept       application/json
 // @Produce      json
 // @Param        request  body  entity.RequestPostCreateUpdateRoom true  "Post Create Room Request Body"
 // @Success      200  {object}  entity.ResponsePutUpdateRoom
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/room [post]
-// @Param        id  path  string  true  "Id of asset placement"
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/rooms [post]
 func (rc *RoomController) Create(c *gin.Context) {
 	// Model
 	var req entity.Room
@@ -139,8 +138,8 @@ func (rc *RoomController) Create(c *gin.Context) {
 // @Produce      json
 // @Param        request  body  entity.RequestPostCreateUpdateRoom true  "Put Update Room Request Body"
 // @Success      200  {object}  entity.ResponsePutUpdateRoom
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/room [post]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/rooms [post]
 // @Param        id  path  string  true  "Id of room"
 func (rc *RoomController) UpdateById(c *gin.Context) {
 	// Param
@@ -176,8 +175,8 @@ func (rc *RoomController) UpdateById(c *gin.Context) {
 // @Description  Permanentally delete room by id
 // @Tags         Room
 // @Success      200  {object}  entity.ResponseDeleteRoomById
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/room/{id} [delete]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/rooms/{id} [delete]
 // @Param        id  path  string  true  "Id of room"
 func (rc *RoomController) DeleteById(c *gin.Context) {
 	// Param
@@ -206,8 +205,8 @@ func (rc *RoomController) DeleteById(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/room/most-context/{targetCol} [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/rooms/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
 func (rc *RoomController) GetMostContext(c *gin.Context) {
 	// Param

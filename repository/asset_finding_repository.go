@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Asset Finding Interface
 type AssetFindingRepository interface {
 	FindAll(pagination utils.Pagination) ([]entity.AssetFinding, int64, error)
 	FindAllReport() ([]entity.AssetFindingReport, error)
@@ -18,10 +19,12 @@ type AssetFindingRepository interface {
 	DeleteById(id uuid.UUID) error
 }
 
+// Asset Finding Struct
 type assetFindingRepository struct {
 	db *gorm.DB
 }
 
+// Asset Finding Constructor
 func NewAssetFindingRepository(db *gorm.DB) AssetFindingRepository {
 	return &assetFindingRepository{db: db}
 }

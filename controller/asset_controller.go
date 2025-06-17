@@ -39,8 +39,8 @@ var config = Config{
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllAsset
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets [get]
 func (rc *AssetController) GetAllAsset(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -69,8 +69,8 @@ func (rc *AssetController) GetAllAsset(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetDeletedAsset
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/deleted [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/deleted [get]
 func (rc *AssetController) GetDeletedAsset(c *gin.Context) {
 	// Service: Get All Deleted Asset
 	asset, err := rc.AssetService.GetDeleted()
@@ -96,8 +96,8 @@ func (rc *AssetController) GetDeletedAsset(c *gin.Context) {
 // @Param        asset_status   formData  string  true  "Asset Status"
 // @Param        asset_image    formData  file    true  "Asset Image (JPG,PNG,JPEG)"
 // @Success      201  {object}  entity.ResponseCreateAsset
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset [post]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets [post]
 func (rc *AssetController) Create(c *gin.Context) {
 	// Model
 	var req entity.Asset
@@ -119,7 +119,7 @@ func (rc *AssetController) Create(c *gin.Context) {
 	// Get User Id
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, http.StatusUnauthorized,, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
@@ -171,8 +171,8 @@ func (rc *AssetController) Create(c *gin.Context) {
 // @Produce      json
 // @Param        request  body  entity.RequestUpdateAssetById  true  "Update Asset Request Body"
 // @Success      200  {object}  entity.ResponseUpdateAssetById
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/{id} [put]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/{id} [put]
 // @Param        id  path  string  true  "Id of asset"
 func (rc *AssetController) UpdateById(c *gin.Context) {
 	// Param
@@ -208,8 +208,8 @@ func (rc *AssetController) UpdateById(c *gin.Context) {
 // @Description  Permanentally Delete Asset By Id
 // @Tags         Asset
 // @Success      200  {object}  entity.ResponseHardDeleteAssetById
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/destroy/{id} [delete]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/destroy/{id} [delete]
 // @Param        id  path  string  true  "Id of asset"
 func (rc *AssetController) HardDeleteById(c *gin.Context) {
 	// Param
@@ -236,8 +236,8 @@ func (rc *AssetController) HardDeleteById(c *gin.Context) {
 // @Description  Delete Asset By Id
 // @Tags         Asset
 // @Success      200  {object}  entity.ResponseSoftDeleteAssetById
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/{id} [delete]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/{id} [delete]
 // @Param        id  path  string  true  "Id of asset"
 func (rc *AssetController) SoftDeleteById(c *gin.Context) {
 	// Param
@@ -264,8 +264,8 @@ func (rc *AssetController) SoftDeleteById(c *gin.Context) {
 // @Description  Recover Deleted Asset By Id
 // @Tags         Asset
 // @Success      200  {object}  entity.ResponseRecoverDeleteAssetById
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/recover/{id} [put]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/recover/{id} [put]
 // @Param        id  path  string  true  "Id of asset"
 func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 	// Param
@@ -294,8 +294,8 @@ func (rc *AssetController) RecoverDeletedById(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/most-context/{targetCol} [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)"
 func (rc *AssetController) GetMostContext(c *gin.Context) {
 	// Param

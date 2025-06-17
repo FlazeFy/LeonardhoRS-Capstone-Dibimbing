@@ -23,8 +23,8 @@ func NewHistoryRepository(historyService service.HistoryService) *HistoryControl
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllHistory
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/history/all [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/histories/all [get]
 func (rc *HistoryController) GetAllHistory(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -53,8 +53,8 @@ func (rc *HistoryController) GetAllHistory(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMyHistory
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/history/my [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/histories/my [get]
 func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -97,8 +97,8 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/history/most-context/{targetCol} [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/histories/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: type_user, type_history)"
 func (rc *HistoryController) GetMostContext(c *gin.Context) {
 	// Param

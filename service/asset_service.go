@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Asset Interface
 type AssetService interface {
 	GetAllAsset(pagination utils.Pagination) ([]entity.Asset, int64, error)
 	GetDeleted() ([]entity.Asset, error)
@@ -21,11 +22,13 @@ type AssetService interface {
 	RecoverDeletedById(id uuid.UUID) error
 }
 
+// Asset Struct
 type assetService struct {
 	assetRepo repository.AssetRepository
 	statsRepo repository.StatsRepository
 }
 
+// Asset Constructor
 func NewAssetService(assetRepo repository.AssetRepository, statsRepo repository.StatsRepository) AssetService {
 	return &assetService{
 		assetRepo: assetRepo,

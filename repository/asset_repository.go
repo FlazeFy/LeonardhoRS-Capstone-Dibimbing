@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Asset Interface
 type AssetRepository interface {
 	FindAll(pagination utils.Pagination) ([]entity.Asset, int64, error)
 	Create(asset *entity.Asset, adminId uuid.UUID) error
@@ -23,10 +24,12 @@ type AssetRepository interface {
 	RecoverDeletedById(id uuid.UUID) error
 }
 
+// Asset Struct
 type assetRepository struct {
 	db *gorm.DB
 }
 
+// Asset Constructor
 func NewAssetRepository(db *gorm.DB) AssetRepository {
 	return &assetRepository{db: db}
 }

@@ -36,11 +36,11 @@ type (
 		Data    []Asset `json:"data"`
 	}
 	ResponseCreateAsset struct {
-		Message string `json:"message" example:"asset created successfully"`
+		Message string `json:"message" example:"asset created"`
 		Status  string `json:"status" example:"success"`
 	}
 	ResponseUpdateAssetById struct {
-		Message string `json:"message" example:"asset updated successfully"`
+		Message string `json:"message" example:"asset updated"`
 		Status  string `json:"status" example:"success"`
 	}
 	ResponseHardDeleteAssetById struct {

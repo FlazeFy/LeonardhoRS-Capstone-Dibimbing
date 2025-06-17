@@ -29,8 +29,8 @@ func NewAssetFindingRepository(assetFindingService service.AssetFindingService) 
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllAssetFinding
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/finding [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/findings [get]
 func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -59,8 +59,8 @@ func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetFindingHourTotal
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/finding/hour-total [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/findings/hour-total [get]
 func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 	// Service: Get All Asset Finding
 	assetFinding, err := rc.AssetFindingService.GetFindingHourTotal()
@@ -79,8 +79,8 @@ func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/most-context/{targetCol} [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: finding_category)"
 func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 	// Param
@@ -113,13 +113,13 @@ func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 // @Param        finding_image     		formData  file    true  "Finding Image (JPG,PNG,JPEG)"
 // @Param        asset_placement_id 	formData  string  true  "Asset Placement Id"
 // @Success      201  {object}  entity.ResponseCreateAssetFinding
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/finding [post]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/findings [post]
 func (rc *AssetFindingController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetFinding
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
@@ -152,6 +152,16 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 		technicianId = &technicianOrUserId
 	} else {
 		userId = &technicianOrUserId
+	}
+
+	// Validator Field
+	if req.AssetPlacementId == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset placement id is required")
+		return
+	}
+	if technicianId == nil && userId == nil {
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, "technician id and user id is required")
+		return
 	}
 
 	// Default values
@@ -200,8 +210,8 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 // @Description  Permanentally delete asset finding by id
 // @Tags         Asset
 // @Success      200  {object}  entity.ResponseDeleteAssetFindingById
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/finding/{id} [delete]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/findings/{id} [delete]
 // @Param        id  path  string  true  "Id of asset finding"
 func (rc *AssetFindingController) DeleteById(c *gin.Context) {
 	// Param

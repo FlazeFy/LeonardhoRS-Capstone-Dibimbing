@@ -25,8 +25,8 @@ func NewAssetPlacementRepository(assetPlacementService service.AssetPlacementSer
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllAssetPlacement
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/placement [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/placements [get]
 func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -56,8 +56,8 @@ func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
 // @Produce      json
 // @Param        request  body  entity.RequestCreateUpdateAssetPlacement  true  "Create Asset Placement Request Body"
 // @Success      201  {object}  entity.ResponseCreateAssetPlacement
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/placement [post]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/placements [post]
 func (rc *AssetPlacementController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetPlacement
@@ -92,8 +92,8 @@ func (rc *AssetPlacementController) Create(c *gin.Context) {
 // @Produce      json
 // @Param        request  body  entity.RequestCreateUpdateAssetPlacement  true  "Put Update Asset Placement Request Body"
 // @Success      200  {object}  entity.ResponsePutUpdateAssetPlacement
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/placement/{id} [put]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/placements/{id} [put]
 // @Param        id  path  string  true  "Id of asset placement"
 func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
 	// Param
@@ -129,8 +129,8 @@ func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
 // @Description  Permanentally delete asset placement by id
 // @Tags         Asset
 // @Success      200  {object}  entity.ResponseDeleteAssetPlacementById
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/placement/{id} [delete]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/placements/{id} [delete]
 // @Param        id  path  string  true  "Id of asset placement"
 func (rc *AssetPlacementController) DeleteById(c *gin.Context) {
 	// Param

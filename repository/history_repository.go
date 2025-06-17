@@ -10,15 +10,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// History Interface
 type HistoryRepository interface {
 	FindAll(pagination utils.Pagination) ([]entity.AllHistory, int64, error)
 	FindMy(pagination utils.Pagination, id uuid.UUID, typeUser string) ([]entity.History, int64, error)
 }
 
+// History Struct
 type historyRepository struct {
 	db *gorm.DB
 }
 
+// History Constructor
 func NewHistoryRepository(db *gorm.DB) HistoryRepository {
 	return &historyRepository{db: db}
 }

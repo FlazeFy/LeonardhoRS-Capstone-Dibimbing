@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Technician Interface
 type TechnicianService interface {
 	GetAllTechnician(pagination utils.Pagination) ([]entity.Technician, int64, error)
 	Create(technician *entity.Technician, adminId uuid.UUID) error
@@ -17,10 +18,12 @@ type TechnicianService interface {
 	DeleteById(id uuid.UUID) error
 }
 
+// Technician Struct
 type technicianService struct {
 	technicianRepo repository.TechnicianRepository
 }
 
+// Technician Constructor
 func NewTechnicianService(technicianRepo repository.TechnicianRepository) TechnicianService {
 	return &technicianService{
 		technicianRepo: technicianRepo,

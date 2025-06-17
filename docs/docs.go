@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/asset": {
+        "/api/v1/assets": {
             "get": {
                 "description": "Returns a paginated list of assets available",
                 "consumes": [
@@ -38,10 +38,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
@@ -119,16 +116,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/deleted": {
+        "/api/v1/assets/deleted": {
             "get": {
                 "description": "Returns a list of deleted assets",
                 "consumes": [
@@ -151,16 +145,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/destroy/{id}": {
+        "/api/v1/assets/destroy/{id}": {
             "delete": {
                 "description": "Permanentally Delete Asset By Id",
                 "tags": [
@@ -186,16 +177,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/finding": {
+        "/api/v1/assets/findings": {
             "get": {
                 "description": "Returns a paginated list of assets finding",
                 "consumes": [
@@ -218,10 +206,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
@@ -278,16 +263,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/finding/hour-total": {
+        "/api/v1/assets/findings/hour-total": {
             "get": {
                 "description": "Returns a paginated list of assets finding total per hour",
                 "consumes": [
@@ -310,16 +292,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/finding/{id}": {
+        "/api/v1/assets/findings/{id}": {
             "delete": {
                 "description": "Permanentally delete asset finding by id",
                 "tags": [
@@ -345,16 +324,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/maintenance": {
+        "/api/v1/assets/maintenances": {
             "get": {
                 "description": "Returns a paginated list of assets maintenance",
                 "consumes": [
@@ -377,10 +353,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
@@ -418,16 +391,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/maintenance/schedule": {
+        "/api/v1/assets/maintenances/schedule": {
             "get": {
                 "description": "Returns a list of assets maintenance schedule",
                 "consumes": [
@@ -450,16 +420,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/maintenance/{id}": {
+        "/api/v1/assets/maintenances/{id}": {
             "put": {
                 "description": "Create an asset maintenance by Id",
                 "consumes": [
@@ -500,10 +467,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
@@ -533,16 +497,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/most-context/{targetCol}": {
+        "/api/v1/assets/most-context/{targetCol}": {
             "get": {
                 "description": "Returns a list of most appear item in asset maintenance by given field",
                 "consumes": [
@@ -574,16 +535,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/placement": {
+        "/api/v1/assets/placements": {
             "get": {
                 "description": "Returns a paginated list of assets placement",
                 "consumes": [
@@ -606,10 +564,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
@@ -647,16 +602,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/placement/{id}": {
+        "/api/v1/assets/placements/{id}": {
             "put": {
                 "description": "Create an asset placement by Id",
                 "consumes": [
@@ -697,10 +649,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
@@ -730,16 +679,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/recover/{id}": {
+        "/api/v1/assets/recover/{id}": {
             "put": {
                 "description": "Recover Deleted Asset By Id",
                 "tags": [
@@ -765,16 +711,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/asset/{id}": {
+        "/api/v1/assets/{id}": {
             "put": {
                 "description": "Update an asset by Id",
                 "consumes": [
@@ -815,10 +758,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
@@ -848,16 +788,122 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/history/all": {
+        "/api/v1/auths/login": {
+            "post": {
+                "description": "Login to the Apps",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Post Login",
+                "parameters": [
+                    {
+                        "description": "Post Login Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.UserAuth"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePostLogin"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auths/register": {
+            "post": {
+                "description": "Register User / Guest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Post Register",
+                "parameters": [
+                    {
+                        "description": "Post Register Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestPostRegister"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePostLogin"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auths/signout": {
+            "post": {
+                "description": "Sign Out to the Apps",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Post Sign Out",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePostSignOut"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/histories/all": {
             "get": {
                 "description": "Returns a paginated list of all users histories",
                 "consumes": [
@@ -880,16 +926,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
             }
         },
-        "/api/v1/history/most-context/{targetCol}": {
+        "/api/v1/histories/most-context/{targetCol}": {
             "get": {
                 "description": "Returns a list of most appear item in history by given field",
                 "consumes": [
@@ -921,16 +964,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
             }
         },
-        "/api/v1/history/my": {
+        "/api/v1/histories/my": {
             "get": {
                 "description": "Returns a paginated list of my histories",
                 "consumes": [
@@ -953,10 +993,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
@@ -972,7 +1009,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Use"
+                    "User"
                 ],
                 "summary": "Get My Profile",
                 "responses": {
@@ -985,16 +1022,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
             }
         },
-        "/api/v1/room": {
+        "/api/v1/rooms": {
             "get": {
                 "description": "Returns a paginated list of room",
                 "consumes": [
@@ -1017,10 +1051,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
@@ -1065,16 +1096,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/room/asset/detail/{floor}/{roomName}": {
+        "/api/v1/rooms/asset/detail/{floor}/{roomName}": {
             "get": {
                 "description": "Returns a paginated list of asset that found in a room",
                 "consumes": [
@@ -1113,16 +1141,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
             }
         },
-        "/api/v1/room/asset/short/{floor}/{roomName}": {
+        "/api/v1/rooms/asset/short/{floor}/{roomName}": {
             "get": {
                 "description": "Returns a paginated list of asset that found in a room. in short format",
                 "consumes": [
@@ -1161,16 +1186,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
             }
         },
-        "/api/v1/room/most-context/{targetCol}": {
+        "/api/v1/rooms/most-context/{targetCol}": {
             "get": {
                 "description": "Returns a list of most appear item in room by given field",
                 "consumes": [
@@ -1202,16 +1224,13 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
                         }
                     }
                 }
             }
         },
-        "/api/v1/room/{id}": {
+        "/api/v1/rooms/{id}": {
             "delete": {
                 "description": "Permanentally delete room by id",
                 "tags": [
@@ -1237,16 +1256,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
             }
         },
-        "/api/v1/technician": {
+        "/api/v1/technicians": {
             "get": {
                 "description": "Returns a paginated list of technician",
                 "consumes": [
@@ -1269,10 +1285,129 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a technician",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technician"
+                ],
+                "summary": "Post Create Technician",
+                "parameters": [
+                    {
+                        "description": "Post Technician Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestPostUpdateTechnicianById"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of asset technician",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePostTechnician"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/technicians/{id}": {
+            "put": {
+                "description": "Update a Technician by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technician"
+                ],
+                "summary": "Put Update Technician By Id",
+                "parameters": [
+                    {
+                        "description": "Update Technician Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestPostUpdateTechnicianById"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of technician",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseUpdateTechnicianById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Permanentally delete technician by id",
+                "tags": [
+                    "Technician"
+                ],
+                "summary": "Delete Technician By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of technician",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteTechnicianById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
                         }
                     }
                 }
@@ -1568,6 +1703,19 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.LoginData": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "\u003cyour_access_token\u003e"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "admin"
+                }
+            }
+        },
         "entity.Metadata": {
             "type": "object",
             "properties": {
@@ -1660,6 +1808,46 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.RequestPostRegister": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.RequestPostUpdateTechnicianById": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.RequestUpdateAssetById": {
             "type": "object",
             "required": [
@@ -1691,12 +1879,25 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.ResponseBadRequest": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "targetCol is not valid"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "failed"
+                }
+            }
+        },
         "entity.ResponseCreateAsset": {
             "type": "object",
             "properties": {
                 "message": {
                     "type": "string",
-                    "example": "asset created successfully"
+                    "example": "asset created"
                 },
                 "status": {
                     "type": "string",
@@ -1709,7 +1910,7 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string",
-                    "example": "asset finding created successfully"
+                    "example": "asset finding created"
                 },
                 "status": {
                     "type": "string",
@@ -1722,7 +1923,7 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string",
-                    "example": "asset maintenance created successfully"
+                    "example": "asset maintenance created"
                 },
                 "status": {
                     "type": "string",
@@ -1735,7 +1936,7 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string",
-                    "example": "asset placement created successfully"
+                    "example": "asset placement created"
                 },
                 "status": {
                     "type": "string",
@@ -1788,6 +1989,19 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "room deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteTechnicianById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "technician deleted"
                 },
                 "status": {
                     "type": "string",
@@ -2123,12 +2337,67 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.ResponseNotFound": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset not found"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "failed"
+                }
+            }
+        },
+        "entity.ResponsePostLogin": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/entity.LoginData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "user login successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePostSignOut": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "User signed out"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePostTechnician": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "technician created"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
         "entity.ResponsePutUpdateAssetMaintenance": {
             "type": "object",
             "properties": {
                 "message": {
                     "type": "string",
-                    "example": "asset maintenance updated successfully"
+                    "example": "asset maintenance updated"
                 },
                 "status": {
                     "type": "string",
@@ -2141,7 +2410,7 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string",
-                    "example": "asset placement updated successfully"
+                    "example": "asset placement updated"
                 },
                 "status": {
                     "type": "string",
@@ -2154,7 +2423,7 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string",
-                    "example": "room updated successfully"
+                    "example": "room updated"
                 },
                 "status": {
                     "type": "string",
@@ -2193,7 +2462,20 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string",
-                    "example": "asset updated successfully"
+                    "example": "asset updated"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseUpdateTechnicianById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "technician updated"
                 },
                 "status": {
                     "type": "string",
@@ -2333,6 +2615,21 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.UserAuth": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }

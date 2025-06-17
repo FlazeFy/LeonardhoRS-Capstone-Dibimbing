@@ -25,4 +25,13 @@ type (
 		TelegramIsValid bool      `json:"telegram_is_valid"`
 		CreatedAt       time.Time `json:"created_at" gorm:"type:timestamp;not null"`
 	}
+	// For Response
+	ResponseBadRequest struct {
+		Message string `json:"message" example:"targetCol is not valid"`
+		Status  string `json:"status" example:"failed"`
+	}
+	ResponseNotFound struct {
+		Message string `json:"message" example:"asset not found"`
+		Status  string `json:"status" example:"failed"`
+	}
 )

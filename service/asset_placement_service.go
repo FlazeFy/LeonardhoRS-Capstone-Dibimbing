@@ -9,6 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Asset Placement Interface
 type AssetPlacementService interface {
 	GetAllAssetPlacement(pagination utils.Pagination) ([]entity.AssetPlacement, int64, error)
 	Create(assetPlacement *entity.AssetPlacement, adminId uuid.UUID) error
@@ -16,10 +17,12 @@ type AssetPlacementService interface {
 	DeleteById(id uuid.UUID) error
 }
 
+// Asset Placement Struct
 type assetPlacementService struct {
 	assetPlacementRepo repository.AssetPlacementRepository
 }
 
+// Asset Placement Constructor
 func NewAssetPlacementService(assetPlacementRepo repository.AssetPlacementRepository) AssetPlacementService {
 	return &assetPlacementService{
 		assetPlacementRepo: assetPlacementRepo,

@@ -25,8 +25,8 @@ func NewAssetMaintenanceRepository(assetMaintenanceService service.AssetMaintena
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllAssetMaintenance
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/maintenance [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/maintenances [get]
 func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -55,8 +55,8 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllAssetMaintenanceSchedule
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/maintenance/schedule [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/maintenances/schedule [get]
 func (rc *AssetMaintenanceController) GetAllAssetMaintenanceSchedule(c *gin.Context) {
 	// Service: Get All Asset Maintenance
 	assetMaintenance, err := rc.AssetMaintenanceService.GetAllAssetMaintenanceSchedule()
@@ -76,8 +76,8 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenanceSchedule(c *gin.Cont
 // @Produce      json
 // @Param        request  body  entity.RequestCreateUpdateAssetMaintenance  true  "Create Asset Maintenance Request Body"
 // @Success      201  {object}  entity.ResponseCreateAssetMaintenance
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/maintenance [post]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/maintenances [post]
 func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetMaintenance
@@ -119,8 +119,8 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 // @Produce      json
 // @Param        request  body  entity.RequestCreateUpdateAssetMaintenance  true  "Put Update Asset Maintenance Request Body"
 // @Success      200  {object}  entity.ResponsePutUpdateAssetMaintenance
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/maintenance/{id} [put]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/maintenances/{id} [put]
 // @Param        id  path  string  true  "Id of asset maintenance"
 func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 	// Param
@@ -156,8 +156,8 @@ func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 // @Description  Permanentally delete asset maintenance by id
 // @Tags         Asset
 // @Success      200  {object}  entity.ResponseDeleteAssetMaintenanceById
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/maintenance/{id} [delete]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/maintenances/{id} [delete]
 // @Param        id  path  string  true  "Id of asset maintenance"
 func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 	// Param
@@ -186,8 +186,8 @@ func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/most-context/{targetCol} [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: maintenance_day)"
 func (rc *AssetMaintenanceController) GetMostContext(c *gin.Context) {
 	// Param

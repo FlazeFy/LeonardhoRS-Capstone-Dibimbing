@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Technician Interface
 type TechnicianRepository interface {
 	FindByEmail(email string) (*entity.Technician, error)
 	FindByEmailAndId(email string, id uuid.UUID) (*entity.Technician, error)
@@ -20,10 +21,12 @@ type TechnicianRepository interface {
 	UpdateById(technician *entity.Technician, adminId uuid.UUID) error
 }
 
+// Technician Struct
 type technicianRepository struct {
 	db *gorm.DB
 }
 
+// Technician Constructor
 func NewTechnicianRepository(db *gorm.DB) TechnicianRepository {
 	return &technicianRepository{db: db}
 }

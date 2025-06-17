@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Asset Placement Interface
 type AssetPlacementRepository interface {
 	FindAll(pagination utils.Pagination) ([]entity.AssetPlacement, int64, error)
 	Create(assetPlacement *entity.AssetPlacement, adminId uuid.UUID) error
@@ -19,10 +20,12 @@ type AssetPlacementRepository interface {
 	DeleteById(id uuid.UUID) error
 }
 
+// Asset Placement Struct
 type assetPlacementRepository struct {
 	db *gorm.DB
 }
 
+// Asset Placement Constructor
 func NewAssetPlacementRepository(db *gorm.DB) AssetPlacementRepository {
 	return &assetPlacementRepository{db: db}
 }

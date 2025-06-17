@@ -18,11 +18,11 @@ func NewUserController(userService service.UserService) *UserController {
 
 // @Summary      Get My Profile
 // @Description  Returns a paginated list of handle
-// @Tags         Use
+// @Tags         User
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMyProfile
-// @Failure      404  {object}  map[string]string
+// @Failure      404  {object}  entity.ResponseNotFound
 // @Router       /api/v1/profile [get]
 func (ac *UserController) GetMyProfile(c *gin.Context) {
 	// Get User Id

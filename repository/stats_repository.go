@@ -8,14 +8,17 @@ import (
 	"gorm.io/gorm"
 )
 
+// Stats Interface
 type StatsRepository interface {
 	FindMostUsedContext(tableName, targetCol string) ([]entity.StatsContextTotal, error)
 }
 
+// Stats Struct
 type statsRepository struct {
 	db *gorm.DB
 }
 
+// Stats Constructor
 func NewStatsRepository(db *gorm.DB) StatsRepository {
 	return &statsRepository{db: db}
 }

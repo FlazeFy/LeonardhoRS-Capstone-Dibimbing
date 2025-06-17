@@ -15,6 +15,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Asset Maintenance Interface
 type AssetMaintenanceService interface {
 	GetAllAssetMaintenance(pagination utils.Pagination) ([]entity.AssetMaintenance, int64, error)
 	GetAllAssetMaintenanceSchedule() ([]entity.AssetMaintenanceSchedule, error)
@@ -27,6 +28,7 @@ type AssetMaintenanceService interface {
 	GetTodayValidSchedules() (map[string][]entity.AssetMaintenanceSchedule, error)
 }
 
+// Asset Maintenance Struct
 type assetMaintenanceService struct {
 	assetMaintenanceRepo repository.AssetMaintenanceRepository
 	technicianRepo       repository.TechnicianRepository
@@ -34,6 +36,7 @@ type assetMaintenanceService struct {
 	statsRepo            repository.StatsRepository
 }
 
+// Asset Maintenance Constructor
 func NewAssetMaintenanceService(assetMaintenanceRepo repository.AssetMaintenanceRepository, technicianRepo repository.TechnicianRepository, assetRepo repository.AssetRepository, statsRepo repository.StatsRepository) AssetMaintenanceService {
 	return &assetMaintenanceService{
 		assetMaintenanceRepo: assetMaintenanceRepo,
@@ -110,7 +113,7 @@ func (s *assetMaintenanceService) Create(assetMaintenance *entity.AssetMaintenan
 
 		telegramID, err := strconv.ParseInt(*technician.TelegramUserId, 10, 64)
 		if err != nil {
-			return errors.New(fmt.Sprintf("Invalid technician Telegram ID: %v\n", err))
+			return errors.New(fmt.Sprintf("Invalid technician Telegram ID: %v\n", err.Error()))
 		}
 
 		// Repo : Find Asset By Id

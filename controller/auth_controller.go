@@ -18,6 +18,15 @@ func NewAuthController(authService service.AuthService) *AuthController {
 	return &AuthController{AuthService: authService}
 }
 
+// @Summary      Post Register
+// @Description  Register User / Guest
+// @Tags         Auth
+// @Accept       application/json
+// @Produce      json
+// @Param        request  body  entity.RequestPostRegister true  "Post Register Request Body"
+// @Success      201  {object}  entity.ResponsePostLogin
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/auths/register [post]
 func (ac *AuthController) Register(c *gin.Context) {
 	// Model
 	var req entity.User
@@ -43,6 +52,15 @@ func (ac *AuthController) Register(c *gin.Context) {
 	}, nil)
 }
 
+// @Summary      Post Login
+// @Description  Login to the Apps
+// @Tags         Auth
+// @Accept       application/json
+// @Produce      json
+// @Param        request  body  entity.UserAuth true  "Post Login Request Body"
+// @Success      200  {object}  entity.ResponsePostLogin
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/auths/login [post]
 func (ac *AuthController) Login(c *gin.Context) {
 	// Model
 	var req entity.UserAuth
@@ -67,6 +85,14 @@ func (ac *AuthController) Login(c *gin.Context) {
 	}, nil)
 }
 
+// @Summary      Post Sign Out
+// @Description  Sign Out to the Apps
+// @Tags         Auth
+// @Accept       application/json
+// @Produce      json
+// @Success      200  {object}  entity.ResponsePostSignOut
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/auths/signout [post]
 func (ac *AuthController) SignOut(c *gin.Context) {
 	// Header
 	authHeader := c.GetHeader("Authorization")

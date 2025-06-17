@@ -31,7 +31,7 @@ func GetAuthTokenAndRole(t *testing.T, email, password string) (string, string) 
 
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "success", result["status"])
-	assert.Equal(t, "user login successfully", result["message"])
+	assert.Equal(t, "user login", result["message"])
 
 	data, ok := result["data"].(map[string]interface{})
 	assert.True(t, ok, "data should be a JSON object")

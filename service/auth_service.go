@@ -15,12 +15,14 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+// Auth Interface
 type AuthService interface {
 	Register(user *entity.User) (string, error)
 	Login(email, password string) (string, string, error)
 	SignOut(token string) error
 }
 
+// Auth Struct
 type authService struct {
 	userRepo       repository.UserRepository
 	adminRepo      repository.AdminRepository
@@ -28,6 +30,7 @@ type authService struct {
 	redisClient    *redis.Client
 }
 
+// Auth Constructor
 func NewAuthService(userRepo repository.UserRepository, adminRepo repository.AdminRepository, technicianRepo repository.TechnicianRepository, redisClient *redis.Client) AuthService {
 	return &authService{
 		userRepo:       userRepo,

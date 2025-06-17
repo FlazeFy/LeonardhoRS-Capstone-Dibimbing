@@ -8,15 +8,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// Admin Interface
 type AdminRepository interface {
 	FindByEmail(email string) (*entity.Admin, error)
 	FindAllContact() ([]entity.AdminContact, error)
 }
 
+// Admin Struct
 type adminRepository struct {
 	db *gorm.DB
 }
 
+// Admin Constructor
 func NewAdminRepository(db *gorm.DB) AdminRepository {
 	return &adminRepository{db: db}
 }
