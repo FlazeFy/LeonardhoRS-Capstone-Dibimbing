@@ -5,11 +5,15 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"pelita/entity"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
+// For E2E Test
 func GetAuthTokenAndRole(t *testing.T, email, password string) (string, string) {
 	payload := map[string]string{
 		"email":    email,
@@ -45,4 +49,15 @@ func GetAuthTokenAndRole(t *testing.T, email, password string) (string, string) 
 	assert.NotEmpty(t, role)
 
 	return accessToken, role
+}
+
+// For Integration Test
+func SetupTestDB(t *testing.T) *gorm.DB {
+	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
+	assert.NoError(t, err, "failed to connect test DB")
+
+	err = db.AutoMigrate(&entity.Admin{})
+	assert.NoError(t, err, "failed to migrate admin schema")
+
+	return db
 }

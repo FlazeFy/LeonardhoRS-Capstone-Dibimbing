@@ -32,6 +32,7 @@ func (r *adminRepository) FindAllContact() ([]entity.AdminContact, error) {
 	err := r.db.Table("admins").
 		Select("username, email, telegram_is_valid, telegram_user_id").
 		Where("telegram_is_valid = ?", true).
+		Where("telegram_user_id IS NOT NULL").
 		Order("username ASC").
 		Find(&admin).Error
 
