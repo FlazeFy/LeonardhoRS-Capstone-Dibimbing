@@ -25,8 +25,8 @@ func NewAssetPlacementRepository(assetPlacementService service.AssetPlacementSer
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllAssetPlacement
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/placement [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/placements [get]
 func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -34,7 +34,7 @@ func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
 	// Service: Get All Asset Placement
 	assetPlacement, total, err := rc.AssetPlacementService.GetAllAssetPlacement(pagination)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -56,28 +56,38 @@ func (rc *AssetPlacementController) GetAllAssetPlacement(c *gin.Context) {
 // @Produce      json
 // @Param        request  body  entity.RequestCreateUpdateAssetPlacement  true  "Create Asset Placement Request Body"
 // @Success      201  {object}  entity.ResponseCreateAssetPlacement
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/placement [post]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/placements [post]
 func (rc *AssetPlacementController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetPlacement
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Get User Id
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	// Validator Field
+	if req.AssetId == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset placement name is required")
+		return
+	}
+	if req.RoomId == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset placement category is required")
 		return
 	}
 
 	// Service : Create Asset Placement
 	if err := rc.AssetPlacementService.Create(&req, adminId); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -92,8 +102,8 @@ func (rc *AssetPlacementController) Create(c *gin.Context) {
 // @Produce      json
 // @Param        request  body  entity.RequestCreateUpdateAssetPlacement  true  "Put Update Asset Placement Request Body"
 // @Success      200  {object}  entity.ResponsePutUpdateAssetPlacement
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/placement/{id} [put]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/placements/{id} [put]
 // @Param        id  path  string  true  "Id of asset placement"
 func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
 	// Param
@@ -102,25 +112,32 @@ func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
 	// Model
 	var req entity.AssetPlacement
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Parse Id
 	assetPlacementID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
+		return
+	}
+
+	// Validator Field
+	if req.AssetId == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset placement name is required")
+		return
+	}
+	if req.RoomId == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset placement category is required")
 		return
 	}
 
 	// Service : Update Asset Placement
 	if err := rc.AssetPlacementService.UpdateById(&req, assetPlacementID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -132,8 +149,8 @@ func (rc *AssetPlacementController) UpdateById(c *gin.Context) {
 // @Description  Permanentally delete asset placement by id
 // @Tags         Asset
 // @Success      200  {object}  entity.ResponseDeleteAssetPlacementById
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/placement/{id} [delete]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/placements/{id} [delete]
 // @Param        id  path  string  true  "Id of asset placement"
 func (rc *AssetPlacementController) DeleteById(c *gin.Context) {
 	// Param
@@ -142,16 +159,13 @@ func (rc *AssetPlacementController) DeleteById(c *gin.Context) {
 	// Parse Id
 	assetPlacementID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
 		return
 	}
 
 	// Service : Delete Asset Placement By Id
 	if err := rc.AssetPlacementService.DeleteById(assetPlacementID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

@@ -9,17 +9,20 @@ import (
 	"github.com/google/uuid"
 )
 
+// History Interface
 type HistoryService interface {
 	GetAllHistory(pagination utils.Pagination) ([]entity.AllHistory, int64, error)
 	GetMyHistory(pagination utils.Pagination, id uuid.UUID, typeUser string) ([]entity.History, int64, error)
 	GetMostContext(targetCol string) ([]entity.StatsContextTotal, error)
 }
 
+// History Struct
 type historyService struct {
 	historyRepo repository.HistoryRepository
 	statsRepo   repository.StatsRepository
 }
 
+// History Constructor
 func NewHistoryService(historyRepo repository.HistoryRepository, statsRepo repository.StatsRepository) HistoryService {
 	return &historyService{
 		historyRepo: historyRepo,

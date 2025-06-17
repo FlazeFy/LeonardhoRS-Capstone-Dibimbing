@@ -25,8 +25,8 @@ func NewAssetMaintenanceRepository(assetMaintenanceService service.AssetMaintena
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllAssetMaintenance
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/maintenance [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/maintenances [get]
 func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -34,7 +34,7 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
 	// Service: Get All Asset Maintenance
 	assetMaintenance, total, err := rc.AssetMaintenanceService.GetAllAssetMaintenance(pagination)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -55,13 +55,13 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenance(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllAssetMaintenanceSchedule
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/maintenance/schedule [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/maintenances/schedule [get]
 func (rc *AssetMaintenanceController) GetAllAssetMaintenanceSchedule(c *gin.Context) {
 	// Service: Get All Asset Maintenance
 	assetMaintenance, err := rc.AssetMaintenanceService.GetAllAssetMaintenanceSchedule()
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -76,38 +76,49 @@ func (rc *AssetMaintenanceController) GetAllAssetMaintenanceSchedule(c *gin.Cont
 // @Produce      json
 // @Param        request  body  entity.RequestCreateUpdateAssetMaintenance  true  "Create Asset Maintenance Request Body"
 // @Success      201  {object}  entity.ResponseCreateAssetMaintenance
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/maintenance [post]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/maintenances [post]
 func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetMaintenance
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Validator Rules
 	validDays := map[string]bool{"Sun": true, "Mon": true, "Tue": true, "Wed": true, "Thu": true, "Fri": true, "Sat": true}
 	if !validDays[req.MaintenanceDay] {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "maintenance day must be one of: Sun, Mon, Tue, Wed, Thu, Fri, Sat",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "maintenance day must be one of: Sun, Mon, Tue, Wed, Thu, Fri, Sat")
 		return
 	}
 
 	// Get User Id
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	// Validator Field
+	if req.AssetPlacementId == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset placement id is required")
+		return
+	}
+	if req.MaintenanceBy == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance by is required")
+		return
+	}
+	if req.MaintenanceDay == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance day is required")
 		return
 	}
 
 	// Service : Create Asset Maintenance
 	if err := rc.AssetMaintenanceService.Create(&req, adminId); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -122,8 +133,8 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 // @Produce      json
 // @Param        request  body  entity.RequestCreateUpdateAssetMaintenance  true  "Put Update Asset Maintenance Request Body"
 // @Success      200  {object}  entity.ResponsePutUpdateAssetMaintenance
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/maintenance/{id} [put]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/maintenances/{id} [put]
 // @Param        id  path  string  true  "Id of asset maintenance"
 func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 	// Param
@@ -132,25 +143,36 @@ func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 	// Model
 	var req entity.AssetMaintenance
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Parse Id
 	assetMaintenanceID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
+		return
+	}
+
+	// Validator Field
+	if req.AssetPlacementId == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset placement id is required")
+		return
+	}
+	if req.MaintenanceBy == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance by is required")
+		return
+	}
+	if req.MaintenanceDay == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance day is required")
 		return
 	}
 
 	// Service : Update Asset Maintenance
 	if err := rc.AssetMaintenanceService.UpdateById(&req, assetMaintenanceID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -162,8 +184,8 @@ func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 // @Description  Permanentally delete asset maintenance by id
 // @Tags         Asset
 // @Success      200  {object}  entity.ResponseDeleteAssetMaintenanceById
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/maintenance/{id} [delete]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/maintenances/{id} [delete]
 // @Param        id  path  string  true  "Id of asset maintenance"
 func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 	// Param
@@ -172,16 +194,13 @@ func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 	// Parse Id
 	assetMaintenanceID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
 		return
 	}
 
 	// Service : Delete Asset Maintenance By Id
 	if err := rc.AssetMaintenanceService.DeleteById(assetMaintenanceID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -195,8 +214,8 @@ func (rc *AssetMaintenanceController) DeleteById(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/most-context/{targetCol} [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: maintenance_day)"
 func (rc *AssetMaintenanceController) GetMostContext(c *gin.Context) {
 	// Param
@@ -204,17 +223,14 @@ func (rc *AssetMaintenanceController) GetMostContext(c *gin.Context) {
 
 	// Validator : Target Column Validator
 	if targetCol != "maintenance_day" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "targetCol is not valid",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "targetCol is not valid")
 		return
 	}
 
 	// Service: Get Most Context
 	assetMaintenance, err := rc.AssetMaintenanceService.GetMostContext(targetCol)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Asset Maintenance Interface
 type AssetMaintenanceRepository interface {
 	FindAll(pagination utils.Pagination) ([]entity.AssetMaintenance, int64, error)
 	FindAllSchedule() ([]entity.AssetMaintenanceSchedule, error)
@@ -21,10 +22,12 @@ type AssetMaintenanceRepository interface {
 	DeleteById(id uuid.UUID) error
 }
 
+// Asset Maintenance Struct
 type assetMaintenanceRepository struct {
 	db *gorm.DB
 }
 
+// Asset Maintenance Constructor
 func NewAssetMaintenanceRepository(db *gorm.DB) AssetMaintenanceRepository {
 	return &assetMaintenanceRepository{db: db}
 }

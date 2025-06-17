@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Room Interface
 type RoomRepository interface {
 	FindAll(pagination utils.Pagination) ([]entity.Room, int64, error)
 	Create(room *entity.Room) error
@@ -22,10 +23,12 @@ type RoomRepository interface {
 	FindRoomAssetShortByFloorAndRoomName(floor, roomName string) ([]entity.RoomAssetShort, error)
 }
 
+// Room Struct
 type roomRepository struct {
 	db *gorm.DB
 }
 
+// Room Constructor
 func NewRoomRepository(db *gorm.DB) RoomRepository {
 	return &roomRepository{db: db}
 }

@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"net/http"
 
 	"pelita/config"
 
@@ -35,8 +34,8 @@ func BuildResponseMessage(c *gin.Context, typeResponse, contextKey, method strin
 	c.JSON(statusCode, response)
 }
 
-func BuildErrorMessage(c *gin.Context, err string) {
-	c.JSON(http.StatusBadRequest, gin.H{
+func BuildErrorMessage(c *gin.Context, statusCode int, err string) {
+	c.JSON(statusCode, gin.H{
 		"message": err,
 		"status":  "failed",
 	})

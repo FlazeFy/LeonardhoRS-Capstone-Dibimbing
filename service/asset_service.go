@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Asset Interface
 type AssetService interface {
 	GetAllAsset(pagination utils.Pagination) ([]entity.Asset, int64, error)
 	GetDeleted() ([]entity.Asset, error)
@@ -21,11 +22,13 @@ type AssetService interface {
 	RecoverDeletedById(id uuid.UUID) error
 }
 
+// Asset Struct
 type assetService struct {
 	assetRepo repository.AssetRepository
 	statsRepo repository.StatsRepository
 }
 
+// Asset Constructor
 func NewAssetService(assetRepo repository.AssetRepository, statsRepo repository.StatsRepository) AssetService {
 	return &assetService{
 		assetRepo: assetRepo,
@@ -60,15 +63,13 @@ func (s *assetService) GetDeleted() ([]entity.Asset, error) {
 }
 
 func (s *assetService) Create(asset *entity.Asset, adminId uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error {
-	// Validator
-	if asset.AssetName == "" {
-		return errors.New("asset name is required")
+	// Repo : Get Asset by Asset Name & Category & Merk
+	is_exist, err := s.assetRepo.FindByAssetNameCategoryAndMerk(asset.AssetName, asset.AssetCategory, asset.AssetMerk)
+	if err != nil {
+		return err
 	}
-	if asset.AssetCategory == "" {
-		return errors.New("asset category is required")
-	}
-	if asset.AssetStatus == "" {
-		return errors.New("asset status is required")
+	if is_exist != nil {
+		return errors.New("asset already exist on the same floor")
 	}
 
 	// Utils : Firebase Upload image
@@ -82,15 +83,6 @@ func (s *assetService) Create(asset *entity.Asset, adminId uuid.UUID, file *mult
 		asset.AssetImageURL = nil
 	}
 
-	// Repo : Get Asset by Asset Name & Category & Merk
-	is_exist, err := s.assetRepo.FindByAssetNameCategoryAndMerk(asset.AssetName, asset.AssetCategory, asset.AssetMerk)
-	if err != nil {
-		return err
-	}
-	if is_exist != nil {
-		return errors.New("asset already exist on the same floor")
-	}
-
 	// Repo : Create Asset
 	if err := s.assetRepo.Create(asset, adminId); err != nil {
 		return err
@@ -100,17 +92,6 @@ func (s *assetService) Create(asset *entity.Asset, adminId uuid.UUID, file *mult
 }
 
 func (s *assetService) UpdateById(asset *entity.Asset, id uuid.UUID) error {
-	// Validator
-	if asset.AssetName == "" {
-		return errors.New("asset name is required")
-	}
-	if asset.AssetCategory == "" {
-		return errors.New("asset category is required")
-	}
-	if asset.AssetStatus == "" {
-		return errors.New("asset status is required")
-	}
-
 	// Repo : Get Asset by Asset Name & Floor
 	is_exist, err := s.assetRepo.FindByAssetNameCategoryMerkAndId(asset.AssetName, asset.AssetCategory, asset.AssetMerk, id)
 	if err != nil {

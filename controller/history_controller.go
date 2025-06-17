@@ -23,8 +23,8 @@ func NewHistoryRepository(historyService service.HistoryService) *HistoryControl
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllHistory
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/history/all [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/histories/all [get]
 func (rc *HistoryController) GetAllHistory(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -32,7 +32,7 @@ func (rc *HistoryController) GetAllHistory(c *gin.Context) {
 	// Service: Get All History
 	history, total, err := rc.HistoryService.GetAllHistory(pagination)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -53,8 +53,8 @@ func (rc *HistoryController) GetAllHistory(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMyHistory
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/history/my [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/histories/my [get]
 func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -62,21 +62,21 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 	// Get User Id
 	userId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	// Get Role
 	role, err := utils.GetCurrentRole(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	// Service: Get My History
 	history, total, err := rc.HistoryService.GetMyHistory(pagination, userId, role)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -97,8 +97,8 @@ func (rc *HistoryController) GetMyHistory(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/history/most-context/{targetCol} [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/histories/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: type_user, type_history)"
 func (rc *HistoryController) GetMostContext(c *gin.Context) {
 	// Param
@@ -107,20 +107,14 @@ func (rc *HistoryController) GetMostContext(c *gin.Context) {
 	// Validator : Target Column Validator
 	validTarget := []string{"type_user", "type_history"}
 	if !utils.Contains(validTarget, targetCol) {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "targetCol is not valid",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "targetCol is not valid")
 		return
 	}
 
 	// Service: Get My History
 	history, err := rc.HistoryService.GetMostContext(targetCol)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": err.Error(),
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

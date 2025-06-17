@@ -38,11 +38,11 @@ type (
 		Status  string `json:"status" example:"success"`
 	}
 	ResponseCreateAssetPlacement struct {
-		Message string `json:"message" example:"asset placement created successfully"`
+		Message string `json:"message" example:"asset placement created"`
 		Status  string `json:"status" example:"success"`
 	}
 	ResponsePutUpdateAssetPlacement struct {
-		Message string `json:"message" example:"asset placement updated successfully"`
+		Message string `json:"message" example:"asset placement updated"`
 		Status  string `json:"status" example:"success"`
 	}
 	RequestCreateUpdateAssetPlacement struct {

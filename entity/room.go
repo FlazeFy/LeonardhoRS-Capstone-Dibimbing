@@ -55,11 +55,11 @@ type (
 		Status  string `json:"status" example:"success"`
 	}
 	ResponseCreateAssetRoom struct {
-		Message string `json:"message" example:"room created successfully"`
+		Message string `json:"message" example:"room created"`
 		Status  string `json:"status" example:"success"`
 	}
 	ResponsePutUpdateRoom struct {
-		Message string `json:"message" example:"room updated successfully"`
+		Message string `json:"message" example:"room updated"`
 		Status  string `json:"status" example:"success"`
 	}
 	RequestPostCreateUpdateRoom struct {

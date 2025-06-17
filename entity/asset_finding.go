@@ -52,7 +52,7 @@ type (
 		Status  string `json:"status" example:"success"`
 	}
 	ResponseCreateAssetFinding struct {
-		Message string `json:"message" example:"asset finding created successfully"`
+		Message string `json:"message" example:"asset finding created"`
 		Status  string `json:"status" example:"success"`
 	}
 )

@@ -10,15 +10,18 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+// User Interface
 type UserService interface {
 	GetMyProfile(user uuid.UUID, role string) (*entity.MyProfile, error)
 }
 
+// User Struct
 type userService struct {
 	userRepo    repository.UserRepository
 	redisClient *redis.Client
 }
 
+// User Constructor
 func NewUserService(userRepo repository.UserRepository, redisClient *redis.Client) UserService {
 	return &userService{
 		userRepo:    userRepo,

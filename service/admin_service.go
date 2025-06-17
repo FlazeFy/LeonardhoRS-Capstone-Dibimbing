@@ -6,14 +6,17 @@ import (
 	"pelita/repository"
 )
 
+// Admin Interface
 type AdminService interface {
 	GetAllContact() ([]entity.AdminContact, error)
 }
 
+// Admin Struct
 type adminService struct {
 	adminRepo repository.AdminRepository
 }
 
+// Admin Constructor
 func NewAdminService(adminRepo repository.AdminRepository) AdminService {
 	return &adminService{
 		adminRepo: adminRepo,

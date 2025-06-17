@@ -18,31 +18,31 @@ func NewUserController(userService service.UserService) *UserController {
 
 // @Summary      Get My Profile
 // @Description  Returns a paginated list of handle
-// @Tags         Use
+// @Tags         User
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMyProfile
-// @Failure      404  {object}  map[string]string
+// @Failure      404  {object}  entity.ResponseNotFound
 // @Router       /api/v1/profile [get]
 func (ac *UserController) GetMyProfile(c *gin.Context) {
 	// Get User Id
 	userID, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	// Get Role
 	role, err := utils.GetCurrentRole(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	// Service: Get Profile by User ID
 	user, err := ac.UserService.GetMyProfile(userID, role)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

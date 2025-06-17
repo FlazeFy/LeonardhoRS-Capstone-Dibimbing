@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Asset Finding Interface
 type AssetFindingService interface {
 	GetAllAssetFinding(pagination utils.Pagination) ([]entity.AssetFinding, int64, error)
 	GetMostContext(targetCol string) ([]entity.StatsContextTotal, error)
@@ -21,11 +22,13 @@ type AssetFindingService interface {
 	GetAllAssetFindingReport() ([]entity.AssetFindingReport, error)
 }
 
+// Asset Finding Struct
 type assetFindingService struct {
 	assetFindingRepo repository.AssetFindingRepository
 	statsRepo        repository.StatsRepository
 }
 
+// Asset Finding Constructor
 func NewAssetFindingService(assetFindingRepo repository.AssetFindingRepository, statsRepo repository.StatsRepository) AssetFindingService {
 	return &assetFindingService{
 		assetFindingRepo: assetFindingRepo,
@@ -60,14 +63,6 @@ func (s *assetFindingService) GetAllAssetFindingReport() ([]entity.AssetFindingR
 }
 
 func (s *assetFindingService) Create(assetFinding *entity.AssetFinding, technicianId, userId *uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error {
-	// Validator
-	if assetFinding.AssetPlacementId == uuid.Nil {
-		return errors.New("asset placement id is required")
-	}
-	if technicianId == nil && userId == nil {
-		return errors.New("technician id and user id is required")
-	}
-
 	// Utils : Firebase Upload image
 	if file != nil {
 		var createdBy uuid.UUID

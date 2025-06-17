@@ -29,8 +29,8 @@ func NewAssetFindingRepository(assetFindingService service.AssetFindingService) 
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetAllAssetFinding
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/finding [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/findings [get]
 func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 	// Pagination
 	pagination := utils.GetPagination(c)
@@ -38,7 +38,7 @@ func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 	// Service: Get All Asset Finding
 	assetFinding, total, err := rc.AssetFindingService.GetAllAssetFinding(pagination)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -59,13 +59,13 @@ func (rc *AssetFindingController) GetAllAssetFinding(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetFindingHourTotal
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/finding/hour-total [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/findings/hour-total [get]
 func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 	// Service: Get All Asset Finding
 	assetFinding, err := rc.AssetFindingService.GetFindingHourTotal()
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -79,8 +79,8 @@ func (rc *AssetFindingController) GetFindingHourTotal(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Success      200  {object}  entity.ResponseGetMostContext
-// @Failure      404  {object}  map[string]string
-// @Router       /api/v1/asset/most-context/{targetCol} [get]
+// @Failure      404  {object}  entity.ResponseNotFound
+// @Router       /api/v1/assets/most-context/{targetCol} [get]
 // @Param        targetCol  path  string  true  "Target Column to Analyze (such as: finding_category)"
 func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 	// Param
@@ -88,17 +88,14 @@ func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 
 	// Validator : Target Column Validator
 	if targetCol != "finding_category" {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "targetCol is not valid",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "targetCol is not valid")
 		return
 	}
 
 	// Service: Get Most Context
 	assetFinding, err := rc.AssetFindingService.GetMostContext(targetCol)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -116,39 +113,36 @@ func (rc *AssetFindingController) GetMostContext(c *gin.Context) {
 // @Param        finding_image     		formData  file    true  "Finding Image (JPG,PNG,JPEG)"
 // @Param        asset_placement_id 	formData  string  true  "Asset Placement Id"
 // @Success      201  {object}  entity.ResponseCreateAssetFinding
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/finding [post]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/findings [post]
 func (rc *AssetFindingController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetFinding
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	// Validator Rules
 	validDays := map[string]bool{"Missing": true, "Broken": true, "Empty": true, "Dirty": true}
 	if !validDays[req.FindingCategory] {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "finding category must be one of: Missing, Broken, Empty, Dirty",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "finding category must be one of: Missing, Broken, Empty, Dirty")
 		return
 	}
 
 	// Get User Id / Technician Id
 	technicianOrUserId, err := utils.GetCurrentUserID(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
 	// Get Role
 	role, err := utils.GetCurrentRole(c)
 	if err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
 		return
 	}
 
@@ -160,6 +154,16 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 		userId = &technicianOrUserId
 	}
 
+	// Validator Field
+	if req.AssetPlacementId == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset placement id is required")
+		return
+	}
+	if technicianId == nil && userId == nil {
+		utils.BuildErrorMessage(c, http.StatusUnauthorized, "technician id and user id is required")
+		return
+	}
+
 	// Default values
 	var fileExt string
 	var fileSize int64
@@ -168,10 +172,7 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 	file, err := c.FormFile("asset_image")
 	if file != nil {
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "failed to retrieve the file",
-				"status":  "failed",
-			})
+			utils.BuildErrorMessage(c, http.StatusBadRequest, "failed to retrieve the file")
 			return
 		}
 
@@ -181,20 +182,14 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 
 		// Validate file size
 		if fileSize > config.MaxSizeFile {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": fmt.Sprintf("The file size must be under %.2f MB", float64(config.MaxSizeFile)/1000000),
-				"status":  "failed",
-			})
+			utils.BuildErrorMessage(c, http.StatusBadRequest, fmt.Sprintf("The file size must be under %.2f MB", float64(config.MaxSizeFile)/1000000))
 			return
 		}
 
 		// Optional: open file to validate it can be read
 		fileReader, err := file.Open()
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"message": "Failed to open the file",
-				"status":  "failed",
-			})
+			utils.BuildErrorMessage(c, http.StatusBadRequest, "failed to open the file")
 			return
 		}
 		defer fileReader.Close()
@@ -202,7 +197,7 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 
 	// Service : Create Asset Finding
 	if err := rc.AssetFindingService.Create(&req, technicianId, userId, fileHeader, fileExt, fileSize); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -215,8 +210,8 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 // @Description  Permanentally delete asset finding by id
 // @Tags         Asset
 // @Success      200  {object}  entity.ResponseDeleteAssetFindingById
-// @Failure      400  {object}  map[string]string
-// @Router       /api/v1/asset/finding/{id} [delete]
+// @Failure      400  {object}  entity.ResponseBadRequest
+// @Router       /api/v1/assets/findings/{id} [delete]
 // @Param        id  path  string  true  "Id of asset finding"
 func (rc *AssetFindingController) DeleteById(c *gin.Context) {
 	// Param
@@ -225,16 +220,13 @@ func (rc *AssetFindingController) DeleteById(c *gin.Context) {
 	// Parse Id
 	assetFindingID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid UUID format",
-			"status":  "failed",
-		})
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
 		return
 	}
 
 	// Service : Delete Asset Finding By Id
 	if err := rc.AssetFindingService.DeleteById(assetFindingID); err != nil {
-		utils.BuildErrorMessage(c, err.Error())
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

@@ -26,6 +26,25 @@ type (
 		Data     []Technician `json:"data"`
 		Metadata Metadata     `json:"metadata"`
 	}
+	ResponseUpdateTechnicianById struct {
+		Message string `json:"message" example:"technician updated"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponsePostTechnician struct {
+		Message string `json:"message" example:"technician created"`
+		Status  string `json:"status" example:"success"`
+	}
+	RequestPostUpdateTechnicianById struct {
+		Username        string  `json:"username"`
+		Password        string  `json:"password"`
+		Email           string  `json:"email"`
+		TelegramUserId  *string `json:"telegram_user_id"`
+		TelegramIsValid bool    `json:"telegram_is_valid"`
+	}
+	ResponseDeleteTechnicianById struct {
+		Message string `json:"message" example:"technician deleted"`
+		Status  string `json:"status" example:"success"`
+	}
 )
 
 // For Generic Interface

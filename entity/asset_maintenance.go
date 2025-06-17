@@ -58,11 +58,11 @@ type (
 		Status  string `json:"status" example:"success"`
 	}
 	ResponseCreateAssetMaintenance struct {
-		Message string `json:"message" example:"asset maintenance created successfully"`
+		Message string `json:"message" example:"asset maintenance created"`
 		Status  string `json:"status" example:"success"`
 	}
 	ResponsePutUpdateAssetMaintenance struct {
-		Message string `json:"message" example:"asset maintenance updated successfully"`
+		Message string `json:"message" example:"asset maintenance updated"`
 		Status  string `json:"status" example:"success"`
 	}
 	RequestCreateUpdateAssetMaintenance struct {
