@@ -43,14 +43,6 @@ func (s *assetPlacementService) GetAllAssetPlacement(pagination utils.Pagination
 }
 
 func (s *assetPlacementService) Create(assetPlacement *entity.AssetPlacement, adminId uuid.UUID) error {
-	// Validator
-	if assetPlacement.AssetId == uuid.Nil {
-		return errors.New("asset placement name is required")
-	}
-	if assetPlacement.RoomId == uuid.Nil {
-		return errors.New("asset placement category is required")
-	}
-
 	// Repo : Get Asset Placement by Room Id and Asset Id
 	is_exist, err := s.assetPlacementRepo.FindByAssetIdAndRoomId(assetPlacement.AssetId, assetPlacement.RoomId)
 	if err != nil {
@@ -69,14 +61,6 @@ func (s *assetPlacementService) Create(assetPlacement *entity.AssetPlacement, ad
 }
 
 func (s *assetPlacementService) UpdateById(assetPlacement *entity.AssetPlacement, id uuid.UUID) error {
-	// Validator
-	if assetPlacement.AssetId == uuid.Nil {
-		return errors.New("asset placement name is required")
-	}
-	if assetPlacement.RoomId == uuid.Nil {
-		return errors.New("asset placement category is required")
-	}
-
 	// Repo : Get Asset by Asset Name & Floor
 	is_exist, err := s.assetPlacementRepo.FindByAssetIdRoomIdAndId(assetPlacement.AssetId, assetPlacement.RoomId, id)
 	if err != nil {

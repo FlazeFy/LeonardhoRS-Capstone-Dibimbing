@@ -114,7 +114,7 @@ func (rc *RoomController) Create(c *gin.Context) {
 	// Model
 	var req entity.Room
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
@@ -124,6 +124,20 @@ func (rc *RoomController) Create(c *gin.Context) {
 	err := rc.RoomService.Create(&req)
 	if err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	// Validator Field
+	if req.RoomName == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "room name is required")
+		return
+	}
+	if req.RoomDept == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "room dept is required")
+		return
+	}
+	if req.Floor == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "floor is required")
 		return
 	}
 
@@ -148,7 +162,7 @@ func (rc *RoomController) UpdateById(c *gin.Context) {
 	// Model
 	var req entity.Room
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
@@ -158,6 +172,20 @@ func (rc *RoomController) UpdateById(c *gin.Context) {
 	roomID, err := uuid.Parse(id)
 	if err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID Format")
+		return
+	}
+
+	// Validator Field
+	if req.RoomName == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "room name is required")
+		return
+	}
+	if req.RoomDept == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "room dept is required")
+		return
+	}
+	if req.Floor == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "floor is required")
 		return
 	}
 

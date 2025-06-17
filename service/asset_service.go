@@ -63,17 +63,6 @@ func (s *assetService) GetDeleted() ([]entity.Asset, error) {
 }
 
 func (s *assetService) Create(asset *entity.Asset, adminId uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error {
-	// Validator
-	if asset.AssetName == "" {
-		return errors.New("asset name is required")
-	}
-	if asset.AssetCategory == "" {
-		return errors.New("asset category is required")
-	}
-	if asset.AssetStatus == "" {
-		return errors.New("asset status is required")
-	}
-
 	// Repo : Get Asset by Asset Name & Category & Merk
 	is_exist, err := s.assetRepo.FindByAssetNameCategoryAndMerk(asset.AssetName, asset.AssetCategory, asset.AssetMerk)
 	if err != nil {
@@ -103,17 +92,6 @@ func (s *assetService) Create(asset *entity.Asset, adminId uuid.UUID, file *mult
 }
 
 func (s *assetService) UpdateById(asset *entity.Asset, id uuid.UUID) error {
-	// Validator
-	if asset.AssetName == "" {
-		return errors.New("asset name is required")
-	}
-	if asset.AssetCategory == "" {
-		return errors.New("asset category is required")
-	}
-	if asset.AssetStatus == "" {
-		return errors.New("asset status is required")
-	}
-
 	// Repo : Get Asset by Asset Name & Floor
 	is_exist, err := s.assetRepo.FindByAssetNameCategoryMerkAndId(asset.AssetName, asset.AssetCategory, asset.AssetMerk, id)
 	if err != nil {

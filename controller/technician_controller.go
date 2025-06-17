@@ -65,7 +65,7 @@ func (rc *TechnicianController) Create(c *gin.Context) {
 	// Model
 	var req entity.Technician
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
@@ -75,6 +75,20 @@ func (rc *TechnicianController) Create(c *gin.Context) {
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
 		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	// Validator Field
+	if req.Username == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "username is required")
+		return
+	}
+	if req.Password == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "password is required")
+		return
+	}
+	if req.Email == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "email is required")
 		return
 	}
 
@@ -105,7 +119,7 @@ func (rc *TechnicianController) UpdateById(c *gin.Context) {
 	// Model
 	var req entity.Technician
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
@@ -115,6 +129,20 @@ func (rc *TechnicianController) UpdateById(c *gin.Context) {
 	technicianID, err := uuid.Parse(id)
 	if err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
+		return
+	}
+
+	// Validator Field
+	if req.Username == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "username is required")
+		return
+	}
+	if req.Password == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "password is required")
+		return
+	}
+	if req.Email == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "email is required")
 		return
 	}
 

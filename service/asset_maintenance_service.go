@@ -73,17 +73,6 @@ func (s *assetMaintenanceService) GetAllAssetMaintenanceSchedule() ([]entity.Ass
 }
 
 func (s *assetMaintenanceService) Create(assetMaintenance *entity.AssetMaintenance, adminId uuid.UUID) error {
-	// Validator
-	if assetMaintenance.AssetPlacementId == uuid.Nil {
-		return errors.New("asset placement id is required")
-	}
-	if assetMaintenance.MaintenanceBy == uuid.Nil {
-		return errors.New("asset maintenance by is required")
-	}
-	if assetMaintenance.MaintenanceDay == "" {
-		return errors.New("asset maintenance day is required")
-	}
-
 	// Repo : Get Asset Maintenance By Asset Placement Id, Maintenance By, and Maintenance Day
 	is_exist, err := s.assetMaintenanceRepo.FindByAssetPlacementIdMaintenanceByAndMaintenanceDay(assetMaintenance.AssetPlacementId, assetMaintenance.MaintenanceBy, assetMaintenance.MaintenanceDay, assetMaintenance.MaintenanceHourStart, assetMaintenance.MaintenanceHourEnd)
 	if err != nil {
@@ -145,17 +134,6 @@ func (s *assetMaintenanceService) Create(assetMaintenance *entity.AssetMaintenan
 }
 
 func (s *assetMaintenanceService) UpdateById(assetMaintenance *entity.AssetMaintenance, id uuid.UUID) error {
-	// Validator
-	if assetMaintenance.AssetPlacementId == uuid.Nil {
-		return errors.New("asset placement id is required")
-	}
-	if assetMaintenance.MaintenanceBy == uuid.Nil {
-		return errors.New("asset maintenance by is required")
-	}
-	if assetMaintenance.MaintenanceDay == "" {
-		return errors.New("asset maintenance day is required")
-	}
-
 	// Repo : Get Asset Maintenance By Asset Placement Id, Maintenance By, Maintenance Day, and Id
 	is_exist, err := s.assetMaintenanceRepo.FindByAssetPlacementIdMaintenanceByMaintenanceDayAndId(assetMaintenance.AssetPlacementId, assetMaintenance.MaintenanceBy, assetMaintenance.MaintenanceDay, assetMaintenance.MaintenanceHourStart, assetMaintenance.MaintenanceHourEnd, id)
 	if err != nil {

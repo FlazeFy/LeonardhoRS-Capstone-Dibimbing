@@ -74,17 +74,6 @@ func (s *roomService) GetRoomAssetShortByFloorAndRoomName(floor, roomName string
 }
 
 func (s *roomService) Create(room *entity.Room) error {
-	// Validator
-	if room.RoomName == "" {
-		return errors.New("room name is required")
-	}
-	if room.RoomDept == "" {
-		return errors.New("room dept is required")
-	}
-	if room.Floor == "" {
-		return errors.New("floor is required")
-	}
-
 	// Repo : Get Room by Room Name & Floor
 	is_exist, err := s.roomRepo.FindByRoomNameAndFloor(room.RoomName, room.Floor)
 	if err != nil {
@@ -103,17 +92,6 @@ func (s *roomService) Create(room *entity.Room) error {
 }
 
 func (s *roomService) UpdateById(room *entity.Room, id uuid.UUID) error {
-	// Validator
-	if room.RoomName == "" {
-		return errors.New("room name is required")
-	}
-	if room.RoomDept == "" {
-		return errors.New("room dept is required")
-	}
-	if room.Floor == "" {
-		return errors.New("floor is required")
-	}
-
 	// Repo : Get Room by Room Name & Floor
 	is_exist, err := s.roomRepo.FindByRoomNameFloorAndId(room.RoomName, room.Floor, id)
 	if err != nil {

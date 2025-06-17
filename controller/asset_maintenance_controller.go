@@ -82,7 +82,7 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	// Model
 	var req entity.AssetMaintenance
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
@@ -99,6 +99,20 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
 		utils.BuildErrorMessage(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	// Validator Field
+	if req.AssetPlacementId == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset placement id is required")
+		return
+	}
+	if req.MaintenanceBy == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance by is required")
+		return
+	}
+	if req.MaintenanceDay == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance day is required")
 		return
 	}
 
@@ -129,7 +143,7 @@ func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 	// Model
 	var req entity.AssetMaintenance
 
-	// Validator
+	// Validator JSON
 	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
@@ -139,6 +153,20 @@ func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 	assetMaintenanceID, err := uuid.Parse(id)
 	if err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
+		return
+	}
+
+	// Validator Field
+	if req.AssetPlacementId == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset placement id is required")
+		return
+	}
+	if req.MaintenanceBy == uuid.Nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance by is required")
+		return
+	}
+	if req.MaintenanceDay == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance day is required")
 		return
 	}
 

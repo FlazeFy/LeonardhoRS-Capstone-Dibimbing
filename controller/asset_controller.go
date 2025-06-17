@@ -154,6 +154,20 @@ func (rc *AssetController) Create(c *gin.Context) {
 		defer fileReader.Close()
 	}
 
+	// Validator Field
+	if req.AssetName == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset name is required")
+		return
+	}
+	if req.AssetCategory == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset category is required")
+		return
+	}
+	if req.AssetStatus == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset status is required")
+		return
+	}
+
 	// Service : Create Asset
 	if err := rc.AssetService.Create(&req, adminId, fileHeader, fileExt, fileSize); err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
@@ -191,6 +205,20 @@ func (rc *AssetController) UpdateById(c *gin.Context) {
 	assetID, err := uuid.Parse(id)
 	if err != nil {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "Invalid UUID format")
+		return
+	}
+
+	// Validator Field
+	if req.AssetName == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset name is required")
+		return
+	}
+	if req.AssetCategory == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset category is required")
+		return
+	}
+	if req.AssetStatus == "" {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset status is required")
 		return
 	}
 
