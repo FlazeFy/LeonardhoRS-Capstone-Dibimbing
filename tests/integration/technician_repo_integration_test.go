@@ -10,42 +10,12 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/gorm"
 )
-
-func createTestAdmin(t *testing.T, db *gorm.DB) uuid.UUID {
-	admin := entity.Admin{
-		ID:              uuid.New(),
-		Username:        "admin",
-		Password:        "hashed_password",
-		Email:           "admin@example.com",
-		TelegramIsValid: true,
-		CreatedAt:       time.Now(),
-	}
-	err := db.Create(&admin).Error
-	assert.NoError(t, err)
-	return admin.ID
-}
-
-func createTestTechnician(t *testing.T, db *gorm.DB, createdBy uuid.UUID, email string) entity.Technician {
-	technician := entity.Technician{
-		ID:              uuid.New(),
-		Username:        "tech_user",
-		Password:        "hashed_password",
-		Email:           email,
-		TelegramIsValid: true,
-		CreatedAt:       time.Now(),
-		CreatedBy:       createdBy,
-	}
-	err := db.Create(&technician).Error
-	assert.NoError(t, err)
-	return technician
-}
 
 func TestTechnicianRepositoryCreateAndFind(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewTechnicianRepository(db)
-	adminId := createTestAdmin(t, db)
+	admin := tests.CreateTestAdmin(t, db)
 
 	// Test 1: Create Technician
 	tech := entity.Technician{
@@ -55,7 +25,7 @@ func TestTechnicianRepositoryCreateAndFind(t *testing.T) {
 		TelegramIsValid: true,
 		CreatedAt:       time.Now(),
 	}
-	err := repo.Create(&tech, adminId)
+	err := repo.Create(&tech, admin.ID)
 	assert.NoError(t, err)
 
 	// Test 2: Should find by email
@@ -84,7 +54,7 @@ func TestTechnicianRepositoryCreateAndFind(t *testing.T) {
 func TestTechnicianRepositoryFindAll(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewTechnicianRepository(db)
-	adminId := createTestAdmin(t, db)
+	admin := tests.CreateTestAdmin(t, db)
 
 	// Create multiple technicians
 	for i := 1; i <= 3; i++ {
@@ -95,7 +65,7 @@ func TestTechnicianRepositoryFindAll(t *testing.T) {
 			Email:           uuid.NewString()[0:8] + "@example.com",
 			TelegramIsValid: true,
 			CreatedAt:       time.Now(),
-			CreatedBy:       adminId,
+			CreatedBy:       admin.ID,
 		}
 		db.Create(&tech)
 	}
@@ -111,8 +81,8 @@ func TestTechnicianRepositoryFindAll(t *testing.T) {
 func TestTechnicianRepositoryUpdateById(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewTechnicianRepository(db)
-	adminId := createTestAdmin(t, db)
-	original := createTestTechnician(t, db, adminId, "update_test@example.com")
+	admin := tests.CreateTestAdmin(t, db)
+	original := tests.CreateTestTechnician(t, db, admin.ID, "update_test@example.com")
 
 	// Update fields
 	original.Username = "updated_username"
@@ -130,8 +100,8 @@ func TestTechnicianRepositoryUpdateById(t *testing.T) {
 func TestTechnicianRepositoryDeleteById(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewTechnicianRepository(db)
-	adminId := createTestAdmin(t, db)
-	tech := createTestTechnician(t, db, adminId, "delete_test@example.com")
+	admin := tests.CreateTestAdmin(t, db)
+	tech := tests.CreateTestTechnician(t, db, admin.ID, "delete_test@example.com")
 
 	// Test 1: Should Delete technician by id
 	err := repo.DeleteById(tech.ID)

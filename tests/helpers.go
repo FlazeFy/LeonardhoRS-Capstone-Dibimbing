@@ -7,7 +7,9 @@ import (
 	"net/http"
 	"pelita/entity"
 	"testing"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -60,8 +62,52 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 		&entity.Admin{},
 		&entity.User{},
 		&entity.Technician{},
+		&entity.History{},
 	)
 	assert.NoError(t, err, "failed to migrate admin schema")
 
 	return db
+}
+
+func CreateTestAdmin(t *testing.T, db *gorm.DB) entity.Admin {
+	admin := entity.Admin{
+		ID:              uuid.New(),
+		Username:        "admin_test",
+		Password:        "hashed_password",
+		Email:           "admin@test.com",
+		TelegramIsValid: true,
+		CreatedAt:       time.Now(),
+	}
+	err := db.Create(&admin).Error
+	assert.NoError(t, err)
+	return admin
+}
+
+func CreateTestTechnician(t *testing.T, db *gorm.DB, createdBy uuid.UUID, email string) entity.Technician {
+	technician := entity.Technician{
+		ID:              uuid.New(),
+		Username:        "tech_user",
+		Password:        "hashed_password",
+		Email:           email,
+		TelegramIsValid: true,
+		CreatedAt:       time.Now(),
+		CreatedBy:       createdBy,
+	}
+	err := db.Create(&technician).Error
+	assert.NoError(t, err)
+	return technician
+}
+
+func CreateTestUser(t *testing.T, db *gorm.DB) entity.User {
+	user := entity.User{
+		ID:              uuid.New(),
+		Username:        "user_test",
+		Password:        "hashed_password",
+		Email:           "user@test.com",
+		TelegramIsValid: true,
+		CreatedAt:       time.Now(),
+	}
+	err := db.Create(&user).Error
+	assert.NoError(t, err)
+	return user
 }
