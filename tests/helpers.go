@@ -59,6 +59,7 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 	err = db.AutoMigrate(
 		&entity.Admin{},
 		&entity.User{},
+		&entity.Technician{},
 	)
 	assert.NoError(t, err, "failed to migrate admin schema")
 

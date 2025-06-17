@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUserRepository_CreateAndFind(t *testing.T) {
+func TestUserRepositoryCreateAndFind(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewUserRepository(db)
 	telegramId := "12341"
@@ -47,7 +47,7 @@ func TestUserRepository_CreateAndFind(t *testing.T) {
 	assert.Nil(t, notFound)
 }
 
-func TestUserRepository_FindById(t *testing.T) {
+func TestUserRepositoryFindById(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewUserRepository(db)
 	telegramId := "12341"
