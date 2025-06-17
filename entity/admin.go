@@ -16,6 +16,12 @@ type (
 		TelegramIsValid bool      `json:"telegram_is_valid"`
 		CreatedAt       time.Time `json:"created_at" gorm:"type:timestamp;not null"`
 	}
+	AdminContact struct {
+		Username        string  `json:"username"`
+		Email           string  `json:"email"`
+		TelegramUserId  *string `json:"telegram_user_id"`
+		TelegramIsValid bool    `json:"telegram_is_valid"`
+	}
 )
 
 // For Generic Interface

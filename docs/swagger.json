@@ -1,0 +1,2627 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/v1/assets": {
+            "get": {
+                "description": "Returns a paginated list of assets available",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get All Asset",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllAsset"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create an asset",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Asset Name",
+                        "name": "asset_name",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Description",
+                        "name": "asset_desc",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Merk",
+                        "name": "asset_merk",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Category",
+                        "name": "asset_category",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "Asset Price",
+                        "name": "asset_price",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Status",
+                        "name": "asset_status",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Asset Image (JPG,PNG,JPEG)",
+                        "name": "asset_image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAsset"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/deleted": {
+            "get": {
+                "description": "Returns a list of deleted assets",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get Deleted Asset",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetDeletedAsset"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/destroy/{id}": {
+            "delete": {
+                "description": "Permanentally Delete Asset By Id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Hard Delete Asset By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseHardDeleteAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/findings": {
+            "get": {
+                "description": "Returns a paginated list of assets finding",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get All Asset Finding",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllAssetFinding"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create an asset finding",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset Finding",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Finding Category",
+                        "name": "finding_category",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Finding Notes",
+                        "name": "finding_notes",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Finding Image (JPG,PNG,JPEG)",
+                        "name": "finding_image",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Asset Placement Id",
+                        "name": "asset_placement_id",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAssetFinding"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/findings/hour-total": {
+            "get": {
+                "description": "Returns a paginated list of assets finding total per hour",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get All Asset Finding Hour Total",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetFindingHourTotal"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/findings/{id}": {
+            "delete": {
+                "description": "Permanentally delete asset finding by id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Delete Asset Finding By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset finding",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteAssetFindingById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/maintenances": {
+            "get": {
+                "description": "Returns a paginated list of assets maintenance",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get All Asset Maintenance",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllAssetMaintenance"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create an asset maintenance by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset Maintenance By Id",
+                "parameters": [
+                    {
+                        "description": "Create Asset Maintenance Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetMaintenance"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAssetMaintenance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/maintenances/schedule": {
+            "get": {
+                "description": "Returns a list of assets maintenance schedule",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get All Asset Maintenance Schedule",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllAssetMaintenanceSchedule"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/maintenances/{id}": {
+            "put": {
+                "description": "Create an asset maintenance by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Put Update Asset Maintenance By Id",
+                "parameters": [
+                    {
+                        "description": "Put Update Asset Maintenance Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetMaintenance"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of asset maintenance",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePutUpdateAssetMaintenance"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Permanentally delete asset maintenance by id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Delete Asset Maintenance By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset maintenance",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteAssetMaintenanceById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/most-context/{targetCol}": {
+            "get": {
+                "description": "Returns a list of most appear item in asset maintenance by given field",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get Most Context Asset Maintenance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Target Column to Analyze (such as: maintenance_day)",
+                        "name": "targetCol",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetMostContext"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/placements": {
+            "get": {
+                "description": "Returns a paginated list of assets placement",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Get All Asset Placement",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllAssetPlacement"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create an asset maintenance by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Post Create Asset Placement By Id",
+                "parameters": [
+                    {
+                        "description": "Create Asset Placement Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetPlacement"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseCreateAssetPlacement"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/placements/{id}": {
+            "put": {
+                "description": "Create an asset placement by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Put Update Asset Placement By Id",
+                "parameters": [
+                    {
+                        "description": "Put Update Asset Placement Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestCreateUpdateAssetPlacement"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of asset placement",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePutUpdateAssetPlacement"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Permanentally delete asset placement by id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Delete Asset Placement By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset placement",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteAssetPlacementById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/recover/{id}": {
+            "put": {
+                "description": "Recover Deleted Asset By Id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Recover Put Deleted Asset By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseRecoverDeleteAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/assets/{id}": {
+            "put": {
+                "description": "Update an asset by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Put Update Asset By Id",
+                "parameters": [
+                    {
+                        "description": "Update Asset Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestUpdateAssetById"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseUpdateAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete Asset By Id",
+                "tags": [
+                    "Asset"
+                ],
+                "summary": "Soft Delete Asset By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of asset",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseSoftDeleteAssetById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auths/login": {
+            "post": {
+                "description": "Login to the Apps",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Post Login",
+                "parameters": [
+                    {
+                        "description": "Post Login Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.UserAuth"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePostLogin"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auths/register": {
+            "post": {
+                "description": "Register User / Guest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Post Register",
+                "parameters": [
+                    {
+                        "description": "Post Register Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestPostRegister"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePostLogin"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auths/signout": {
+            "post": {
+                "description": "Sign Out to the Apps",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Post Sign Out",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePostSignOut"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/histories/all": {
+            "get": {
+                "description": "Returns a paginated list of all users histories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "History"
+                ],
+                "summary": "Get All History",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllHistory"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/histories/most-context/{targetCol}": {
+            "get": {
+                "description": "Returns a list of most appear item in history by given field",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "History"
+                ],
+                "summary": "Get Most Context History",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Target Column to Analyze (such as: type_user, type_history)",
+                        "name": "targetCol",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetMostContext"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/histories/my": {
+            "get": {
+                "description": "Returns a paginated list of my histories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "History"
+                ],
+                "summary": "Get My History",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetMyHistory"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/profile": {
+            "get": {
+                "description": "Returns a paginated list of handle",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get My Profile",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetMyProfile"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rooms": {
+            "get": {
+                "description": "Returns a paginated list of room",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Get All Room",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllRoom"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Update an room by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Put Update Room",
+                "parameters": [
+                    {
+                        "description": "Put Update Room Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestPostCreateUpdateRoom"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of room",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePutUpdateRoom"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rooms/asset/detail/{floor}/{roomName}": {
+            "get": {
+                "description": "Returns a paginated list of asset that found in a room",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Get Room Asset By Floor And Room Name (Detail)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "In which Room you want to find the asset. Type 'all' to search in all room",
+                        "name": "roomName",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "In which Floor you want to find the asset.",
+                        "name": "floor",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetRoomAssetByFloorAndRoomName"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rooms/asset/short/{floor}/{roomName}": {
+            "get": {
+                "description": "Returns a paginated list of asset that found in a room. in short format",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Get Room Asset By Floor And Room Name (Short)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "In which Room you want to find the asset. Type 'all' to search in all room",
+                        "name": "roomName",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "In which Floor you want to find the asset.",
+                        "name": "floor",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetRoomAssetShortByFloorAndRoomName"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rooms/most-context/{targetCol}": {
+            "get": {
+                "description": "Returns a list of most appear item in room by given field",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Get Most Context Room",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Target Column to Analyze (such as: asset_merk, asset_category, or asset_status)",
+                        "name": "targetCol",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetMostContext"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/rooms/{id}": {
+            "delete": {
+                "description": "Permanentally delete room by id",
+                "tags": [
+                    "Room"
+                ],
+                "summary": "Delete Room By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of room",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteRoomById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/technicians": {
+            "get": {
+                "description": "Returns a paginated list of technician",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technician"
+                ],
+                "summary": "Get All Technician",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseGetAllTechnician"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseNotFound"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a technician",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technician"
+                ],
+                "summary": "Post Create Technician",
+                "parameters": [
+                    {
+                        "description": "Post Technician Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestPostUpdateTechnicianById"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of asset technician",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponsePostTechnician"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/technicians/{id}": {
+            "put": {
+                "description": "Update a Technician by Id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Technician"
+                ],
+                "summary": "Put Update Technician By Id",
+                "parameters": [
+                    {
+                        "description": "Update Technician Request Body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RequestPostUpdateTechnicianById"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Id of technician",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseUpdateTechnicianById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Permanentally delete technician by id",
+                "tags": [
+                    "Technician"
+                ],
+                "summary": "Delete Technician By Id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id of technician",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseDeleteTechnicianById"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ResponseBadRequest"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.Admin": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AllHistory": {
+            "type": "object",
+            "properties": {
+                "admin_id": {
+                    "description": "FK - Admin",
+                    "type": "string"
+                },
+                "admins": {
+                    "$ref": "#/definitions/entity.Admin"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "technician_id": {
+                    "description": "FK - Technician",
+                    "type": "string"
+                },
+                "technicians": {
+                    "$ref": "#/definitions/entity.Technician"
+                },
+                "type_history": {
+                    "type": "string"
+                },
+                "type_user": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "FK - User",
+                    "type": "string"
+                },
+                "users": {
+                    "$ref": "#/definitions/entity.User"
+                }
+            }
+        },
+        "entity.Asset": {
+            "type": "object",
+            "properties": {
+                "asset_category": {
+                    "type": "string"
+                },
+                "asset_desc": {
+                    "type": "string"
+                },
+                "asset_image_url": {
+                    "type": "string"
+                },
+                "asset_merk": {
+                    "type": "string"
+                },
+                "asset_name": {
+                    "type": "string"
+                },
+                "asset_price": {
+                    "type": "string"
+                },
+                "asset_status": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "description": "FK - Admin",
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AssetFinding": {
+            "type": "object",
+            "properties": {
+                "asset_placement_id": {
+                    "description": "FK - Asset Placement",
+                    "type": "string"
+                },
+                "asset_placements": {
+                    "$ref": "#/definitions/entity.AssetPlacement"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "finding_by_technician": {
+                    "description": "FK - Technician",
+                    "type": "string"
+                },
+                "finding_by_user": {
+                    "description": "FK - User / Guest",
+                    "type": "string"
+                },
+                "finding_category": {
+                    "type": "string"
+                },
+                "finding_image": {
+                    "type": "string"
+                },
+                "finding_notes": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "technicians": {
+                    "$ref": "#/definitions/entity.Technician"
+                },
+                "users": {
+                    "$ref": "#/definitions/entity.User"
+                }
+            }
+        },
+        "entity.AssetMaintenance": {
+            "type": "object",
+            "properties": {
+                "asset_placement_id": {
+                    "description": "FK - Asset Placement",
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "description": "FK - Admin",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "maintenance_by": {
+                    "description": "FK - Technician",
+                    "type": "string"
+                },
+                "maintenance_day": {
+                    "type": "string"
+                },
+                "maintenance_hour_end": {
+                    "type": "string"
+                },
+                "maintenance_hour_start": {
+                    "type": "string"
+                },
+                "maintenance_notes": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AssetMaintenanceSchedule": {
+            "type": "object",
+            "properties": {
+                "asset_category": {
+                    "type": "string"
+                },
+                "asset_name": {
+                    "description": "FK - Asset",
+                    "type": "string"
+                },
+                "asset_qty": {
+                    "description": "FK - Asset Placement",
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "maintenance_day": {
+                    "type": "string"
+                },
+                "maintenance_hour_end": {
+                    "type": "string"
+                },
+                "maintenance_hour_start": {
+                    "type": "string"
+                },
+                "maintenance_notes": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "description": "FK - Technician",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.AssetPlacement": {
+            "type": "object",
+            "properties": {
+                "asset_desc": {
+                    "type": "string"
+                },
+                "asset_id": {
+                    "description": "FK - Asset",
+                    "type": "string"
+                },
+                "asset_owner": {
+                    "description": "FK - Technician",
+                    "type": "string"
+                },
+                "asset_qty": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "description": "FK - Admin",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "room_id": {
+                    "description": "FK - Room",
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.History": {
+            "type": "object",
+            "properties": {
+                "admin_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "technician_id": {
+                    "type": "string"
+                },
+                "type_history": {
+                    "type": "string"
+                },
+                "type_user": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.LoginData": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string",
+                    "example": "\u003cyour_access_token\u003e"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "admin"
+                }
+            }
+        },
+        "entity.Metadata": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "total_pages": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.RequestCreateUpdateAssetMaintenance": {
+            "type": "object",
+            "required": [
+                "asset_placement_id",
+                "maintenance_by",
+                "maintenance_day",
+                "maintenance_hour_end",
+                "maintenance_hour_start"
+            ],
+            "properties": {
+                "asset_placement_id": {
+                    "type": "string"
+                },
+                "maintenance_by": {
+                    "type": "string"
+                },
+                "maintenance_day": {
+                    "type": "string"
+                },
+                "maintenance_hour_end": {
+                    "type": "string"
+                },
+                "maintenance_hour_start": {
+                    "type": "string"
+                },
+                "maintenance_notes": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.RequestCreateUpdateAssetPlacement": {
+            "type": "object",
+            "required": [
+                "asset_id",
+                "asset_owner",
+                "asset_qty",
+                "room_id"
+            ],
+            "properties": {
+                "asset_desc": {
+                    "type": "string"
+                },
+                "asset_id": {
+                    "type": "string"
+                },
+                "asset_owner": {
+                    "type": "string"
+                },
+                "asset_qty": {
+                    "type": "integer"
+                },
+                "room_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.RequestPostCreateUpdateRoom": {
+            "type": "object",
+            "required": [
+                "floor",
+                "room_dept",
+                "room_name"
+            ],
+            "properties": {
+                "floor": {
+                    "type": "string"
+                },
+                "room_dept": {
+                    "type": "string"
+                },
+                "room_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.RequestPostRegister": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.RequestPostUpdateTechnicianById": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.RequestUpdateAssetById": {
+            "type": "object",
+            "required": [
+                "asset_category",
+                "asset_desc",
+                "asset_merk",
+                "asset_name",
+                "asset_price",
+                "asset_status"
+            ],
+            "properties": {
+                "asset_category": {
+                    "type": "string"
+                },
+                "asset_desc": {
+                    "type": "string"
+                },
+                "asset_merk": {
+                    "type": "string"
+                },
+                "asset_name": {
+                    "type": "string"
+                },
+                "asset_price": {
+                    "type": "string"
+                },
+                "asset_status": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.ResponseBadRequest": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "targetCol is not valid"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "failed"
+                }
+            }
+        },
+        "entity.ResponseCreateAsset": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset created"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseCreateAssetFinding": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset finding created"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseCreateAssetMaintenance": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance created"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseCreateAssetPlacement": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset placement created"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteAssetFindingById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset finding deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteAssetMaintenanceById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteAssetPlacementById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset placement deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteRoomById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "room deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseDeleteTechnicianById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "technician deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllAsset": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Asset"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllAssetFinding": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetFinding"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset finding fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllAssetMaintenance": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetMaintenance"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllAssetMaintenanceSchedule": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetMaintenanceSchedule"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance schedule fetched"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllAssetPlacement": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AssetPlacement"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset placement fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllHistory": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.AllHistory"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "history fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllRoom": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Room"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "room fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetAllTechnician": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Technician"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "technician fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetDeletedAsset": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Asset"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "deleted asset fetched"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetFindingHourTotal": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.StatsContextTotal"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset finding fetched"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetMostContext": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.StatsContextTotal"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "asset fetched"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetMyHistory": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.History"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "history fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetMyProfile": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.User"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "user fetched"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetRoomAssetByFloorAndRoomName": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.RoomAsset"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "room fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseGetRoomAssetShortByFloorAndRoomName": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.RoomAssetShort"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "room fetched"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/entity.Metadata"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseHardDeleteAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset permanentally deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseNotFound": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset not found"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "failed"
+                }
+            }
+        },
+        "entity.ResponsePostLogin": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/entity.LoginData"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "user login successfully"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePostSignOut": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "User signed out"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePostTechnician": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "technician created"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePutUpdateAssetMaintenance": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset maintenance updated"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePutUpdateAssetPlacement": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset placement updated"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponsePutUpdateRoom": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "room updated"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseRecoverDeleteAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset recovered"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseSoftDeleteAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset deleted"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseUpdateAssetById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "asset updated"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.ResponseUpdateTechnicianById": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "technician updated"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "entity.Room": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "floor": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "room_dept": {
+                    "type": "string"
+                },
+                "room_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.RoomAsset": {
+            "type": "object",
+            "properties": {
+                "asset_category": {
+                    "type": "string"
+                },
+                "asset_desc": {
+                    "type": "string"
+                },
+                "asset_merk": {
+                    "type": "string"
+                },
+                "asset_name": {
+                    "type": "string"
+                },
+                "floor": {
+                    "type": "string"
+                },
+                "room_dept": {
+                    "type": "string"
+                },
+                "room_name": {
+                    "type": "string"
+                },
+                "total_asset": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.RoomAssetShort": {
+            "type": "object",
+            "properties": {
+                "asset_category": {
+                    "type": "string"
+                },
+                "asset_name": {
+                    "type": "string"
+                },
+                "floor": {
+                    "type": "string"
+                },
+                "room_dept": {
+                    "type": "string"
+                },
+                "room_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.StatsContextTotal": {
+            "type": "object",
+            "properties": {
+                "context": {
+                    "type": "string"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.Technician": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "description": "FK - User",
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "telegram_is_valid": {
+                    "type": "boolean"
+                },
+                "telegram_user_id": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.UserAuth": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

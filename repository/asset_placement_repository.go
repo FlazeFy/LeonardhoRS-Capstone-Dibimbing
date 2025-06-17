@@ -3,14 +3,16 @@ package repository
 import (
 	"errors"
 	"pelita/entity"
+	"pelita/utils"
 	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
+// Asset Placement Interface
 type AssetPlacementRepository interface {
-	FindAll() ([]entity.AssetPlacement, error)
+	FindAll(pagination utils.Pagination) ([]entity.AssetPlacement, int64, error)
 	Create(assetPlacement *entity.AssetPlacement, adminId uuid.UUID) error
 	FindByAssetIdAndRoomId(assetId, assetPlacementId uuid.UUID) (*entity.AssetPlacement, error)
 	FindByAssetIdRoomIdAndId(assetId, assetPlacementId uuid.UUID, id uuid.UUID) (*entity.AssetPlacement, error)
@@ -18,25 +20,37 @@ type AssetPlacementRepository interface {
 	DeleteById(id uuid.UUID) error
 }
 
+// Asset Placement Struct
 type assetPlacementRepository struct {
 	db *gorm.DB
 }
 
+// Asset Placement Constructor
 func NewAssetPlacementRepository(db *gorm.DB) AssetPlacementRepository {
 	return &assetPlacementRepository{db: db}
 }
 
-func (r *assetPlacementRepository) FindAll() ([]entity.AssetPlacement, error) {
+func (r *assetPlacementRepository) FindAll(pagination utils.Pagination) ([]entity.AssetPlacement, int64, error) {
+	var total int64
+
 	// Models
 	var assetPlacement []entity.AssetPlacement
 
+	// Pagination
+	offset := (pagination.Page - 1) * pagination.Limit
+	r.db.Model(&entity.AssetPlacement{}).Count(&total)
+
 	// Query
-	err := r.db.Find(&assetPlacement).Error
+	err := r.db.Order("created_at DESC").
+		Limit(pagination.Limit).
+		Offset(offset).
+		Find(&assetPlacement).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
+		return nil, 0, err
 	}
 
-	return assetPlacement, err
+	return assetPlacement, total, nil
 }
 
 func (r *assetPlacementRepository) FindByAssetIdAndRoomId(assetId, roomId uuid.UUID) (*entity.AssetPlacement, error) {

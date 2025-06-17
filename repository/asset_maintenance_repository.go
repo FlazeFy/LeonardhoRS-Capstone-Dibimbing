@@ -4,14 +4,17 @@ import (
 	"errors"
 	"fmt"
 	"pelita/entity"
+	"pelita/utils"
 	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
+// Asset Maintenance Interface
 type AssetMaintenanceRepository interface {
-	FindAll() ([]entity.AssetMaintenance, error)
+	FindAll(pagination utils.Pagination) ([]entity.AssetMaintenance, int64, error)
+	FindAllSchedule() ([]entity.AssetMaintenanceSchedule, error)
 	Create(assetMaintenance *entity.AssetMaintenance, adminId uuid.UUID) error
 	FindByAssetPlacementIdMaintenanceByAndMaintenanceDay(assetPlacementId, maintenanceBy uuid.UUID, maintenanceDay string, maintenanceHourStart, maintenanceHourEnd entity.Time) (*entity.AssetMaintenance, error)
 	FindByAssetPlacementIdMaintenanceByMaintenanceDayAndId(assetPlacementId, maintenanceBy uuid.UUID, maintenanceDay string, maintenanceHourStart, maintenanceHourEnd entity.Time, id uuid.UUID) (*entity.AssetMaintenance, error)
@@ -19,25 +22,56 @@ type AssetMaintenanceRepository interface {
 	DeleteById(id uuid.UUID) error
 }
 
+// Asset Maintenance Struct
 type assetMaintenanceRepository struct {
 	db *gorm.DB
 }
 
+// Asset Maintenance Constructor
 func NewAssetMaintenanceRepository(db *gorm.DB) AssetMaintenanceRepository {
 	return &assetMaintenanceRepository{db: db}
 }
 
-func (r *assetMaintenanceRepository) FindAll() ([]entity.AssetMaintenance, error) {
+func (r *assetMaintenanceRepository) FindAll(pagination utils.Pagination) ([]entity.AssetMaintenance, int64, error) {
+	var total int64
+
 	// Models
 	var assetMaintenance []entity.AssetMaintenance
 
+	// Pagination
+	offset := (pagination.Page - 1) * pagination.Limit
+	r.db.Model(&entity.AssetMaintenance{}).Count(&total)
+
 	// Query
-	err := r.db.Find(&assetMaintenance).Error
+	err := r.db.Order("created_at DESC").
+		Limit(pagination.Limit).
+		Offset(offset).
+		Find(&assetMaintenance).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, 0, err
+	}
+
+	return assetMaintenance, total, nil
+}
+
+func (r *assetMaintenanceRepository) FindAllSchedule() ([]entity.AssetMaintenanceSchedule, error) {
+	// Models
+	var asset []entity.AssetMaintenanceSchedule
+
+	// Query
+	err := r.db.Table("asset_maintenances").
+		Select("maintenance_day, maintenance_hour_start, maintenance_hour_end, maintenance_notes, asset_qty, asset_name, asset_category, username, email, telegram_user_id, telegram_is_valid").
+		Joins("JOIN asset_placements ON asset_maintenances.asset_placement_id = asset_placements.id").
+		Joins("JOIN assets ON assets.id = asset_placements.asset_id").
+		Joins("JOIN technicians ON technicians.id = asset_maintenances.maintenance_by").
+		Order("FIELD(maintenance_day, 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'), maintenance_hour_start ASC").
+		Find(&asset).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}
 
-	return assetMaintenance, err
+	return asset, err
 }
 
 func (r *assetMaintenanceRepository) FindByAssetPlacementIdMaintenanceByAndMaintenanceDay(assetPlacementId, maintenanceBy uuid.UUID, maintenanceDay string, maintenanceHourStart, maintenanceHourEnd entity.Time) (*entity.AssetMaintenance, error) {

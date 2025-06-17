@@ -4,52 +4,76 @@ import (
 	"errors"
 	"pelita/entity"
 	"pelita/repository"
+	"pelita/utils"
 
 	"github.com/google/uuid"
 )
 
+// Room Interface
 type RoomService interface {
-	GetAllRoom() ([]entity.Room, error)
+	GetAllRoom(pagination utils.Pagination) ([]entity.Room, int64, error)
+	GetRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error)
+	GetRoomAssetShortByFloorAndRoomName(floor, roomName string) ([]entity.RoomAssetShort, error)
+	GetMostContext(targetCol string) ([]entity.StatsContextTotal, error)
 	Create(room *entity.Room) error
 	UpdateById(room *entity.Room, id uuid.UUID) error
 	DeleteById(id uuid.UUID) error
 }
 
+// Room Struct
 type roomService struct {
-	roomRepo repository.RoomRepository
+	roomRepo  repository.RoomRepository
+	statsRepo repository.StatsRepository
 }
 
-func NewRoomService(roomRepo repository.RoomRepository) RoomService {
+// Room Constructor
+func NewRoomService(roomRepo repository.RoomRepository, statsRepo repository.StatsRepository) RoomService {
 	return &roomService{
-		roomRepo: roomRepo,
+		roomRepo:  roomRepo,
+		statsRepo: statsRepo,
 	}
 }
 
-func (s *roomService) GetAllRoom() ([]entity.Room, error) {
+func (s *roomService) GetAllRoom(pagination utils.Pagination) ([]entity.Room, int64, error) {
 	// Repo : Get All Room
-	room, err := s.roomRepo.FindAll()
+	room, total, err := s.roomRepo.FindAll(pagination)
+	if err != nil {
+		return nil, 0, err
+	}
+	if room == nil {
+		return nil, 0, errors.New("room not found")
+	}
+
+	return room, total, nil
+}
+
+func (s *roomService) GetRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error) {
+	// Repo : Get Find Room Asset By Floor And Room Name
+	roomAsset, err := s.roomRepo.FindRoomAssetByFloorAndRoomName(floor, roomName)
 	if err != nil {
 		return nil, err
 	}
-	if room == nil {
+	if roomAsset == nil {
 		return nil, errors.New("room not found")
 	}
 
-	return room, nil
+	return roomAsset, nil
+}
+
+func (s *roomService) GetRoomAssetShortByFloorAndRoomName(floor, roomName string) ([]entity.RoomAssetShort, error) {
+	// Repo : Get Find Room Asset Short By Floor And Room Name
+	roomAsset, err := s.roomRepo.FindRoomAssetShortByFloorAndRoomName(floor, roomName)
+	if err != nil {
+		return nil, err
+	}
+	if roomAsset == nil {
+		return nil, errors.New("room not found")
+	}
+
+	return roomAsset, nil
 }
 
 func (s *roomService) Create(room *entity.Room) error {
-	// Validator
-	if room.RoomName == "" {
-		return errors.New("room name is required")
-	}
-	if room.RoomDept == "" {
-		return errors.New("room dept is required")
-	}
-	if room.Floor == "" {
-		return errors.New("floor is required")
-	}
-
 	// Repo : Get Room by Room Name & Floor
 	is_exist, err := s.roomRepo.FindByRoomNameAndFloor(room.RoomName, room.Floor)
 	if err != nil {
@@ -68,17 +92,6 @@ func (s *roomService) Create(room *entity.Room) error {
 }
 
 func (s *roomService) UpdateById(room *entity.Room, id uuid.UUID) error {
-	// Validator
-	if room.RoomName == "" {
-		return errors.New("room name is required")
-	}
-	if room.RoomDept == "" {
-		return errors.New("room dept is required")
-	}
-	if room.Floor == "" {
-		return errors.New("floor is required")
-	}
-
 	// Repo : Get Room by Room Name & Floor
 	is_exist, err := s.roomRepo.FindByRoomNameFloorAndId(room.RoomName, room.Floor, id)
 	if err != nil {
@@ -104,4 +117,17 @@ func (s *roomService) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+func (s *roomService) GetMostContext(targetCol string) ([]entity.StatsContextTotal, error) {
+	// Repo : Get My Room
+	room, err := s.statsRepo.FindMostUsedContext("rooms", targetCol)
+	if err != nil {
+		return nil, err
+	}
+	if room == nil {
+		return nil, errors.New("room not found")
+	}
+
+	return room, nil
 }

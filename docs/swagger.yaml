@@ -1,0 +1,1764 @@
+definitions:
+  entity.Admin:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      password:
+        type: string
+      telegram_is_valid:
+        type: boolean
+      telegram_user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  entity.AllHistory:
+    properties:
+      admin_id:
+        description: FK - Admin
+        type: string
+      admins:
+        $ref: '#/definitions/entity.Admin'
+      created_at:
+        type: string
+      id:
+        type: string
+      technician_id:
+        description: FK - Technician
+        type: string
+      technicians:
+        $ref: '#/definitions/entity.Technician'
+      type_history:
+        type: string
+      type_user:
+        type: string
+      user_id:
+        description: FK - User
+        type: string
+      users:
+        $ref: '#/definitions/entity.User'
+    type: object
+  entity.Asset:
+    properties:
+      asset_category:
+        type: string
+      asset_desc:
+        type: string
+      asset_image_url:
+        type: string
+      asset_merk:
+        type: string
+      asset_name:
+        type: string
+      asset_price:
+        type: string
+      asset_status:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        description: FK - Admin
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.AssetFinding:
+    properties:
+      asset_placement_id:
+        description: FK - Asset Placement
+        type: string
+      asset_placements:
+        $ref: '#/definitions/entity.AssetPlacement'
+      created_at:
+        type: string
+      finding_by_technician:
+        description: FK - Technician
+        type: string
+      finding_by_user:
+        description: FK - User / Guest
+        type: string
+      finding_category:
+        type: string
+      finding_image:
+        type: string
+      finding_notes:
+        type: string
+      id:
+        type: string
+      technicians:
+        $ref: '#/definitions/entity.Technician'
+      users:
+        $ref: '#/definitions/entity.User'
+    type: object
+  entity.AssetMaintenance:
+    properties:
+      asset_placement_id:
+        description: FK - Asset Placement
+        type: string
+      created_at:
+        type: string
+      created_by:
+        description: FK - Admin
+        type: string
+      id:
+        type: string
+      maintenance_by:
+        description: FK - Technician
+        type: string
+      maintenance_day:
+        type: string
+      maintenance_hour_end:
+        type: string
+      maintenance_hour_start:
+        type: string
+      maintenance_notes:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.AssetMaintenanceSchedule:
+    properties:
+      asset_category:
+        type: string
+      asset_name:
+        description: FK - Asset
+        type: string
+      asset_qty:
+        description: FK - Asset Placement
+        type: integer
+      email:
+        type: string
+      maintenance_day:
+        type: string
+      maintenance_hour_end:
+        type: string
+      maintenance_hour_start:
+        type: string
+      maintenance_notes:
+        type: string
+      telegram_is_valid:
+        type: boolean
+      telegram_user_id:
+        type: string
+      username:
+        description: FK - Technician
+        type: string
+    type: object
+  entity.AssetPlacement:
+    properties:
+      asset_desc:
+        type: string
+      asset_id:
+        description: FK - Asset
+        type: string
+      asset_owner:
+        description: FK - Technician
+        type: string
+      asset_qty:
+        type: integer
+      created_at:
+        type: string
+      created_by:
+        description: FK - Admin
+        type: string
+      id:
+        type: string
+      room_id:
+        description: FK - Room
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.History:
+    properties:
+      admin_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      technician_id:
+        type: string
+      type_history:
+        type: string
+      type_user:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entity.LoginData:
+    properties:
+      access_token:
+        example: <your_access_token>
+        type: string
+      role:
+        example: admin
+        type: string
+    type: object
+  entity.Metadata:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      total:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  entity.RequestCreateUpdateAssetMaintenance:
+    properties:
+      asset_placement_id:
+        type: string
+      maintenance_by:
+        type: string
+      maintenance_day:
+        type: string
+      maintenance_hour_end:
+        type: string
+      maintenance_hour_start:
+        type: string
+      maintenance_notes:
+        type: string
+    required:
+    - asset_placement_id
+    - maintenance_by
+    - maintenance_day
+    - maintenance_hour_end
+    - maintenance_hour_start
+    type: object
+  entity.RequestCreateUpdateAssetPlacement:
+    properties:
+      asset_desc:
+        type: string
+      asset_id:
+        type: string
+      asset_owner:
+        type: string
+      asset_qty:
+        type: integer
+      room_id:
+        type: string
+    required:
+    - asset_id
+    - asset_owner
+    - asset_qty
+    - room_id
+    type: object
+  entity.RequestPostCreateUpdateRoom:
+    properties:
+      floor:
+        type: string
+      room_dept:
+        type: string
+      room_name:
+        type: string
+    required:
+    - floor
+    - room_dept
+    - room_name
+    type: object
+  entity.RequestPostRegister:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      telegram_is_valid:
+        type: boolean
+      telegram_user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  entity.RequestPostUpdateTechnicianById:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      telegram_is_valid:
+        type: boolean
+      telegram_user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  entity.RequestUpdateAssetById:
+    properties:
+      asset_category:
+        type: string
+      asset_desc:
+        type: string
+      asset_merk:
+        type: string
+      asset_name:
+        type: string
+      asset_price:
+        type: string
+      asset_status:
+        type: string
+    required:
+    - asset_category
+    - asset_desc
+    - asset_merk
+    - asset_name
+    - asset_price
+    - asset_status
+    type: object
+  entity.ResponseBadRequest:
+    properties:
+      message:
+        example: targetCol is not valid
+        type: string
+      status:
+        example: failed
+        type: string
+    type: object
+  entity.ResponseCreateAsset:
+    properties:
+      message:
+        example: asset created
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseCreateAssetFinding:
+    properties:
+      message:
+        example: asset finding created
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseCreateAssetMaintenance:
+    properties:
+      message:
+        example: asset maintenance created
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseCreateAssetPlacement:
+    properties:
+      message:
+        example: asset placement created
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseDeleteAssetFindingById:
+    properties:
+      message:
+        example: asset finding deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseDeleteAssetMaintenanceById:
+    properties:
+      message:
+        example: asset maintenance deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseDeleteAssetPlacementById:
+    properties:
+      message:
+        example: asset placement deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseDeleteRoomById:
+    properties:
+      message:
+        example: room deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseDeleteTechnicianById:
+    properties:
+      message:
+        example: technician deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetAllAsset:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.Asset'
+        type: array
+      message:
+        example: asset fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetAllAssetFinding:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.AssetFinding'
+        type: array
+      message:
+        example: asset finding fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetAllAssetMaintenance:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.AssetMaintenance'
+        type: array
+      message:
+        example: asset maintenance fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetAllAssetMaintenanceSchedule:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.AssetMaintenanceSchedule'
+        type: array
+      message:
+        example: asset maintenance schedule fetched
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetAllAssetPlacement:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.AssetPlacement'
+        type: array
+      message:
+        example: asset placement fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetAllHistory:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.AllHistory'
+        type: array
+      message:
+        example: history fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetAllRoom:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.Room'
+        type: array
+      message:
+        example: room fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetAllTechnician:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.Technician'
+        type: array
+      message:
+        example: technician fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetDeletedAsset:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.Asset'
+        type: array
+      message:
+        example: deleted asset fetched
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetFindingHourTotal:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.StatsContextTotal'
+        type: array
+      message:
+        example: asset finding fetched
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetMostContext:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.StatsContextTotal'
+        type: array
+      message:
+        example: asset fetched
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetMyHistory:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.History'
+        type: array
+      message:
+        example: history fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetMyProfile:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.User'
+        type: array
+      message:
+        example: user fetched
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetRoomAssetByFloorAndRoomName:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.RoomAsset'
+        type: array
+      message:
+        example: room fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseGetRoomAssetShortByFloorAndRoomName:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/entity.RoomAssetShort'
+        type: array
+      message:
+        example: room fetched
+        type: string
+      metadata:
+        $ref: '#/definitions/entity.Metadata'
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseHardDeleteAssetById:
+    properties:
+      message:
+        example: asset permanentally deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseNotFound:
+    properties:
+      message:
+        example: asset not found
+        type: string
+      status:
+        example: failed
+        type: string
+    type: object
+  entity.ResponsePostLogin:
+    properties:
+      data:
+        $ref: '#/definitions/entity.LoginData'
+      message:
+        example: user login successfully
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponsePostSignOut:
+    properties:
+      message:
+        example: User signed out
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponsePostTechnician:
+    properties:
+      message:
+        example: technician created
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponsePutUpdateAssetMaintenance:
+    properties:
+      message:
+        example: asset maintenance updated
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponsePutUpdateAssetPlacement:
+    properties:
+      message:
+        example: asset placement updated
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponsePutUpdateRoom:
+    properties:
+      message:
+        example: room updated
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseRecoverDeleteAssetById:
+    properties:
+      message:
+        example: asset recovered
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseSoftDeleteAssetById:
+    properties:
+      message:
+        example: asset deleted
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseUpdateAssetById:
+    properties:
+      message:
+        example: asset updated
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.ResponseUpdateTechnicianById:
+    properties:
+      message:
+        example: technician updated
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  entity.Room:
+    properties:
+      created_at:
+        type: string
+      floor:
+        type: string
+      id:
+        type: string
+      room_dept:
+        type: string
+      room_name:
+        type: string
+    type: object
+  entity.RoomAsset:
+    properties:
+      asset_category:
+        type: string
+      asset_desc:
+        type: string
+      asset_merk:
+        type: string
+      asset_name:
+        type: string
+      floor:
+        type: string
+      room_dept:
+        type: string
+      room_name:
+        type: string
+      total_asset:
+        type: integer
+    type: object
+  entity.RoomAssetShort:
+    properties:
+      asset_category:
+        type: string
+      asset_name:
+        type: string
+      floor:
+        type: string
+      room_dept:
+        type: string
+      room_name:
+        type: string
+    type: object
+  entity.StatsContextTotal:
+    properties:
+      context:
+        type: string
+      total:
+        type: integer
+    type: object
+  entity.Technician:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        description: FK - User
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      password:
+        type: string
+      telegram_is_valid:
+        type: boolean
+      telegram_user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  entity.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      password:
+        type: string
+      telegram_is_valid:
+        type: boolean
+      telegram_user_id:
+        type: string
+      username:
+        type: string
+    type: object
+  entity.UserAuth:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/assets:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of assets available
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetAllAsset'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get All Asset
+      tags:
+      - Asset
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create an asset
+      parameters:
+      - description: Asset Name
+        in: formData
+        name: asset_name
+        required: true
+        type: string
+      - description: Asset Description
+        in: formData
+        name: asset_desc
+        required: true
+        type: string
+      - description: Asset Merk
+        in: formData
+        name: asset_merk
+        required: true
+        type: string
+      - description: Asset Category
+        in: formData
+        name: asset_category
+        required: true
+        type: string
+      - description: Asset Price
+        in: formData
+        name: asset_price
+        required: true
+        type: number
+      - description: Asset Status
+        in: formData
+        name: asset_status
+        required: true
+        type: string
+      - description: Asset Image (JPG,PNG,JPEG)
+        in: formData
+        name: asset_image
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponseCreateAsset'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Create Asset
+      tags:
+      - Asset
+  /api/v1/assets/{id}:
+    delete:
+      description: Delete Asset By Id
+      parameters:
+      - description: Id of asset
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseSoftDeleteAssetById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Soft Delete Asset By Id
+      tags:
+      - Asset
+    put:
+      consumes:
+      - application/json
+      description: Update an asset by Id
+      parameters:
+      - description: Update Asset Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestUpdateAssetById'
+      - description: Id of asset
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseUpdateAssetById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Put Update Asset By Id
+      tags:
+      - Asset
+  /api/v1/assets/deleted:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of deleted assets
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetDeletedAsset'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get Deleted Asset
+      tags:
+      - Asset
+  /api/v1/assets/destroy/{id}:
+    delete:
+      description: Permanentally Delete Asset By Id
+      parameters:
+      - description: Id of asset
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseHardDeleteAssetById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Hard Delete Asset By Id
+      tags:
+      - Asset
+  /api/v1/assets/findings:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of assets finding
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetAllAssetFinding'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get All Asset Finding
+      tags:
+      - Asset
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create an asset finding
+      parameters:
+      - description: Finding Category
+        in: formData
+        name: finding_category
+        required: true
+        type: string
+      - description: Finding Notes
+        in: formData
+        name: finding_notes
+        required: true
+        type: string
+      - description: Finding Image (JPG,PNG,JPEG)
+        in: formData
+        name: finding_image
+        required: true
+        type: file
+      - description: Asset Placement Id
+        in: formData
+        name: asset_placement_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponseCreateAssetFinding'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Create Asset Finding
+      tags:
+      - Asset
+  /api/v1/assets/findings/{id}:
+    delete:
+      description: Permanentally delete asset finding by id
+      parameters:
+      - description: Id of asset finding
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseDeleteAssetFindingById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Delete Asset Finding By Id
+      tags:
+      - Asset
+  /api/v1/assets/findings/hour-total:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of assets finding total per hour
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetFindingHourTotal'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get All Asset Finding Hour Total
+      tags:
+      - Asset
+  /api/v1/assets/maintenances:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of assets maintenance
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetAllAssetMaintenance'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get All Asset Maintenance
+      tags:
+      - Asset
+    post:
+      consumes:
+      - application/json
+      description: Create an asset maintenance by Id
+      parameters:
+      - description: Create Asset Maintenance Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestCreateUpdateAssetMaintenance'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponseCreateAssetMaintenance'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Create Asset Maintenance By Id
+      tags:
+      - Asset
+  /api/v1/assets/maintenances/{id}:
+    delete:
+      description: Permanentally delete asset maintenance by id
+      parameters:
+      - description: Id of asset maintenance
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseDeleteAssetMaintenanceById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Delete Asset Maintenance By Id
+      tags:
+      - Asset
+    put:
+      consumes:
+      - application/json
+      description: Create an asset maintenance by Id
+      parameters:
+      - description: Put Update Asset Maintenance Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestCreateUpdateAssetMaintenance'
+      - description: Id of asset maintenance
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponsePutUpdateAssetMaintenance'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Put Update Asset Maintenance By Id
+      tags:
+      - Asset
+  /api/v1/assets/maintenances/schedule:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of assets maintenance schedule
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetAllAssetMaintenanceSchedule'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get All Asset Maintenance Schedule
+      tags:
+      - Asset
+  /api/v1/assets/most-context/{targetCol}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of most appear item in asset maintenance by given
+        field
+      parameters:
+      - description: 'Target Column to Analyze (such as: maintenance_day)'
+        in: path
+        name: targetCol
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetMostContext'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get Most Context Asset Maintenance
+      tags:
+      - Asset
+  /api/v1/assets/placements:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of assets placement
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetAllAssetPlacement'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get All Asset Placement
+      tags:
+      - Asset
+    post:
+      consumes:
+      - application/json
+      description: Create an asset maintenance by Id
+      parameters:
+      - description: Create Asset Placement Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestCreateUpdateAssetPlacement'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponseCreateAssetPlacement'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Create Asset Placement By Id
+      tags:
+      - Asset
+  /api/v1/assets/placements/{id}:
+    delete:
+      description: Permanentally delete asset placement by id
+      parameters:
+      - description: Id of asset placement
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseDeleteAssetPlacementById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Delete Asset Placement By Id
+      tags:
+      - Asset
+    put:
+      consumes:
+      - application/json
+      description: Create an asset placement by Id
+      parameters:
+      - description: Put Update Asset Placement Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestCreateUpdateAssetPlacement'
+      - description: Id of asset placement
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponsePutUpdateAssetPlacement'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Put Update Asset Placement By Id
+      tags:
+      - Asset
+  /api/v1/assets/recover/{id}:
+    put:
+      description: Recover Deleted Asset By Id
+      parameters:
+      - description: Id of asset
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseRecoverDeleteAssetById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Recover Put Deleted Asset By Id
+      tags:
+      - Asset
+  /api/v1/auths/login:
+    post:
+      consumes:
+      - application/json
+      description: Login to the Apps
+      parameters:
+      - description: Post Login Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UserAuth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponsePostLogin'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Login
+      tags:
+      - Auth
+  /api/v1/auths/register:
+    post:
+      consumes:
+      - application/json
+      description: Register User / Guest
+      parameters:
+      - description: Post Register Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestPostRegister'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponsePostLogin'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Register
+      tags:
+      - Auth
+  /api/v1/auths/signout:
+    post:
+      consumes:
+      - application/json
+      description: Sign Out to the Apps
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponsePostSignOut'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Sign Out
+      tags:
+      - Auth
+  /api/v1/histories/all:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of all users histories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetAllHistory'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get All History
+      tags:
+      - History
+  /api/v1/histories/most-context/{targetCol}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of most appear item in history by given field
+      parameters:
+      - description: 'Target Column to Analyze (such as: type_user, type_history)'
+        in: path
+        name: targetCol
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetMostContext'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get Most Context History
+      tags:
+      - History
+  /api/v1/histories/my:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of my histories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetMyHistory'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get My History
+      tags:
+      - History
+  /api/v1/profile:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of handle
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetMyProfile'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get My Profile
+      tags:
+      - User
+  /api/v1/rooms:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of room
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetAllRoom'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get All Room
+      tags:
+      - Room
+    post:
+      consumes:
+      - application/json
+      description: Update an room by id
+      parameters:
+      - description: Put Update Room Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestPostCreateUpdateRoom'
+      - description: Id of room
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponsePutUpdateRoom'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Put Update Room
+      tags:
+      - Room
+  /api/v1/rooms/{id}:
+    delete:
+      description: Permanentally delete room by id
+      parameters:
+      - description: Id of room
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseDeleteRoomById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Delete Room By Id
+      tags:
+      - Room
+  /api/v1/rooms/asset/detail/{floor}/{roomName}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of asset that found in a room
+      parameters:
+      - description: In which Room you want to find the asset. Type 'all' to search
+          in all room
+        in: path
+        name: roomName
+        required: true
+        type: string
+      - description: In which Floor you want to find the asset.
+        in: path
+        name: floor
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetRoomAssetByFloorAndRoomName'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get Room Asset By Floor And Room Name (Detail)
+      tags:
+      - Room
+  /api/v1/rooms/asset/short/{floor}/{roomName}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of asset that found in a room. in short
+        format
+      parameters:
+      - description: In which Room you want to find the asset. Type 'all' to search
+          in all room
+        in: path
+        name: roomName
+        required: true
+        type: string
+      - description: In which Floor you want to find the asset.
+        in: path
+        name: floor
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetRoomAssetShortByFloorAndRoomName'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get Room Asset By Floor And Room Name (Short)
+      tags:
+      - Room
+  /api/v1/rooms/most-context/{targetCol}:
+    get:
+      consumes:
+      - application/json
+      description: Returns a list of most appear item in room by given field
+      parameters:
+      - description: 'Target Column to Analyze (such as: asset_merk, asset_category,
+          or asset_status)'
+        in: path
+        name: targetCol
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetMostContext'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get Most Context Room
+      tags:
+      - Room
+  /api/v1/technicians:
+    get:
+      consumes:
+      - application/json
+      description: Returns a paginated list of technician
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseGetAllTechnician'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ResponseNotFound'
+      summary: Get All Technician
+      tags:
+      - Technician
+    post:
+      consumes:
+      - application/json
+      description: Create a technician
+      parameters:
+      - description: Post Technician Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestPostUpdateTechnicianById'
+      - description: Id of asset technician
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.ResponsePostTechnician'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Post Create Technician
+      tags:
+      - Technician
+  /api/v1/technicians/{id}:
+    delete:
+      description: Permanentally delete technician by id
+      parameters:
+      - description: Id of technician
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseDeleteTechnicianById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Delete Technician By Id
+      tags:
+      - Technician
+    put:
+      consumes:
+      - application/json
+      description: Update a Technician by Id
+      parameters:
+      - description: Update Technician Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RequestPostUpdateTechnicianById'
+      - description: Id of technician
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ResponseUpdateTechnicianById'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ResponseBadRequest'
+      summary: Put Update Technician By Id
+      tags:
+      - Technician
+swagger: "2.0"

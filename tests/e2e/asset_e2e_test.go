@@ -53,7 +53,7 @@ func TestAssetPostCreateWithValidInput(t *testing.T) {
 	// Template Response
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 	assert.Equal(t, "success", result["status"])
-	assert.Equal(t, "asset created successfully", result["message"])
+	assert.Equal(t, "asset created", result["message"])
 
 	// Data Object
 	data, ok := result["data"].(map[string]interface{})
@@ -124,7 +124,7 @@ func TestAssetFindingPostCreateWithValidInput(t *testing.T) {
 	// Template Response
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 	assert.Equal(t, "success", result["status"])
-	assert.Equal(t, "asset finding created successfully", result["message"])
+	assert.Equal(t, "asset finding created", result["message"])
 
 	// Data Object
 	data, ok := result["data"].(map[string]interface{})
@@ -191,7 +191,7 @@ func TestAssetMaintenancePostCreateWithValidInput(t *testing.T) {
 	// Template Response
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 	assert.Equal(t, "success", result["status"])
-	assert.Equal(t, "asset maintenance created successfully", result["message"])
+	assert.Equal(t, "asset maintenance created", result["message"])
 
 	// Data Object
 	data, ok := result["data"].(map[string]interface{})
@@ -261,7 +261,7 @@ func TestAssetPlacementPostCreateWithValidInput(t *testing.T) {
 	// Template Response
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 	assert.Equal(t, "success", result["status"])
-	assert.Equal(t, "asset placement created successfully", result["message"])
+	assert.Equal(t, "asset placement created", result["message"])
 
 	// Data Object
 	data, ok := result["data"].(map[string]interface{})

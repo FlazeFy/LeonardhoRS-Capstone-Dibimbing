@@ -42,7 +42,7 @@ func TestAuthPostRegisterWithValidInput(t *testing.T) {
 	// Template Response
 	assert.Equal(t, http.StatusCreated, resp.StatusCode)
 	assert.Equal(t, "success", result["status"])
-	assert.Equal(t, "user registered successfully", result["message"])
+	assert.Equal(t, "user registered", result["message"])
 
 	// Data Object
 	data, ok := result["data"].(map[string]interface{})
@@ -82,7 +82,7 @@ func TestAuthPostLoginWithValidInput(t *testing.T) {
 	// Validate Template Response
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "success", result["status"])
-	assert.Equal(t, "user login successfully", result["message"])
+	assert.Equal(t, "user login", result["message"])
 
 	// Data Object
 	data, ok := result["data"].(map[string]interface{})
@@ -128,5 +128,5 @@ func TestAuthPostSignOutWithValidInput(t *testing.T) {
 	// Validate Template Response
 	assert.Equal(t, http.StatusOK, resp.StatusCode)
 	assert.Equal(t, "success", result["status"])
-	assert.Equal(t, "user signout successfully", result["message"])
+	assert.Equal(t, "user signout", result["message"])
 }

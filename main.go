@@ -2,12 +2,17 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"pelita/config"
 	"pelita/entity"
 	"pelita/routes"
 
+	_ "pelita/docs"
+
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/gorm"
 )
 
@@ -18,17 +23,24 @@ func main() {
 		panic("error loading ENV")
 	}
 
+	config.InitFirebase()
+
 	// Connect DB
 	db := config.ConnectDatabase()
 	MigrateAll(db)
 
-	// Setup Gin
+	// Setup Gin & Redis
 	router := gin.Default()
 	redisClient := config.InitRedis()
-	routes.SetUpRoutes(router, db, redisClient)
+
+	// Setup Dependecy & Scheduler
+	routes.SetUpDependency(router, db, redisClient)
+
+	// Swagger
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Run server
-	router.Run(":9000")
+	router.Run(":" + os.Getenv("PORT"))
 }
 
 func MigrateAll(db *gorm.DB) {
@@ -41,6 +53,7 @@ func MigrateAll(db *gorm.DB) {
 		&entity.AssetPlacement{},
 		&entity.AssetMaintenance{},
 		&entity.AssetFinding{},
+		&entity.History{},
 	)
 
 	if err != nil {

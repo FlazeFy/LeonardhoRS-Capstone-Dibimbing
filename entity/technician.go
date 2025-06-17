@@ -19,6 +19,32 @@ type (
 		CreatedBy uuid.UUID `json:"created_by" gorm:"not null"`
 		Admin     Admin     `json:"-" gorm:"foreignKey:CreatedBy;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	}
+	// For Response Only
+	ResponseGetAllTechnician struct {
+		Message  string       `json:"message" example:"technician fetched"`
+		Status   string       `json:"status" example:"success"`
+		Data     []Technician `json:"data"`
+		Metadata Metadata     `json:"metadata"`
+	}
+	ResponseUpdateTechnicianById struct {
+		Message string `json:"message" example:"technician updated"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponsePostTechnician struct {
+		Message string `json:"message" example:"technician created"`
+		Status  string `json:"status" example:"success"`
+	}
+	RequestPostUpdateTechnicianById struct {
+		Username        string  `json:"username"`
+		Password        string  `json:"password"`
+		Email           string  `json:"email"`
+		TelegramUserId  *string `json:"telegram_user_id"`
+		TelegramIsValid bool    `json:"telegram_is_valid"`
+	}
+	ResponseDeleteTechnicianById struct {
+		Message string `json:"message" example:"technician deleted"`
+		Status  string `json:"status" example:"success"`
+	}
 )
 
 // For Generic Interface

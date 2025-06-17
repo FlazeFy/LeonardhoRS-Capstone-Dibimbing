@@ -25,4 +25,52 @@ type (
 		MaintenanceBy uuid.UUID  `json:"maintenance_by" gorm:"not null"`
 		Technician    Technician `json:"-" gorm:"foreignKey:MaintenanceBy;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	}
+	AssetMaintenanceSchedule struct {
+		MaintenanceDay       string  `json:"maintenance_day"`
+		MaintenanceHourStart Time    `json:"maintenance_hour_start"`
+		MaintenanceHourEnd   Time    `json:"maintenance_hour_end"`
+		MaintenanceNotes     *string `json:"maintenance_notes"`
+		// FK - Asset Placement
+		AssetQty int `json:"asset_qty"`
+		// FK - Asset
+		AssetName     string `json:"asset_name"`
+		AssetCategory string `json:"asset_category"`
+		// FK - Technician
+		Username        string  `json:"username"`
+		Email           string  `json:"email"`
+		TelegramUserId  *string `json:"telegram_user_id"`
+		TelegramIsValid bool    `json:"telegram_is_valid"`
+	}
+	// For Response Only
+	ResponseGetAllAssetMaintenance struct {
+		Message  string             `json:"message" example:"asset maintenance fetched"`
+		Status   string             `json:"status" example:"success"`
+		Data     []AssetMaintenance `json:"data"`
+		Metadata Metadata           `json:"metadata"`
+	}
+	ResponseGetAllAssetMaintenanceSchedule struct {
+		Message string                     `json:"message" example:"asset maintenance schedule fetched"`
+		Status  string                     `json:"status" example:"success"`
+		Data    []AssetMaintenanceSchedule `json:"data"`
+	}
+	ResponseDeleteAssetMaintenanceById struct {
+		Message string `json:"message" example:"asset maintenance deleted"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponseCreateAssetMaintenance struct {
+		Message string `json:"message" example:"asset maintenance created"`
+		Status  string `json:"status" example:"success"`
+	}
+	ResponsePutUpdateAssetMaintenance struct {
+		Message string `json:"message" example:"asset maintenance updated"`
+		Status  string `json:"status" example:"success"`
+	}
+	RequestCreateUpdateAssetMaintenance struct {
+		MaintenanceDay       string  `json:"maintenance_day" binding:"required"`
+		MaintenanceHourStart string  `json:"maintenance_hour_start" binding:"required"`
+		MaintenanceHourEnd   string  `json:"maintenance_hour_end" binding:"required"`
+		MaintenanceNotes     *string `json:"maintenance_notes" binding:"omitempty"`
+		AssetPlacementId     string  `json:"asset_placement_id" binding:"required"`
+		MaintenanceBy        string  `json:"maintenance_by" binding:"required"`
+	}
 )
