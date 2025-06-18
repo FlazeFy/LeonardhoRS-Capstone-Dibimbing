@@ -21,6 +21,9 @@ type RoomRepository interface {
 	FindByRoomNameFloorAndId(roomName, floor string, id uuid.UUID) (*entity.Room, error)
 	FindRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error)
 	FindRoomAssetShortByFloorAndRoomName(floor, roomName string) ([]entity.RoomAssetShort, error)
+
+	// For Seeder
+	DeleteAll() error
 }
 
 // Room Struct
@@ -195,4 +198,9 @@ func (r *roomRepository) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+// For Seeder
+func (r *roomRepository) DeleteAll() error {
+	return r.db.Where("1 = 1").Delete(&entity.Room{}).Error
 }
