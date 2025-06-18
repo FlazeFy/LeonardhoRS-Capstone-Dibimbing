@@ -17,6 +17,7 @@ type AdminRepository interface {
 	// For Seeder
 	Create(room *entity.Admin) error
 	DeleteAll() error
+	FindOneRandom() (*entity.Admin, error)
 }
 
 // Admin Struct
@@ -70,4 +71,15 @@ func (r *adminRepository) Create(admin *entity.Admin) error {
 
 	// Query
 	return r.db.Create(admin).Error
+}
+func (r *adminRepository) FindOneRandom() (*entity.Admin, error) {
+	var admin entity.Admin
+
+	err := r.db.Order("RAND()").Limit(1).First(&admin).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &admin, err
 }

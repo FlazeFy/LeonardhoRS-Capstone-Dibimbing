@@ -7,11 +7,11 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func GenerateAdmin() entity.Admin {
+func GenerateTechnician() entity.Technician {
 	password := "nopass123"
 	hashedPass, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
-	return entity.Admin{
+	return entity.Technician{
 		Username:        gofakeit.Username(),
 		Password:        string(hashedPass),
 		TelegramUserId:  nil,

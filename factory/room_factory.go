@@ -3,7 +3,6 @@ package factory
 import (
 	"math/rand"
 	"pelita/entity"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -25,10 +24,8 @@ func RandomFloor() string {
 
 func GenerateRoom() entity.Room {
 	return entity.Room{
-		ID:        uuid.New(),
-		Floor:     RandomFloor(),
-		RoomName:  RandomRoomName(),
-		RoomDept:  RandomDept(),
-		CreatedAt: time.Now(),
+		Floor:    RandomFloor(),
+		RoomName: RandomRoomName(),
+		RoomDept: RandomDept(),
 	}
 }
