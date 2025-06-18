@@ -5,13 +5,14 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"pelita/config"
 	"pelita/entity"
 	"testing"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -55,8 +56,25 @@ func GetAuthTokenAndRole(t *testing.T, email, password string) (string, string) 
 
 // For Integration Test
 func SetupTestDB(t *testing.T) *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
-	assert.NoError(t, err, "failed to connect test DB")
+	// Load Env
+	err := godotenv.Load("../../.env")
+	if err != nil {
+		panic("error loading ENV")
+	}
+
+	db := config.ConnectTestDatabase(t)
+
+	err = db.Migrator().DropTable(
+		&entity.Admin{},
+		&entity.User{},
+		&entity.Technician{},
+		&entity.History{},
+		&entity.Asset{},
+		&entity.AssetPlacement{},
+		&entity.AssetMaintenance{},
+		&entity.AssetFinding{},
+	)
+	assert.NoError(t, err)
 
 	err = db.AutoMigrate(
 		&entity.Admin{},
@@ -68,7 +86,7 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 		&entity.AssetMaintenance{},
 		&entity.AssetFinding{},
 	)
-	assert.NoError(t, err, "failed to migrate admin schema")
+	assert.NoError(t, err)
 
 	return db
 }
