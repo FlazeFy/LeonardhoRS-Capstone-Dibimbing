@@ -65,6 +65,8 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 		&entity.History{},
 		&entity.Asset{},
 		&entity.AssetPlacement{},
+		&entity.AssetMaintenance{},
+		&entity.AssetFinding{},
 	)
 	assert.NoError(t, err, "failed to migrate admin schema")
 
@@ -155,4 +157,21 @@ func CreateTestRoom(t *testing.T, db *gorm.DB) *entity.Room {
 	assert.NoError(t, err)
 
 	return room
+}
+
+func CreateTestAssetPlacement(t *testing.T, db *gorm.DB, adminId, technicianId, assetId, roomId uuid.UUID) *entity.AssetPlacement {
+	placement := &entity.AssetPlacement{
+		ID:         uuid.New(),
+		AssetQty:   3,
+		AssetDesc:  nil,
+		AssetId:    assetId,
+		RoomId:     roomId,
+		CreatedBy:  adminId,
+		AssetOwner: technicianId,
+		CreatedAt:  time.Now(),
+	}
+
+	err := db.Create(placement).Error
+	assert.NoError(t, err)
+	return placement
 }
