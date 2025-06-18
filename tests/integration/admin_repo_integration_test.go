@@ -15,6 +15,7 @@ func TestAdminRepositoryFindByEmail(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewAdminRepository(db)
 
+	// Setup: Prepare Test Data
 	admin := entity.Admin{
 		ID:              uuid.New(),
 		Username:        "admin_user",

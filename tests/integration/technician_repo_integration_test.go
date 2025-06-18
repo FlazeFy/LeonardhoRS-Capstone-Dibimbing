@@ -15,6 +15,8 @@ import (
 func TestTechnicianRepositoryCreateAndFind(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewTechnicianRepository(db)
+
+	// Setup: Prepare Test Data
 	admin := tests.CreateTestAdmin(t, db)
 
 	// Test 1: Create Technician

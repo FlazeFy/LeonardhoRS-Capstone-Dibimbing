@@ -195,3 +195,23 @@ func CreateTestAssetPlacement(t *testing.T, db *gorm.DB, adminId, technicianId, 
 	assert.NoError(t, err)
 	return placement
 }
+
+func CreateTestAssetMaintenanceWithDay(t *testing.T, db *gorm.DB, placementID, adminID, technicianID uuid.UUID, day string) *entity.AssetMaintenance {
+	start := entity.Time{Time: time.Date(0, 1, 1, 13, 0, 0, 0, time.UTC)}
+	end := entity.Time{Time: time.Date(0, 1, 1, 15, 0, 0, 0, time.UTC)}
+
+	maintenance := &entity.AssetMaintenance{
+		ID:                   uuid.New(),
+		MaintenanceDay:       day,
+		MaintenanceHourStart: start,
+		MaintenanceHourEnd:   end,
+		MaintenanceNotes:     nil,
+		AssetPlacementId:     placementID,
+		CreatedBy:            adminID,
+		MaintenanceBy:        technicianID,
+		CreatedAt:            time.Now(),
+	}
+	err := db.Create(maintenance).Error
+	assert.NoError(t, err)
+	return maintenance
+}

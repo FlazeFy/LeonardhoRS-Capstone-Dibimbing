@@ -14,7 +14,7 @@ func TestAssetFindingRepositoryCreateAndFind(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewAssetFindingRepository(db)
 
-	// Setup dependencies
+	// Setup: Prepare Test Data
 	admin := tests.CreateTestAdmin(t, db)
 	user := tests.CreateTestUser(t, db)
 	technician := tests.CreateTestTechnician(t, db, admin.ID, "admin@gmail.com")

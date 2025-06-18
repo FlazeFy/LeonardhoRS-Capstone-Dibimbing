@@ -14,7 +14,7 @@ func TestRoomRepositoryCRUD(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewRoomRepository(db)
 
-	// Setup: Create test room
+	// Setup: Prepare Test Data
 	room := &entity.Room{
 		Floor:    "1",
 		RoomName: "Room A",

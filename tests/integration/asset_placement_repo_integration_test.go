@@ -14,6 +14,8 @@ import (
 func TestAssetPlacementRepositoryCreateFindUpdateDelete(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewAssetPlacementRepository(db)
+
+	// Setup: Prepare Test Data
 	admin := tests.CreateTestAdmin(t, db)
 	technician := tests.CreateTestTechnician(t, db, admin.ID, admin.Email)
 	asset := tests.CreateTestAsset(t, db, admin.ID)

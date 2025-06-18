@@ -15,6 +15,8 @@ import (
 func TestAssetRepositoryCreateAndFind(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewAssetRepository(db)
+
+	// Setup: Prepare Test Data
 	admin := tests.CreateTestAdmin(t, db)
 	assetDesc := "test desc"
 	assetName := "test asset"
