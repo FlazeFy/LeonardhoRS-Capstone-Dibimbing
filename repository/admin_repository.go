@@ -5,6 +5,7 @@ import (
 
 	"pelita/entity"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -12,6 +13,10 @@ import (
 type AdminRepository interface {
 	FindByEmail(email string) (*entity.Admin, error)
 	FindAllContact() ([]entity.AdminContact, error)
+
+	// For Seeder
+	Create(room *entity.Admin) error
+	DeleteAll() error
 }
 
 // Admin Struct
@@ -54,4 +59,15 @@ func (r *adminRepository) FindByEmail(email string) (*entity.Admin, error) {
 	}
 
 	return &admin, err
+}
+
+// For Seeder
+func (r *adminRepository) DeleteAll() error {
+	return r.db.Where("1 = 1").Delete(&entity.Admin{}).Error
+}
+func (r *adminRepository) Create(admin *entity.Admin) error {
+	admin.ID = uuid.New()
+
+	// Query
+	return r.db.Create(admin).Error
 }
