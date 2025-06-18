@@ -11,7 +11,6 @@ import (
 	"pelita/utils"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -54,11 +53,6 @@ func (s *authService) Register(user *entity.User) (string, error) {
 	if err := utils.HashPassword(user, user.Password); err != nil {
 		return "", err
 	}
-
-	// Mapping
-	user.ID = uuid.New()
-	user.CreatedAt = time.Now()
-	user.TelegramIsValid = false
 
 	// Repo : Create Register
 	if err := s.userRepo.Create(user); err != nil {
