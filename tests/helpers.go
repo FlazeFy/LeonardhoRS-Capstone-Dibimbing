@@ -64,6 +64,7 @@ func SetupTestDB(t *testing.T) *gorm.DB {
 		&entity.Technician{},
 		&entity.History{},
 		&entity.Asset{},
+		&entity.AssetPlacement{},
 	)
 	assert.NoError(t, err, "failed to migrate admin schema")
 
@@ -111,4 +112,47 @@ func CreateTestUser(t *testing.T, db *gorm.DB) entity.User {
 	err := db.Create(&user).Error
 	assert.NoError(t, err)
 	return user
+}
+
+func CreateTestAsset(t *testing.T, db *gorm.DB, adminID uuid.UUID) *entity.Asset {
+	assetName := "Test Asset"
+	assetCategory := "Test Category"
+	assetStatus := "new"
+	assetMerk := "Test Merk"
+	assetPrice := "12345"
+	assetImageUrl := "http://example.com/test.jpg"
+	assetDesc := "Test asset description"
+
+	asset := &entity.Asset{
+		ID:            uuid.New(),
+		AssetName:     assetName,
+		AssetCategory: assetCategory,
+		AssetStatus:   assetStatus,
+		AssetDesc:     &assetDesc,
+		AssetMerk:     &assetMerk,
+		AssetPrice:    &assetPrice,
+		AssetImageURL: &assetImageUrl,
+		CreatedAt:     time.Now(),
+		CreatedBy:     adminID,
+	}
+
+	err := db.Create(asset).Error
+	assert.NoError(t, err)
+
+	return asset
+}
+
+func CreateTestRoom(t *testing.T, db *gorm.DB) *entity.Room {
+	room := &entity.Room{
+		ID:        uuid.New(),
+		Floor:     "2",
+		RoomName:  "Test Room A",
+		RoomDept:  "Engineering",
+		CreatedAt: time.Now(),
+	}
+
+	err := db.Create(room).Error
+	assert.NoError(t, err)
+
+	return room
 }
