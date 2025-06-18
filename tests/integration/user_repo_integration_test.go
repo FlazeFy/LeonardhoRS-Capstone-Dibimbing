@@ -14,6 +14,8 @@ import (
 func TestUserRepositoryCreateAndFind(t *testing.T) {
 	db := tests.SetupTestDB(t)
 	repo := repository.NewUserRepository(db)
+
+	// Setup: Prepare Test Data
 	telegramId := "12341"
 	user := &entity.User{
 		ID:              uuid.New(),

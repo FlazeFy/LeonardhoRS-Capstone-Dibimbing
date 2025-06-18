@@ -82,7 +82,7 @@ func (r *assetFindingRepository) FindAllFindingHourTotal() ([]entity.StatsContex
 	var asset []entity.StatsContextTotal
 
 	// Query
-	err := r.db.Table("asset_maintenances").
+	err := r.db.Table("asset_findings").
 		Select("HOUR(created_at) as context, COUNT(1) as total").
 		Group("HOUR(created_at)").
 		Order("total DESC").
