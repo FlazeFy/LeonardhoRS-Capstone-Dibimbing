@@ -20,6 +20,9 @@ type AssetMaintenanceRepository interface {
 	FindByAssetPlacementIdMaintenanceByMaintenanceDayAndId(assetPlacementId, maintenanceBy uuid.UUID, maintenanceDay string, maintenanceHourStart, maintenanceHourEnd entity.Time, id uuid.UUID) (*entity.AssetMaintenance, error)
 	UpdateById(assetMaintenance *entity.AssetMaintenance, id uuid.UUID) error
 	DeleteById(id uuid.UUID) error
+
+	// For Seeder
+	DeleteAll() error
 }
 
 // Asset Maintenance Struct
@@ -176,4 +179,9 @@ func (r *assetMaintenanceRepository) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+// For Seeder
+func (r *assetMaintenanceRepository) DeleteAll() error {
+	return r.db.Where("1 = 1").Delete(&entity.AssetMaintenance{}).Error
 }
