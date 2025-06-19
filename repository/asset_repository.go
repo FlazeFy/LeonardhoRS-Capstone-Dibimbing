@@ -22,6 +22,9 @@ type AssetRepository interface {
 	HardDeleteById(id uuid.UUID) error
 	SoftDeleteById(id uuid.UUID) error
 	RecoverDeletedById(id uuid.UUID) error
+
+	// For Seeder
+	DeleteAll() error
 }
 
 // Asset Struct
@@ -201,4 +204,9 @@ func (r *assetRepository) HardDeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+// For Seeder
+func (r *assetRepository) DeleteAll() error {
+	return r.db.Where("1 = 1").Delete(&entity.Asset{}).Error
 }

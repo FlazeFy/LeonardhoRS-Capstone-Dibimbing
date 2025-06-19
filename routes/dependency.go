@@ -63,5 +63,5 @@ func SetUpDependency(r *gin.Engine, db *gorm.DB, redisClient *redis.Client) {
 	SetUpScheduler(assetMaintenanceService, assetFindingService, adminService)
 
 	// Seeder & Factories
-	SetUpSeeder(db, roomRepo, adminRepo, technicianRepo, userRepo)
+	SetUpSeeder(db, roomRepo, adminRepo, technicianRepo, userRepo, assetRepo)
 }
