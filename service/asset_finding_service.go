@@ -15,7 +15,7 @@ type AssetFindingService interface {
 	GetAllAssetFinding(pagination utils.Pagination) ([]entity.AssetFinding, int64, error)
 	GetMostContext(targetCol string) ([]entity.StatsContextTotal, error)
 	GetFindingHourTotal() ([]entity.StatsContextTotal, error)
-	Create(assetFinding *entity.AssetFinding, technicianId, userId *uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error
+	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error
 	DeleteById(id uuid.UUID) error
 
 	// Scheduler Service
@@ -62,14 +62,14 @@ func (s *assetFindingService) GetAllAssetFindingReport() ([]entity.AssetFindingR
 	return assetFinding, nil
 }
 
-func (s *assetFindingService) Create(assetFinding *entity.AssetFinding, technicianId, userId *uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error {
+func (s *assetFindingService) Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.UUID, file *multipart.FileHeader, fileExt string, fileSize int64) error {
 	// Utils : Firebase Upload image
 	if file != nil {
 		var createdBy uuid.UUID
-		if technicianId != nil {
-			createdBy = *technicianId
-		} else if userId != nil {
-			createdBy = *userId
+		if technicianId != uuid.Nil {
+			createdBy = technicianId
+		} else if userId != uuid.Nil {
+			createdBy = userId
 		}
 		assetImage, err := utils.UploadFile(createdBy, "asset", file, fileExt)
 
@@ -82,7 +82,7 @@ func (s *assetFindingService) Create(assetFinding *entity.AssetFinding, technici
 	}
 
 	// Repo : Create Asset Finding
-	if err := s.assetFindingRepo.Create(assetFinding, *technicianId, *userId); err != nil {
+	if err := s.assetFindingRepo.Create(assetFinding, technicianId, userId); err != nil {
 		return err
 	}
 

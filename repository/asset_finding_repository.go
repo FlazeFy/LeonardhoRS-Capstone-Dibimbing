@@ -17,6 +17,9 @@ type AssetFindingRepository interface {
 	FindAllFindingHourTotal() ([]entity.StatsContextTotal, error)
 	Create(assetFinding *entity.AssetFinding, technicianId, userId uuid.UUID) error
 	DeleteById(id uuid.UUID) error
+
+	// For Seeder
+	DeleteAll() error
 }
 
 // Asset Finding Struct
@@ -99,8 +102,16 @@ func (r *assetFindingRepository) Create(assetFinding *entity.AssetFinding, techn
 	now := time.Now()
 
 	assetFinding.ID = uuid.New()
-	assetFinding.FindingByTechnician = &technicianId
-	assetFinding.FindingByUser = &userId
+	if technicianId != uuid.Nil {
+		assetFinding.FindingByTechnician = &technicianId
+	} else {
+		assetFinding.FindingByTechnician = nil
+	}
+	if userId != uuid.Nil {
+		assetFinding.FindingByUser = &userId
+	} else {
+		assetFinding.FindingByUser = nil
+	}
 	assetFinding.CreatedAt = now
 
 	// Query
@@ -118,4 +129,9 @@ func (r *assetFindingRepository) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+// For Seeder
+func (r *assetFindingRepository) DeleteAll() error {
+	return r.db.Where("1 = 1").Delete(&entity.AssetFinding{}).Error
 }

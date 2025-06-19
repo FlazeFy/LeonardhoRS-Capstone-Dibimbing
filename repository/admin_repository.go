@@ -5,6 +5,7 @@ import (
 
 	"pelita/entity"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -12,6 +13,11 @@ import (
 type AdminRepository interface {
 	FindByEmail(email string) (*entity.Admin, error)
 	FindAllContact() ([]entity.AdminContact, error)
+
+	// For Seeder
+	Create(room *entity.Admin) error
+	DeleteAll() error
+	FindOneRandom() (*entity.Admin, error)
 }
 
 // Admin Struct
@@ -49,6 +55,28 @@ func (r *adminRepository) FindByEmail(email string) (*entity.Admin, error) {
 
 	// Query
 	err := r.db.Where("email = ?", email).First(&admin).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &admin, err
+}
+
+// For Seeder
+func (r *adminRepository) DeleteAll() error {
+	return r.db.Where("1 = 1").Delete(&entity.Admin{}).Error
+}
+func (r *adminRepository) Create(admin *entity.Admin) error {
+	admin.ID = uuid.New()
+
+	// Query
+	return r.db.Create(admin).Error
+}
+func (r *adminRepository) FindOneRandom() (*entity.Admin, error) {
+	var admin entity.Admin
+
+	err := r.db.Order("RAND()").Limit(1).First(&admin).Error
+
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}

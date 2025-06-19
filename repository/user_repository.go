@@ -3,9 +3,11 @@ package repository
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"pelita/entity"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -15,6 +17,10 @@ type UserRepository interface {
 	FindByEmail(email string) (*entity.User, error)
 	FindById(id, role string) (*entity.MyProfile, error)
 	Create(user *entity.User) error
+
+	// For Seeder
+	DeleteAll() error
+	FindOneRandom() (*entity.User, error)
 }
 
 // User Struct
@@ -75,6 +81,27 @@ func (r *userRepository) FindById(id, role string) (*entity.MyProfile, error) {
 }
 
 func (r *userRepository) Create(user *entity.User) error {
+	user.ID = uuid.New()
+	user.CreatedAt = time.Now()
+	user.TelegramIsValid = false
+	user.ID = uuid.New()
+
 	// Query
 	return r.db.Create(user).Error
+}
+
+// For Seeder
+func (r *userRepository) DeleteAll() error {
+	return r.db.Where("1 = 1").Delete(&entity.User{}).Error
+}
+func (r *userRepository) FindOneRandom() (*entity.User, error) {
+	var user entity.User
+
+	err := r.db.Order("RAND()").Limit(1).First(&user).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &user, err
 }

@@ -33,7 +33,7 @@ func main() {
 	router := gin.Default()
 	redisClient := config.InitRedis()
 
-	// Setup Dependecy & Scheduler
+	// Setup Dependecy, Scheduler, and Seeder
 	routes.SetUpDependency(router, db, redisClient)
 
 	// Swagger

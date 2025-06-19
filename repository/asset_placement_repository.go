@@ -18,6 +18,10 @@ type AssetPlacementRepository interface {
 	FindByAssetIdRoomIdAndId(assetId, assetPlacementId uuid.UUID, id uuid.UUID) (*entity.AssetPlacement, error)
 	UpdateById(assetPlacement *entity.AssetPlacement, id uuid.UUID) error
 	DeleteById(id uuid.UUID) error
+
+	// For Seeder
+	DeleteAll() error
+	FindOneRandom() (*entity.AssetPlacement, error)
 }
 
 // Asset Placement Struct
@@ -122,4 +126,20 @@ func (r *assetPlacementRepository) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+// For Seeder
+func (r *assetPlacementRepository) DeleteAll() error {
+	return r.db.Where("1 = 1").Delete(&entity.AssetPlacement{}).Error
+}
+func (r *assetPlacementRepository) FindOneRandom() (*entity.AssetPlacement, error) {
+	var assetPlacement entity.AssetPlacement
+
+	err := r.db.Order("RAND()").Limit(1).First(&assetPlacement).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &assetPlacement, err
 }

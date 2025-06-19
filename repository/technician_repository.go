@@ -19,6 +19,10 @@ type TechnicianRepository interface {
 	Create(technician *entity.Technician, adminId uuid.UUID) error
 	DeleteById(id uuid.UUID) error
 	UpdateById(technician *entity.Technician, adminId uuid.UUID) error
+
+	// For Seeder
+	DeleteAll() error
+	FindOneRandom() (*entity.Technician, error)
 }
 
 // Technician Struct
@@ -132,4 +136,20 @@ func (r *technicianRepository) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+// For Seeder
+func (r *technicianRepository) DeleteAll() error {
+	return r.db.Where("1 = 1").Delete(&entity.Technician{}).Error
+}
+func (r *technicianRepository) FindOneRandom() (*entity.Technician, error) {
+	var technician entity.Technician
+
+	err := r.db.Order("RAND()").Limit(1).First(&technician).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &technician, err
 }

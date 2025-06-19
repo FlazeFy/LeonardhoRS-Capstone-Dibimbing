@@ -21,6 +21,10 @@ type RoomRepository interface {
 	FindByRoomNameFloorAndId(roomName, floor string, id uuid.UUID) (*entity.Room, error)
 	FindRoomAssetByFloorAndRoomName(floor, roomName string) ([]entity.RoomAsset, error)
 	FindRoomAssetShortByFloorAndRoomName(floor, roomName string) ([]entity.RoomAssetShort, error)
+
+	// For Seeder
+	DeleteAll() error
+	FindOneRandom() (*entity.Room, error)
 }
 
 // Room Struct
@@ -195,4 +199,20 @@ func (r *roomRepository) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+// For Seeder
+func (r *roomRepository) DeleteAll() error {
+	return r.db.Where("1 = 1").Delete(&entity.Room{}).Error
+}
+func (r *roomRepository) FindOneRandom() (*entity.Room, error) {
+	var room entity.Room
+
+	err := r.db.Order("RAND()").Limit(1).First(&room).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &room, err
 }

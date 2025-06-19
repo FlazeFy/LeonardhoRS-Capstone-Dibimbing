@@ -147,11 +147,13 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 	}
 
 	// Define The Role Id
-	var technicianId, userId *uuid.UUID
+	var technicianId, userId uuid.UUID
 	if role == "technician" {
-		technicianId = &technicianOrUserId
+		technicianId = technicianOrUserId
+		userId = uuid.Nil
 	} else {
-		userId = &technicianOrUserId
+		userId = technicianOrUserId
+		technicianId = uuid.Nil
 	}
 
 	// Validator Field
@@ -159,7 +161,7 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset placement id is required")
 		return
 	}
-	if technicianId == nil && userId == nil {
+	if technicianId == uuid.Nil && userId == uuid.Nil {
 		utils.BuildErrorMessage(c, http.StatusUnauthorized, "technician id and user id is required")
 		return
 	}
