@@ -8,7 +8,7 @@ import (
 	"github.com/brianvoe/gofakeit/v6"
 )
 
-var assetStatus = []string{"available", "in-use", "maintenance", "broken", "empty"}
+var assetStatus = []string{"available", "in-use", "maintenance"}
 
 func GenerateAsset() entity.Asset {
 	desc := gofakeit.ProductDescription()

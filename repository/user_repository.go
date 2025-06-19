@@ -20,6 +20,7 @@ type UserRepository interface {
 
 	// For Seeder
 	DeleteAll() error
+	FindOneRandom() (*entity.User, error)
 }
 
 // User Struct
@@ -92,4 +93,15 @@ func (r *userRepository) Create(user *entity.User) error {
 // For Seeder
 func (r *userRepository) DeleteAll() error {
 	return r.db.Where("1 = 1").Delete(&entity.User{}).Error
+}
+func (r *userRepository) FindOneRandom() (*entity.User, error) {
+	var user entity.User
+
+	err := r.db.Order("RAND()").Limit(1).First(&user).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &user, err
 }

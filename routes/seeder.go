@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func SetUpSeeder(db *gorm.DB, roomRepo repository.RoomRepository, adminRepo repository.AdminRepository, technicianRepo repository.TechnicianRepository, userRepo repository.UserRepository, assetRepo repository.AssetRepository, assetPlacement repository.AssetPlacementRepository, assetMaintenance repository.AssetMaintenanceRepository) {
+func SetUpSeeder(db *gorm.DB, roomRepo repository.RoomRepository, adminRepo repository.AdminRepository, technicianRepo repository.TechnicianRepository, userRepo repository.UserRepository, assetRepo repository.AssetRepository, assetPlacement repository.AssetPlacementRepository, assetMaintenance repository.AssetMaintenanceRepository, assetFinding repository.AssetFindingRepository) {
 	seeder.SeedRooms(roomRepo, 20)
 	seeder.SeedAdmins(adminRepo, 5)
 	seeder.SeedTechnicians(technicianRepo, adminRepo, 40)
@@ -15,4 +15,5 @@ func SetUpSeeder(db *gorm.DB, roomRepo repository.RoomRepository, adminRepo repo
 	seeder.SeedAssets(assetRepo, adminRepo, 200)
 	seeder.SeedAssetPlacements(assetPlacement, adminRepo, roomRepo, assetRepo, technicianRepo, 350)
 	seeder.SeedAssetMaintenances(assetMaintenance, adminRepo, technicianRepo, assetPlacement, 500)
+	seeder.SeedAssetFindings(assetFinding, assetPlacement, technicianRepo, userRepo, 200)
 }
