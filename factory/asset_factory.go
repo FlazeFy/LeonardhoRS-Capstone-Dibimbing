@@ -2,13 +2,12 @@ package factory
 
 import (
 	"fmt"
+	"pelita/config"
 	"pelita/entity"
 	"pelita/utils"
 
 	"github.com/brianvoe/gofakeit/v6"
 )
-
-var assetStatus = []string{"available", "in-use", "maintenance"}
 
 func GenerateAsset() entity.Asset {
 	desc := gofakeit.ProductDescription()
@@ -21,6 +20,6 @@ func GenerateAsset() entity.Asset {
 		AssetMerk:     &merk,
 		AssetCategory: gofakeit.ProductCategory(),
 		AssetPrice:    &price,
-		AssetStatus:   utils.RandomPicker(assetStatus),
+		AssetStatus:   utils.RandomPicker(config.AssetStatus),
 	}
 }

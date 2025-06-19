@@ -3,6 +3,7 @@ package controller
 import (
 	"math"
 	"net/http"
+	"pelita/config"
 	"pelita/entity"
 	"pelita/service"
 	"pelita/utils"
@@ -88,13 +89,6 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 		return
 	}
 
-	// Validator Rules
-	validDays := map[string]bool{"Sun": true, "Mon": true, "Tue": true, "Wed": true, "Thu": true, "Fri": true, "Sat": true}
-	if !validDays[req.MaintenanceDay] {
-		utils.BuildErrorMessage(c, http.StatusBadRequest, "maintenance day must be one of: Sun, Mon, Tue, Wed, Thu, Fri, Sat")
-		return
-	}
-
 	// Get User Id
 	adminId, err := utils.GetCurrentUserID(c)
 	if err != nil {
@@ -113,6 +107,11 @@ func (rc *AssetMaintenanceController) Create(c *gin.Context) {
 	}
 	if req.MaintenanceDay == "" {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance day is required")
+		return
+	}
+	// Validator Contain : Maintenance Day
+	if !utils.Contains(config.Days, req.MaintenanceDay) {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance day is not valid")
 		return
 	}
 
@@ -167,6 +166,11 @@ func (rc *AssetMaintenanceController) UpdateById(c *gin.Context) {
 	}
 	if req.MaintenanceDay == "" {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance day is required")
+		return
+	}
+	// Validator Contain : Maintenance Day
+	if !utils.Contains(config.Days, req.MaintenanceDay) {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset maintenance day is not valid")
 		return
 	}
 

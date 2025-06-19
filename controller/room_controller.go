@@ -3,6 +3,7 @@ package controller
 import (
 	"math"
 	"net/http"
+	"pelita/config"
 	"pelita/entity"
 	"pelita/service"
 	"pelita/utils"
@@ -120,13 +121,6 @@ func (rc *RoomController) Create(c *gin.Context) {
 		return
 	}
 
-	// Service : Create Room
-	err := rc.RoomService.Create(&req)
-	if err != nil {
-		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
 	// Validator Field
 	if req.RoomName == "" {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "room name is required")
@@ -138,6 +132,23 @@ func (rc *RoomController) Create(c *gin.Context) {
 	}
 	if req.Floor == "" {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "floor is required")
+		return
+	}
+
+	// Validator Contain : Room Deparment & Floor
+	if !utils.Contains(config.Departments, req.RoomDept) {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "room_dept is not valid")
+		return
+	}
+	if !utils.Contains(config.Floors, req.Floor) {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "floor is not valid")
+		return
+	}
+
+	// Service : Create Room
+	err := rc.RoomService.Create(&req)
+	if err != nil {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -186,6 +197,16 @@ func (rc *RoomController) UpdateById(c *gin.Context) {
 	}
 	if req.Floor == "" {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "floor is required")
+		return
+	}
+
+	// Validator Contain : Room Deparment & Floor
+	if !utils.Contains(config.Departments, req.RoomDept) {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "room_dept is not valid")
+		return
+	}
+	if !utils.Contains(config.Floors, req.Floor) {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "floor is not valid")
 		return
 	}
 

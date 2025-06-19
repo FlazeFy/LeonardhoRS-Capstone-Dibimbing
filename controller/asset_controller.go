@@ -6,6 +6,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"path/filepath"
+	"pelita/config"
 	"pelita/entity"
 	"pelita/service"
 	"pelita/utils"
@@ -21,16 +22,6 @@ type AssetController struct {
 
 func NewAssetRepository(assetService service.AssetService) *AssetController {
 	return &AssetController{AssetService: assetService}
-}
-
-type Config struct {
-	MaxSizeFile     int64
-	AllowedFileType []string
-}
-
-var config = Config{
-	MaxSizeFile:     10000000, // 10 MB
-	AllowedFileType: []string{"jpg", "jpeg"},
 }
 
 // @Summary      Get All Asset
@@ -140,8 +131,8 @@ func (rc *AssetController) Create(c *gin.Context) {
 		fileHeader = file
 
 		// Validate file size
-		if fileSize > config.MaxSizeFile {
-			utils.BuildErrorMessage(c, http.StatusBadRequest, fmt.Sprintf("The file size must be under %.2f MB", float64(config.MaxSizeFile)/1000000))
+		if fileSize > config.ConfigFile.MaxSizeFile {
+			utils.BuildErrorMessage(c, http.StatusBadRequest, fmt.Sprintf("The file size must be under %.2f MB", float64(config.ConfigFile.MaxSizeFile)/1000000))
 			return
 		}
 
@@ -165,6 +156,11 @@ func (rc *AssetController) Create(c *gin.Context) {
 	}
 	if req.AssetStatus == "" {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset status is required")
+		return
+	}
+	// Validator Contain : Asset Status
+	if !utils.Contains(config.AssetStatus, req.AssetStatus) {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset status is not valid")
 		return
 	}
 
@@ -219,6 +215,11 @@ func (rc *AssetController) UpdateById(c *gin.Context) {
 	}
 	if req.AssetStatus == "" {
 		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset status is required")
+		return
+	}
+	// Validator Contain : Asset Status
+	if !utils.Contains(config.AssetStatus, req.AssetStatus) {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset status is not valid")
 		return
 	}
 
