@@ -18,6 +18,9 @@ type AssetPlacementRepository interface {
 	FindByAssetIdRoomIdAndId(assetId, assetPlacementId uuid.UUID, id uuid.UUID) (*entity.AssetPlacement, error)
 	UpdateById(assetPlacement *entity.AssetPlacement, id uuid.UUID) error
 	DeleteById(id uuid.UUID) error
+
+	// For Seeder
+	DeleteAll() error
 }
 
 // Asset Placement Struct
@@ -122,4 +125,9 @@ func (r *assetPlacementRepository) DeleteById(id uuid.UUID) error {
 	}
 
 	return nil
+}
+
+// For Seeder
+func (r *assetPlacementRepository) DeleteAll() error {
+	return r.db.Where("1 = 1").Delete(&entity.AssetPlacement{}).Error
 }

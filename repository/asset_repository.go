@@ -25,6 +25,7 @@ type AssetRepository interface {
 
 	// For Seeder
 	DeleteAll() error
+	FindOneRandom() (*entity.Asset, error)
 }
 
 // Asset Struct
@@ -209,4 +210,15 @@ func (r *assetRepository) HardDeleteById(id uuid.UUID) error {
 // For Seeder
 func (r *assetRepository) DeleteAll() error {
 	return r.db.Where("1 = 1").Delete(&entity.Asset{}).Error
+}
+func (r *assetRepository) FindOneRandom() (*entity.Asset, error) {
+	var asset entity.Asset
+
+	err := r.db.Order("RAND()").Limit(1).First(&asset).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return &asset, err
 }
