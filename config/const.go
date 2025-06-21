@@ -19,7 +19,7 @@ var Departments = []string{"IT", "Human Resource", "Finance & Risk Management", 
 var Floors = []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"}
 var AssetStatus = []string{"available", "in-use", "maintenance"}
 var FindingCategories = []string{"broken", "missing", "upgrade", "feedback"}
-var Days = []string{"sun", "mon", "tue", "wed", "thu", "fri", "sat"}
+var Days = []string{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"}
 var ConfigFile = Config{
 	MaxSizeFile:     10000000, // 10 MB
 	AllowedFileType: []string{"jpg", "jpeg"},

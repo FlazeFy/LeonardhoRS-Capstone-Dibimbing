@@ -28,7 +28,8 @@ https://docs.google.com/spreadsheets/d/1UZ97iSDHLe6XYc5qb1qnLwP3TCwy98211GIggZ0K
 
 ### 🌐 Deployment URL
 
-[URL]
+Backend (Swagger Docs) : https://pelita.leonardhors.com/swagger/index.html#/
+Telegram : https://t.me/pelita_app_bot
 
 ### 🎥 Presentation Materials (PDF)
 

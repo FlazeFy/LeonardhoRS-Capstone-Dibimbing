@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"pelita/config"
 	"pelita/entity"
@@ -16,7 +17,20 @@ import (
 	"gorm.io/gorm"
 )
 
+func initLogging() {
+	f, err := os.OpenFile("pelita.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalf("Failed to open log file: %v", err)
+	}
+
+	log.SetOutput(f)
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+}
+
 func main() {
+	initLogging()
+	log.Println("Pelita service is starting...")
+
 	// Load Env
 	err := godotenv.Load()
 	if err != nil {
@@ -40,7 +54,10 @@ func main() {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Run server
-	router.Run(":" + os.Getenv("PORT"))
+	port := os.Getenv("PORT")
+	router.Run(":" + port)
+
+	log.Printf("Pelita is running on port %s\n", port)
 }
 
 func MigrateAll(db *gorm.DB) {
