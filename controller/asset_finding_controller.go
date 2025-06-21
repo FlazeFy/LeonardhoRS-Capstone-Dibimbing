@@ -6,6 +6,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"path/filepath"
+	"pelita/config"
 	"pelita/entity"
 	"pelita/service"
 	"pelita/utils"
@@ -125,13 +126,6 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 		return
 	}
 
-	// Validator Rules
-	validDays := map[string]bool{"Missing": true, "Broken": true, "Empty": true, "Dirty": true}
-	if !validDays[req.FindingCategory] {
-		utils.BuildErrorMessage(c, http.StatusBadRequest, "finding category must be one of: Missing, Broken, Empty, Dirty")
-		return
-	}
-
 	// Get User Id / Technician Id
 	technicianOrUserId, err := utils.GetCurrentUserID(c)
 	if err != nil {
@@ -165,6 +159,11 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 		utils.BuildErrorMessage(c, http.StatusUnauthorized, "technician id and user id is required")
 		return
 	}
+	// Validator Contain : Finding Category
+	if !utils.Contains(config.FindingCategories, req.FindingCategory) {
+		utils.BuildErrorMessage(c, http.StatusBadRequest, "asset finding category is not valid")
+		return
+	}
 
 	// Default values
 	var fileExt string
@@ -183,8 +182,8 @@ func (rc *AssetFindingController) Create(c *gin.Context) {
 		fileHeader = file
 
 		// Validate file size
-		if fileSize > config.MaxSizeFile {
-			utils.BuildErrorMessage(c, http.StatusBadRequest, fmt.Sprintf("The file size must be under %.2f MB", float64(config.MaxSizeFile)/1000000))
+		if fileSize > config.ConfigFile.MaxSizeFile {
+			utils.BuildErrorMessage(c, http.StatusBadRequest, fmt.Sprintf("The file size must be under %.2f MB", float64(config.ConfigFile.MaxSizeFile)/1000000))
 			return
 		}
 
